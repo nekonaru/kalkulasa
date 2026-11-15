@@ -1,0 +1,11 @@
+package id.kalkulasa.presentation.navigation
+
+object Routes {
+    const val ONBOARDING = "onboarding"
+    const val HOME = "home"
+    const val CASHIER = "cashier"
+    const val STOCK = "stock"
+    const val FINANCE = "finance"
+    const val REPORTS = "reports"
+    const val SETTINGS = "settings"
+}
