@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Kalkulasa</string>
+    <string name="tagline">Usaha kecil, semua urusan beres.</string>
+
+    <!-- Umum -->
+    <string name="button_save">Simpan</string>
+    <string name="button_cancel">Batal</string>
+    <string name="button_delete">Hapus</string>
+    <string name="button_add">Tambah</string>
+    <string name="button_close">Tutup</string>
+    <string name="button_confirm">Ya, lanjutkan</string>
+    <string name="button_back">Kembali</string>
+    <string name="search">Cari…</string>
+    <string name="empty_generic">Belum ada data</string>
+    <string name="loading">Memuat…</string>
+    <string name="error_generic">Terjadi kesalahan. Coba lagi.</string>
+    <string name="archive">Arsipkan</string>
+    <string name="unarchive">Kembalikan</string>
+    <string name="optional">opsional</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_welcome">Selamat datang di Kalkulasa</string>
+    <string name="onboarding_subtitle">Kalkulasi dan kasa, dua hal yang bikin usaha tertib. Isi data usaha kamu dulu, cuma sebentar.</string>
+    <string name="label_business_name">Nama usaha</string>
+    <string name="hint_business_name">Contoh: Warung Bu Ratna</string>
+    <string name="label_business_type">Jenis usaha</string>
+    <string name="hint_business_type">Contoh: Warung kelontong, Kuliner, Fashion, Jasa</string>
+    <string name="label_initial_capital">Modal awal (Rp)</string>
+    <string name="hint_initial_capital">Contoh: 5000000</string>
+    <string name="button_start">Mulai pakai Kalkulasa</string>
+    <string name="onboarding_name_required">Nama usaha wajib diisi</string>
+    <string name="onboarding_capital_invalid">Modal awal tidak valid</string>
+
+    <!-- Navigasi -->
+    <string name="nav_home">Beranda</string>
+    <string name="nav_cashier">Kasir</string>
+    <string name="nav_stock">Stok</string>
+    <string name="nav_finance">Keuangan</string>
+    <string name="nav_reports">Laporan</string>
+    <string name="nav_settings">Pengaturan</string>
+
+    <!-- Beranda -->
+    <string name="home_today">Hari ini</string>
+    <string name="omzet_today">Omzet hari ini</string>
+    <string name="net_profit">Untung bersih</string>
+    <string name="transactions_today">transaksi</string>
+    <string name="low_stock_count">stok menipis</string>
+    <string name="trend_7_days">Tren 7 hari terakhir</string>
+    <string name="best_sellers">Produk terlaris</string>
+    <string name="home_empty">Belum ada penjualan hari ini. Buka Kasir dan catat transaksi pertama kamu.</string>
+    <string name="home_cta_sell">Catat penjualan</string>
+
+    <!-- Kasir -->
+    <string name="cashier_title">Kasir</string>
+    <string name="search_product">Cari produk atau scan nama…</string>
+    <string name="cart">Keranjang</string>
+    <string name="cart_empty">Keranjang masih kosong. Pilih produk untuk dijual.</string>
+    <string name="subtotal">Subtotal</string>
+    <string name="discount">Diskon</string>
+    <string name="discount_amount">Nominal diskon (Rp)</string>
+    <string name="total">Total</string>
+    <string name="payment_method">Metode bayar</string>
+    <string name="payment_cash">Tunai</string>
+    <string name="payment_transfer">Transfer</string>
+    <string name="payment_qris">QRIS</string>
+    <string name="button_pay">Simpan penjualan</string>
+    <string name="sale_saved">Penjualan tersimpan</string>
+    <string name="sale_insufficient_stock">Stok %1$s tidak cukup (sisa %2$s)</string>
+    <string name="sale_cancelled">Transaksi dibatalkan, stok dikembalikan</string>
+    <string name="today_transactions">Transaksi hari ini</string>
+    <string name="cancel_sale">Batalkan</string>
+    <string name="cancel_sale_confirm">Batalkan transaksi ini? Stok akan dikembalikan.</string>
+
+    <!-- Stok -->
+    <string name="stock_title">Stok</string>
+    <string name="tab_products">Produk</string>
+    <string name="tab_stock_in">Stok Masuk</string>
+    <string name="tab_history">Riwayat</string>
+    <string name="add_product">Tambah produk</string>
+    <string name="edit_product">Ubah produk</string>
+    <string name="product_name">Nama produk</string>
+    <string name="product_category">Kategori</string>
+    <string name="product_unit">Satuan</string>
+    <string name="unit_pcs">pcs</string>
+    <string name="product_barcode">Barcode</string>
+    <string name="product_buy_price">Harga beli</string>
+    <string name="product_sell_price">Harga jual</string>
+    <string name="product_initial_stock">Stok awal</string>
+    <string name="product_min_stock">Stok minimum</string>
+    <string name="product_active">Aktif</string>
+    <string name="product_archived">Diarsipkan</string>
+    <string name="product_empty">Belum ada produk. Tambahkan produk pertama kamu.</string>
+    <string name="product_empty_title">Produk masih kosong</string>
+    <string name="low_stock">Stok menipis</string>
+    <string name="in_stock">Stok tersedia</string>
+    <string name="stock_in_title">Stok masuk</string>
+    <string name="stock_in_supplier">Pemasok (opsional)</string>
+    <string name="stock_in_qty">Jumlah masuk</string>
+    <string name="stock_in_price">Harga beli per satuan</string>
+    <string name="stock_in_note">Catatan</string>
+    <string name="stock_in_save">Simpan stok masuk</string>
+    <string name="stock_in_saved">Stok masuk tersimpan, modal per barang dihitung ulang</string>
+    <string name="stock_adjustment_title">Penyesuaian stok</string>
+    <string name="stock_adjustment_reason">Alasan</string>
+    <string name="reason_damaged">Rusak</string>
+    <string name="reason_lost">Hilang</string>
+    <string name="reason_expired">Kedaluwarsa</string>
+    <string name="reason_opname">Stok opname</string>
+    <string name="reason_other">Lainnya</string>
+    <string name="stock_adjustment_save">Simpan penyesuaian</string>
+    <string name="stock_adjustment_saved">Penyesuaian tersimpan</string>
+    <string name="movement_in">Masuk</string>
+    <string name="movement_out">Keluar</string>
+    <string name="movement_adjustment">Penyesuaian</string>
+    <string name="movement_return">Retur</string>
+    <string name="history_empty">Belum ada pergerakan stok</string>
+    <string name="qty_pieces">%1$s %2$s</string>
+
+    <!-- Keuangan -->
+    <string name="finance_title">Keuangan</string>
+    <string name="cash_balance">Saldo kas</string>
+    <string name="add_capital">Tambah modal</string>
+    <string name="add_private_draw">Prive (ambil uang pribadi)</string>
+    <string name="add_expense">Catat pengeluaran</string>
+    <string name="expense_category">Kategori pengeluaran</string>
+    <string name="expense_listrik">Listrik</string>
+    <string name="expense_sewa">Sewa</string>
+    <string name="expense_gaji">Gaji</string>
+    <string name="expense_transportasi">Transportasi</string>
+    <string name="expense_lainnya">Lainnya</string>
+    <string name="amount">Nominal (Rp)</string>
+    <string name="note">Catatan</string>
+    <string name="finance_history">Riwayat keuangan</string>
+    <string name="finance_empty">Belum ada catatan keuangan. Tambah modal atau catat pengeluaran pertama.</string>
+    <string name="entry_capital_add">Tambahan modal</string>
+    <string name="entry_capital_initial">Modal awal</string>
+    <string name="entry_private_draw">Prive</string>
+    <string name="entry_expense">Pengeluaran</string>
+    <string name="entry_purchase">Pembelian stok</string>
+    <string name="entry_sale">Penjualan</string>
+
+    <!-- Laporan -->
+    <string name="reports_title">Laporan</string>
+    <string name="period_today">Hari ini</string>
+    <string name="period_7_days">7 hari</string>
+    <string name="period_30_days">30 hari</string>
+    <string name="period_this_month">Bulan ini</string>
+    <string name="profit_loss">Laba rugi sederhana</string>
+    <string name="revenue">Omzet</string>
+    <string name="cogs">Modal per barang terjual</string>
+    <string name="gross_profit">Laba kotor</string>
+    <string name="operating_expense">Pengeluaran operasional</string>
+    <string name="net_profit_full">Untung bersih</string>
+    <string name="margin">Margin</string>
+    <string name="inventory_value">Nilai persediaan</string>
+    <string name="export_pdf">Ekspor PDF</string>
+    <string name="export_csv">Ekspor CSV</string>
+    <string name="share_whatsapp">Bagikan ke WhatsApp</string>
+    <string name="reports_empty">Belum ada data pada periode ini.</string>
+
+    <!-- Pengaturan -->
+    <string name="settings_title">Pengaturan</string>
+    <string name="settings_business">Profil usaha</string>
+    <string name="settings_appearance">Tampilan</string>
+    <string name="theme_system">Ikut sistem</string>
+    <string name="theme_light">Terang</string>
+    <string name="theme_dark">Gelap</string>
+    <string name="settings_security">Keamanan</string>
+    <string name="pin_enable">Kunci aplikasi dengan PIN</string>
+    <string name="pin_set">Atur PIN</string>
+    <string name="pin_change">Ubah PIN</string>
+    <string name="pin_remove">Hapus PIN</string>
+    <string name="pin_enter">Masukkan PIN</string>
+    <string name="pin_wrong">PIN salah</string>
+    <string name="pin_new">PIN baru (6 digit)</string>
+    <string name="pin_confirm">Ulangi PIN</string>
+    <string name="pin_mismatch">PIN tidak sama</string>
+    <string name="pin_too_short">PIN minimal 6 digit</string>
+    <string name="settings_data">Data</string>
+    <string name="backup_now">Backup data</string>
+    <string name="backup_done">Backup tersimpan di folder Unduhan</string>
+    <string name="restore_now">Pulihkan dari backup</string>
+    <string name="restore_done">Data berhasil dipulihkan</string>
+    <string name="restore_confirm">Memulihkan backup akan menimpa data saat ini. Lanjutkan?</string>
+    <string name="about">Tentang Kalkulasa</string>
+    <string name="version">Versi %1$s</string>
+    <string name="licenses">Kalkulasa dilisensikan di bawah MIT License.</string>
+
+    <!-- Pin lock screen -->
+    <string name="lock_title">Kalkulasa terkunci</string>
+    <string name="lock_subtitle">Masukkan PIN untuk membuka</string>
+</resources>

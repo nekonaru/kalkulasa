@@ -1,0 +1,235 @@
+package id.kalkulasa.data.repository
+
+import androidx.room.withTransaction
+import id.kalkulasa.data.local.KalkulasaDatabase
+import id.kalkulasa.data.local.entity.BusinessProfileEntity
+import id.kalkulasa.data.local.entity.CapitalEntryEntity
+import id.kalkulasa.data.local.entity.CategoryEntity
+import id.kalkulasa.data.local.entity.ExpenseEntity
+import id.kalkulasa.data.local.entity.ProductEntity
+import id.kalkulasa.data.local.entity.PurchaseEntity
+import id.kalkulasa.data.local.entity.PurchaseItemEntity
+import id.kalkulasa.data.local.entity.SaleEntity
+import id.kalkulasa.data.local.entity.SaleItemEntity
+import id.kalkulasa.data.local.entity.StockMovementEntity
+import id.kalkulasa.domain.repository.BackupRepository
+import org.json.JSONArray
+import org.json.JSONObject
+import javax.inject.Inject
+
+/** JSON backup of the whole local database. Versioned so future restores can migrate. */
+class BackupRepositoryImpl @Inject constructor(
+    private val db: KalkulasaDatabase,
+) : BackupRepository {
+
+    override suspend fun exportJson(): String {
+        val json = JSONObject()
+        json.put("app", "kalkulasa")
+        json.put("backupVersion", 1)
+        json.put("exportedAt", System.currentTimeMillis())
+
+        json.put("business_profile", JSONArray().apply {
+            db.businessProfileDao().getProfile()?.let { put(it.toJson()) }
+        })
+        json.put("category", JSONArray().also { arr -> db.categoryDao().getAll().forEach { arr.put(it.toJson()) } })
+        json.put("product", JSONArray().also { arr -> db.productDao().getAllActive().forEach { arr.put(it.toJson()) } })
+        json.put("stock_movement", JSONArray().also { arr -> db.stockMovementDao().getAll().forEach { arr.put(it.toJson()) } })
+        json.put("purchase", JSONArray().also { arr -> db.purchaseDao().getAll().forEach { arr.put(it.toJson()) } })
+        json.put("purchase_item", JSONArray().also { arr -> db.purchaseDao().getAllItems().forEach { arr.put(it.toJson()) } })
+        json.put("sale", JSONArray().also { arr -> db.saleDao().getAll().forEach { arr.put(it.toJson()) } })
+        json.put("sale_item", JSONArray().also { arr -> db.saleDao().getAllItems().forEach { arr.put(it.toJson()) } })
+        json.put("expense", JSONArray().also { arr -> db.expenseDao().getAll().forEach { arr.put(it.toJson()) } })
+        json.put("capital_entry", JSONArray().also { arr -> db.capitalEntryDao().getAll().forEach { arr.put(it.toJson()) } })
+        return json.toString()
+    }
+
+    override fun importJson(json: String): Result<Unit> = runCatching {
+        val root = JSONObject(json)
+        require(root.optString("app") == "kalkulasa") { "File backup bukan backup Kalkulasa" }
+        require(root.optInt("backupVersion") <= 1) { "Versi backup tidak didukung" }
+
+        val profile = root.getJSONArray("business_profile").optJSONObject(0)?.toBusinessProfile()
+        val categories = root.getJSONArray("category").toList { it.toCategory() }
+        val products = root.getJSONArray("product").toList { it.toProduct() }
+        val movements = root.getJSONArray("stock_movement").toList { it.toStockMovement() }
+        val purchases = root.getJSONArray("purchase").toList { it.toPurchase() }
+        val purchaseItems = root.getJSONArray("purchase_item").toList { it.toPurchaseItem() }
+        val sales = root.getJSONArray("sale").toList { it.toSale() }
+        val saleItems = root.getJSONArray("sale_item").toList { it.toSaleItem() }
+        val expenses = root.getJSONArray("expense").toList { it.toExpense() }
+        val capitalEntries = root.getJSONArray("capital_entry").toList { it.toCapitalEntry() }
+
+        db.runInTransaction {
+            db.clearAllTables()
+            profile?.let { kotlinx.coroutines.runBlocking { db.businessProfileDao().upsert(it) } }
+            kotlinx.coroutines.runBlocking {
+                categories.forEach { db.categoryDao().upsert(it) }
+                products.forEach { db.productDao().upsert(it) }
+                movements.forEach { db.stockMovementDao().insert(it) }
+                purchases.forEach { db.purchaseDao().insert(it) }
+                purchaseItems.forEach { db.purchaseDao().insertItem(it) }
+                sales.forEach { db.saleDao().insert(it) }
+                saleItems.forEach { db.saleDao().insertItem(it) }
+                expenses.forEach { db.expenseDao().insert(it) }
+                capitalEntries.forEach { db.capitalEntryDao().insert(it) }
+            }
+        }
+    }
+
+    private fun <T> JSONArray.toList(map: (JSONObject) -> T): List<T> =
+        (0 until length()).map { map(getJSONObject(it)) }
+
+    // JSON helpers
+    private fun jPut(obj: JSONObject, name: String, value: Any?) {
+        if (value == null) obj.put(name, JSONObject.NULL) else obj.put(name, value)
+    }
+
+    private fun JSONObject.optLongOrNull(name: String): Long? =
+        if (isNull(name)) null else getLong(name)
+
+    private fun BusinessProfileEntity.toJson() = JSONObject().apply {
+        put("id", id); put("namaUsaha", namaUsaha); put("jenisUsaha", jenisUsaha)
+        put("modalAwal", modalAwal); put("dibuatPada", dibuatPada); put("updatedAt", updatedAt)
+        jPut(this, "deletedAt", deletedAt); put("deviceId", deviceId); put("syncStatus", syncStatus)
+    }
+
+    private fun CategoryEntity.toJson() = JSONObject().apply {
+        put("id", id); put("nama", nama); put("jenis", jenis); put("updatedAt", updatedAt)
+        jPut(this, "deletedAt", deletedAt); put("deviceId", deviceId); put("syncStatus", syncStatus)
+    }
+
+    private fun ProductEntity.toJson() = JSONObject().apply {
+        put("id", id); put("nama", nama)
+        jPut(this, "kategoriId", kategoriId)
+        put("satuan", satuan); jPut(this, "barcode", barcode)
+        put("hargaBeliRata2", hargaBeliRata2); put("hargaJual", hargaJual)
+        put("stok", stok); put("stokMinimum", stokMinimum)
+        jPut(this, "fotoUri", fotoUri); put("diarsipkan", diarsipkan)
+        put("updatedAt", updatedAt); jPut(this, "deletedAt", deletedAt)
+        put("deviceId", deviceId); put("syncStatus", syncStatus)
+    }
+
+    private fun StockMovementEntity.toJson() = JSONObject().apply {
+        put("id", id); put("produkId", produkId); put("tipe", tipe); put("jumlah", jumlah)
+        put("hargaSatuan", hargaSatuan); jPut(this, "referensiId", referensiId)
+        jPut(this, "catatan", catatan); put("waktu", waktu); put("updatedAt", updatedAt)
+        jPut(this, "deletedAt", deletedAt); put("deviceId", deviceId); put("syncStatus", syncStatus)
+    }
+
+    private fun PurchaseEntity.toJson() = JSONObject().apply {
+        put("id", id); jPut(this, "pemasok", pemasok); put("total", total); put("waktu", waktu)
+        jPut(this, "catatan", catatan); put("updatedAt", updatedAt)
+        jPut(this, "deletedAt", deletedAt); put("deviceId", deviceId); put("syncStatus", syncStatus)
+    }
+
+    private fun PurchaseItemEntity.toJson() = JSONObject().apply {
+        put("id", id); put("purchaseId", purchaseId); put("produkId", produkId)
+        put("jumlah", jumlah); put("hargaBeli", hargaBeli); put("updatedAt", updatedAt)
+        jPut(this, "deletedAt", deletedAt); put("deviceId", deviceId); put("syncStatus", syncStatus)
+    }
+
+    private fun SaleEntity.toJson() = JSONObject().apply {
+        put("id", id); put("subtotal", subtotal); put("diskon", diskon); put("total", total)
+        put("metodeBayar", metodeBayar); put("status", status); put("waktu", waktu)
+        jPut(this, "catatan", catatan); put("updatedAt", updatedAt)
+        jPut(this, "deletedAt", deletedAt); put("deviceId", deviceId); put("syncStatus", syncStatus)
+    }
+
+    private fun SaleItemEntity.toJson() = JSONObject().apply {
+        put("id", id); put("saleId", saleId); put("produkId", produkId); put("namaProduk", namaProduk)
+        put("jumlah", jumlah); put("hargaJual", hargaJual); put("hppSaatJual", hppSaatJual)
+        put("updatedAt", updatedAt); jPut(this, "deletedAt", deletedAt)
+        put("deviceId", deviceId); put("syncStatus", syncStatus)
+    }
+
+    private fun ExpenseEntity.toJson() = JSONObject().apply {
+        put("id", id); jPut(this, "kategoriId", kategoriId); put("kategoriNama", kategoriNama)
+        put("nominal", nominal); jPut(this, "catatan", catatan); put("waktu", waktu)
+        put("updatedAt", updatedAt); jPut(this, "deletedAt", deletedAt)
+        put("deviceId", deviceId); put("syncStatus", syncStatus)
+    }
+
+    private fun CapitalEntryEntity.toJson() = JSONObject().apply {
+        put("id", id); put("tipe", tipe); put("nominal", nominal)
+        jPut(this, "catatan", catatan); put("waktu", waktu); put("updatedAt", updatedAt)
+        jPut(this, "deletedAt", deletedAt); put("deviceId", deviceId); put("syncStatus", syncStatus)
+    }
+
+    private fun JSONObject.str(name: String): String? = if (isNull(name)) null else getString(name)
+    private fun JSONObject.strOr(name: String): String? = str(name)
+
+    private fun JSONObject.toBusinessProfile() = BusinessProfileEntity(
+        id = getString("id"), namaUsaha = getString("namaUsaha"), jenisUsaha = getString("jenisUsaha"),
+        modalAwal = getLong("modalAwal"), dibuatPada = getLong("dibuatPada"), updatedAt = getLong("updatedAt"),
+        deletedAt = optLongOrNull("deletedAt"), deviceId = getString("deviceId"),
+        syncStatus = optString("syncStatus", "PENDING"),
+    )
+
+    private fun JSONObject.toCategory() = CategoryEntity(
+        id = getString("id"), nama = getString("nama"), jenis = getString("jenis"),
+        updatedAt = getLong("updatedAt"), deletedAt = optLongOrNull("deletedAt"),
+        deviceId = getString("deviceId"), syncStatus = optString("syncStatus", "PENDING"),
+    )
+
+    private fun JSONObject.toProduct() = ProductEntity(
+        id = getString("id"), nama = getString("nama"), kategoriId = str("kategoriId"),
+        satuan = getString("satuan"), barcode = str("barcode"),
+        hargaBeliRata2 = getLong("hargaBeliRata2"), hargaJual = getLong("hargaJual"),
+        stok = getDouble("stok"), stokMinimum = getDouble("stokMinimum"),
+        fotoUri = str("fotoUri"), diarsipkan = getBoolean("diarsipkan"),
+        updatedAt = getLong("updatedAt"), deletedAt = optLongOrNull("deletedAt"),
+        deviceId = getString("deviceId"), syncStatus = optString("syncStatus", "PENDING"),
+    )
+
+    private fun JSONObject.toStockMovement() = StockMovementEntity(
+        id = getString("id"), produkId = getString("produkId"), tipe = getString("tipe"),
+        jumlah = getDouble("jumlah"), hargaSatuan = getLong("hargaSatuan"),
+        referensiId = str("referensiId"), catatan = str("catatan"), waktu = getLong("waktu"),
+        updatedAt = getLong("updatedAt"), deletedAt = optLongOrNull("deletedAt"),
+        deviceId = getString("deviceId"), syncStatus = optString("syncStatus", "PENDING"),
+    )
+
+    private fun JSONObject.toPurchase() = PurchaseEntity(
+        id = getString("id"), pemasok = str("pemasok"), total = getLong("total"),
+        waktu = getLong("waktu"), catatan = str("catatan"), updatedAt = getLong("updatedAt"),
+        deletedAt = optLongOrNull("deletedAt"), deviceId = getString("deviceId"),
+        syncStatus = optString("syncStatus", "PENDING"),
+    )
+
+    private fun JSONObject.toPurchaseItem() = PurchaseItemEntity(
+        id = getString("id"), purchaseId = getString("purchaseId"), produkId = getString("produkId"),
+        jumlah = getDouble("jumlah"), hargaBeli = getLong("hargaBeli"), updatedAt = getLong("updatedAt"),
+        deletedAt = optLongOrNull("deletedAt"), deviceId = getString("deviceId"),
+        syncStatus = optString("syncStatus", "PENDING"),
+    )
+
+    private fun JSONObject.toSale() = SaleEntity(
+        id = getString("id"), subtotal = getLong("subtotal"), diskon = getLong("diskon"),
+        total = getLong("total"), metodeBayar = getString("metodeBayar"),
+        status = getString("status"), waktu = getLong("waktu"), catatan = str("catatan"),
+        updatedAt = getLong("updatedAt"), deletedAt = optLongOrNull("deletedAt"),
+        deviceId = getString("deviceId"), syncStatus = optString("syncStatus", "PENDING"),
+    )
+
+    private fun JSONObject.toSaleItem() = SaleItemEntity(
+        id = getString("id"), saleId = getString("saleId"), produkId = getString("produkId"),
+        namaProduk = getString("namaProduk"), jumlah = getDouble("jumlah"),
+        hargaJual = getLong("hargaJual"), hppSaatJual = getLong("hppSaatJual"),
+        updatedAt = getLong("updatedAt"), deletedAt = optLongOrNull("deletedAt"),
+        deviceId = getString("deviceId"), syncStatus = optString("syncStatus", "PENDING"),
+    )
+
+    private fun JSONObject.toExpense() = ExpenseEntity(
+        id = getString("id"), kategoriId = str("kategoriId"), kategoriNama = getString("kategoriNama"),
+        nominal = getLong("nominal"), catatan = str("catatan"), waktu = getLong("waktu"),
+        updatedAt = getLong("updatedAt"), deletedAt = optLongOrNull("deletedAt"),
+        deviceId = getString("deviceId"), syncStatus = optString("syncStatus", "PENDING"),
+    )
+
+    private fun JSONObject.toCapitalEntry() = CapitalEntryEntity(
+        id = getString("id"), tipe = getString("tipe"), nominal = getLong("nominal"),
+        catatan = str("catatan"), waktu = getLong("waktu"), updatedAt = getLong("updatedAt"),
+        deletedAt = optLongOrNull("deletedAt"), deviceId = getString("deviceId"),
+        syncStatus = optString("syncStatus", "PENDING"),
+    )
+}

@@ -1,0 +1,80 @@
+package id.kalkulasa.domain.repository
+
+import id.kalkulasa.domain.model.BusinessProfile
+import id.kalkulasa.domain.model.CapitalEntry
+import id.kalkulasa.domain.model.Category
+import id.kalkulasa.domain.model.DailyPoint
+import id.kalkulasa.domain.model.Expense
+import id.kalkulasa.domain.model.PeriodReport
+import id.kalkulasa.domain.model.Product
+import id.kalkulasa.domain.model.ProductSales
+import id.kalkulasa.domain.model.Sale
+import id.kalkulasa.domain.model.StockMovement
+import kotlinx.coroutines.flow.Flow
+
+interface ProfileRepository {
+    fun observeProfile(): Flow<BusinessProfile?>
+    suspend fun getProfile(): BusinessProfile?
+    suspend fun saveProfile(profile: BusinessProfile)
+}
+
+interface ProductRepository {
+    fun observeActive(query: String = ""): Flow<List<Product>>
+    fun observeAll(query: String = ""): Flow<List<Product>>
+    fun observeLowStockCount(): Flow<Int>
+    fun observeLowStock(): Flow<List<Product>>
+    fun observeInventoryValue(): Flow<Long>
+    suspend fun getById(id: String): Product?
+    suspend fun getAll(): List<Product>
+    suspend fun save(product: Product)
+    suspend fun setArchived(id: String, archived: Boolean)
+}
+
+interface CategoryRepository {
+    fun observeByType(jenis: String): Flow<List<Category>>
+    fun observeAll(): Flow<List<Category>>
+    suspend fun addCategory(name: String, jenis: String)
+}
+
+interface StockRepository {
+    fun observeRecentMovements(limit: Int = 100): Flow<List<StockMovement>>
+    suspend fun recordStockIn(productId: String, qty: Double, hargaBeli: Long, pemasok: String?, catatan: String?): Result<Unit>
+    suspend fun recordAdjustment(productId: String, newQty: Double, reason: String): Result<Unit>
+}
+
+interface SaleRepository {
+    fun observeRecentSales(limit: Int = 50): Flow<List<Sale>>
+    suspend fun recordSale(items: List<Pair<Product, Double>>, diskon: Long, metodeBayar: String, catatan: String?): Result<Sale>
+    suspend fun cancelSale(saleId: String): Result<Unit>
+    suspend fun salesBetween(from: Long, to: Long): List<Sale>
+    suspend fun revenueBetween(from: Long, to: Long): Long
+    suspend fun cogsBetween(from: Long, to: Long): Long
+    suspend fun countBetween(from: Long, to: Long): Int
+    suspend fun topProductsBetween(from: Long, to: Long, limit: Int): List<ProductSales>
+    suspend fun dailyTrend(days: Int): List<DailyPoint>
+}
+
+interface FinanceRepository {
+    fun observeRecentExpenses(limit: Int = 100): Flow<List<Expense>>
+    fun observeRecentCapitalEntries(limit: Int = 100): Flow<List<CapitalEntry>>
+    suspend fun addCapital(tipe: String, nominal: Long, catatan: String?)
+    suspend fun addExpense(kategoriId: String?, kategoriNama: String, nominal: Long, catatan: String?)
+    suspend fun cashBalance(): Long
+    suspend fun expensesBetween(from: Long, to: Long): Long
+    suspend fun purchasesBetween(from: Long, to: Long): Long
+}
+
+interface ReportRepository {
+    suspend fun reportBetween(from: Long, to: Long): PeriodReport
+    suspend fun exportCsv(from: Long, to: Long): String
+    suspend fun exportPdfBytes(from: Long, to: Long): ByteArray
+    suspend fun shareText(from: Long, to: Long): String
+}
+
+interface BackupRepository {
+    /** Serialize the whole database to a JSON string. */
+    suspend fun exportJson(): String
+
+    /** Replace all local data with the content of the given JSON backup. */
+    fun importJson(json: String): Result<Unit>
+}
