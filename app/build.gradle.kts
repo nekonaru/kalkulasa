@@ -74,10 +74,8 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.lifecycle.process)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.datastore.preferences)
-    implementation(libs.androidx.work.runtime.ktx)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.tooling.preview)
@@ -92,8 +90,6 @@ dependencies {
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     ksp(libs.room.compiler)
-
-    implementation(libs.coil.compose)
     implementation(libs.sqlcipher.android)
     implementation(libs.kotlinx.coroutines.android)
 
