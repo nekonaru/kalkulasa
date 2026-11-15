@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <full-backup-content>
-    <include domain="database" path="." />
-    <include domain="sharedpref" path="." />
-    <exclude domain="cache" path="." />
+    <!-- The database is SQLCipher-encrypted and its key lives in the Android Keystore;
+         backing either up to the cloud is useless and leaks nothing but ciphertext,
+         so exclude both. Users move data between devices with the JSON backup feature. -->
+    <exclude domain="database" path="kalkulasa.db" />
+    <exclude domain="database" path="kalkulasa.db-shm" />
+    <exclude domain="database" path="kalkulasa.db-wal" />
+    <exclude domain="sharedpref" path="kalkulasa_db_key.xml" />
+    <exclude domain="sharedpref" path="kalkulasa_settings.xml" />
 </full-backup-content>

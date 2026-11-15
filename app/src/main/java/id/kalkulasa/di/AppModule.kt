@@ -6,6 +6,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import id.kalkulasa.data.local.DatabaseKeyProvider
 import id.kalkulasa.data.local.KalkulasaDatabase
 import id.kalkulasa.data.repository.BackupRepositoryImpl
 import id.kalkulasa.data.repository.FinanceRepositoryImpl
@@ -43,8 +44,12 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideDatabase(@ApplicationContext context: Context, deviceId: String): KalkulasaDatabase =
-        KalkulasaDatabase.build(context, deviceId)
+    fun provideDatabase(
+        @ApplicationContext context: Context,
+        deviceId: String,
+        keyProvider: DatabaseKeyProvider,
+    ): KalkulasaDatabase =
+        KalkulasaDatabase.build(context, deviceId, keyProvider.getPassphrase())
 
     @Provides
     @Singleton

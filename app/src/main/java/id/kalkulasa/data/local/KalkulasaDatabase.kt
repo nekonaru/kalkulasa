@@ -5,6 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
+import net.zetetic.database.sqlcipher.SupportOpenHelperFactory
 import id.kalkulasa.data.local.dao.BusinessProfileDao
 import id.kalkulasa.data.local.dao.CapitalEntryDao
 import id.kalkulasa.data.local.dao.CategoryDao
@@ -59,8 +60,9 @@ abstract class KalkulasaDatabase : RoomDatabase() {
     companion object {
         const val NAME = "kalkulasa.db"
 
-        fun build(context: Context, deviceId: String): KalkulasaDatabase =
+        fun build(context: Context, deviceId: String, passphrase: ByteArray): KalkulasaDatabase =
             Room.databaseBuilder(context, KalkulasaDatabase::class.java, NAME)
+                .openHelperFactory(SupportOpenHelperFactory(passphrase))
                 .addCallback(SeedCallback(deviceId))
                 .build()
     }

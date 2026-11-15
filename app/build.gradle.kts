@@ -35,8 +35,8 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
-            isShrinkResources = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             signingConfig = if (System.getenv("KALKULASA_KEYSTORE_PATH") != null) {
                 signingConfigs.getByName("release")
             } else {
@@ -94,6 +94,7 @@ dependencies {
     ksp(libs.room.compiler)
 
     implementation(libs.coil.compose)
+    implementation(libs.sqlcipher.android)
     implementation(libs.kotlinx.coroutines.android)
 
     testImplementation(libs.junit)
