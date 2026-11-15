@@ -1,0 +1,73 @@
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Decode release keystore
+        run: echo "${{ secrets.KALKULASA_KEYSTORE_BASE64 }}" | base64 -d > "$GITHUB_WORKSPACE/release.jks"
+
+      - name: Build signed release APK
+        run: ./gradlew :app:assembleRelease
+        env:
+          KALKULASA_KEYSTORE_PATH: ${{ github.workspace }}/release.jks
+          KALKULASA_KEYSTORE_PASSWORD: ${{ secrets.KALKULASA_KEYSTORE_PASSWORD }}
+          KALKULASA_KEY_ALIAS: ${{ secrets.KALKULASA_KEY_ALIAS }}
+          KALKULASA_KEY_PASSWORD: ${{ secrets.KALKULASA_KEY_PASSWORD }}
+
+      - name: Rename APK
+        run: mv app/build/outputs/apk/release/app-release.apk kalkulasa-${{ github.ref_name }}.apk
+
+      - name: Build bilingual release body from changelogs
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          awk -v ver="$VERSION" '
+            /^## v/ { on = ($0 == "## v" ver); next }
+            on { print }
+          ' CHANGELOG.md > /tmp/part_en.md
+          awk -v ver="$VERSION" '
+            /^## v/ { on = ($0 == "## v" ver); next }
+            on { print }
+          ' CHANGELOG.id.md > /tmp/part_id.md
+          {
+            echo "# English"
+            echo
+            cat /tmp/part_en.md
+            echo
+            echo "<br>"
+            echo
+            echo "---"
+            echo
+            echo "<br>"
+            echo
+            echo "# Bahasa Indonesia"
+            echo
+            cat /tmp/part_id.md
+          } > RELEASE_BODY.md
+          cat RELEASE_BODY.md
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Kalkulasa ${{ github.ref_name }}
+          body_path: RELEASE_BODY.md
+          files: kalkulasa-${{ github.ref_name }}.apk
+
+      - name: Clean up keystore
+        if: always()
+        run: rm -f "$GITHUB_WORKSPACE/release.jks"

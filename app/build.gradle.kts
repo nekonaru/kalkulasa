@@ -21,11 +21,27 @@ android {
         resourceConfigurations += listOf("in", "en")
     }
 
+    signingConfigs {
+        create("release") {
+            val storePath = System.getenv("KALKULASA_KEYSTORE_PATH")
+            if (storePath != null) {
+                storeFile = file(storePath)
+                storePassword = System.getenv("KALKULASA_KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("KALKULASA_KEY_ALIAS")
+                keyPassword = System.getenv("KALKULASA_KEY_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
             isShrinkResources = false
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = if (System.getenv("KALKULASA_KEYSTORE_PATH") != null) {
+                signingConfigs.getByName("release")
+            } else {
+                signingConfigs.getByName("debug")
+            }
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
