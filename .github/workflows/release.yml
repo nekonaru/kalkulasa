@@ -23,7 +23,7 @@ jobs:
         run: echo "${{ secrets.KALKULASA_KEYSTORE_BASE64 }}" | base64 -d > "$GITHUB_WORKSPACE/release.jks"
 
       - name: Build signed release APK
-        run: ./gradlew :app:assembleRelease
+        run: bash ./gradlew :app:assembleRelease
         env:
           KALKULASA_KEYSTORE_PATH: ${{ github.workspace }}/release.jks
           KALKULASA_KEYSTORE_PASSWORD: ${{ secrets.KALKULASA_KEYSTORE_PASSWORD }}
