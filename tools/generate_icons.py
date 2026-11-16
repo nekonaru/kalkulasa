@@ -139,17 +139,18 @@ store_icon.save(os.path.join(store_dir, "icon-512.png"))
 
 # Feature graphic 1024x500: teal background, mark on left, wordmark
 fg_graphic = Image.new("RGBA", (1024, 500), TEAL)
-logo500 = draw_logo(360, None, CREAM, CREAM, TEAL, AMBER)
-fg_graphic.alpha_composite(logo500, (70, 70))
+logo500 = draw_logo(330, None, CREAM, CREAM, TEAL, AMBER)
+fg_graphic.alpha_composite(logo500, (60, 85))
 from PIL import ImageFont
 try:
-    font_big = ImageFont.truetype("arialbd.ttf", 150)
-    font_small = ImageFont.truetype("arial.ttf", 40)
+    font_big = ImageFont.truetype("arialbd.ttf", 118)
+    font_small = ImageFont.truetype("arial.ttf", 31)
 except OSError:
     font_big = ImageFont.load_default()
     font_small = ImageFont.load_default()
 d = ImageDraw.Draw(fg_graphic)
-d.text((500, 165), "Kalkulasa", font=font_big, fill=CREAM)
-d.text((500, 330), "Usaha kecil, semua urusan beres.", font=font_small, fill=(255, 247, 232, 220))
+d.text((440, 160), "Kalkulasa", font=font_big, fill=CREAM)
+d.text((440, 315), "Usaha kecil,", font=font_small, fill=(255, 247, 232, 230))
+d.text((440, 360), "semua urusan beres.", font=font_small, fill=(255, 247, 232, 230))
 fg_graphic.save(os.path.join(store_dir, "feature-graphic-1024x500.png"))
 print("icons done")
