@@ -1,7 +1,6 @@
-package id.kalkulasa.presentation.settings
+﻿package id.kalkulasa.presentation.settings
 
 import android.content.Context
-import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
@@ -26,7 +25,6 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.io.File
-import java.io.FileInputStream
 import javax.inject.Inject
 
 sealed interface SettingsEvent {
