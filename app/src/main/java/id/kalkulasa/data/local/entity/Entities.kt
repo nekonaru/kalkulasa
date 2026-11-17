@@ -160,6 +160,22 @@ data class CapitalEntryEntity(
     val syncStatus: String = SyncStatus.PENDING,
 )
 
+@Entity(tableName = "receivable", indices = [Index("namaPelanggan"), Index("jatuhTempo"), Index("saleId")])
+data class ReceivableEntity(
+    @PrimaryKey val id: String,
+    val namaPelanggan: String,
+    val saleId: String? = null,
+    val nominal: Long,
+    val terbayar: Long,
+    val jatuhTempo: Long? = null,
+    val catatan: String? = null,
+    val waktu: Long,
+    val updatedAt: Long,
+    val deletedAt: Long? = null,
+    val deviceId: String,
+    val syncStatus: String = SyncStatus.PENDING,
+)
+
 @Entity(tableName = "change_log", indices = [Index("createdAt"), Index("syncStatus")])
 data class ChangeLogEntity(
     @PrimaryKey val id: String,

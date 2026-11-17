@@ -30,6 +30,7 @@ import id.kalkulasa.R
 import id.kalkulasa.presentation.cashier.CashierScreen
 import id.kalkulasa.presentation.finance.FinanceScreen
 import id.kalkulasa.presentation.home.HomeScreen
+import id.kalkulasa.presentation.piutang.PiutangScreen
 import id.kalkulasa.presentation.onboarding.OnboardingScreen
 import id.kalkulasa.presentation.reports.ReportsScreen
 import id.kalkulasa.presentation.settings.SettingsScreen
@@ -104,11 +105,21 @@ fun KalkulasaNavHost(startDestination: String) {
             composable(Routes.HOME) {
                 HomeScreen(
                     onOpenCashier = { navController.navigateSingleTopTo(Routes.CASHIER) },
+                    onOpenPiutang = { navController.navigate(Routes.PIUTANG) },
                 )
             }
             composable(Routes.CASHIER) { CashierScreen() }
             composable(Routes.STOCK) { StockScreen() }
-            composable(Routes.FINANCE) { FinanceScreen() }
+            composable(Routes.FINANCE) {
+                FinanceScreen(
+                    onOpenPiutang = { navController.navigate(Routes.PIUTANG) },
+                )
+            }
+            composable(Routes.PIUTANG) {
+                PiutangScreen(
+                    onBack = { navController.popBackStack() },
+                )
+            }
             composable(Routes.REPORTS) { ReportsScreen() }
             composable(Routes.SETTINGS) {
                 SettingsScreen(onBack = { navController.popBackStack() })

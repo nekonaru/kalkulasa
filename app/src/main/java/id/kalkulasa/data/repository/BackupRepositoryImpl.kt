@@ -9,6 +9,7 @@ import id.kalkulasa.data.local.entity.ExpenseEntity
 import id.kalkulasa.data.local.entity.ProductEntity
 import id.kalkulasa.data.local.entity.PurchaseEntity
 import id.kalkulasa.data.local.entity.PurchaseItemEntity
+import id.kalkulasa.data.local.entity.ReceivableEntity
 import id.kalkulasa.data.local.entity.SaleEntity
 import id.kalkulasa.data.local.entity.SaleItemEntity
 import id.kalkulasa.data.local.entity.StockMovementEntity
@@ -25,7 +26,7 @@ class BackupRepositoryImpl @Inject constructor(
     override suspend fun exportJson(): String {
         val json = JSONObject()
         json.put("app", "kalkulasa")
-        json.put("backupVersion", 1)
+        json.put("backupVersion", BACKUP_VERSION)
         json.put("exportedAt", System.currentTimeMillis())
 
         json.put("business_profile", JSONArray().apply {
@@ -40,39 +41,41 @@ class BackupRepositoryImpl @Inject constructor(
         json.put("sale_item", JSONArray().also { arr -> db.saleDao().getAllItems().forEach { arr.put(it.toJson()) } })
         json.put("expense", JSONArray().also { arr -> db.expenseDao().getAll().forEach { arr.put(it.toJson()) } })
         json.put("capital_entry", JSONArray().also { arr -> db.capitalEntryDao().getAll().forEach { arr.put(it.toJson()) } })
+        json.put("receivable", JSONArray().also { arr -> db.receivableDao().getAll().forEach { arr.put(it.toJson()) } })
         return json.toString()
     }
 
-    override fun importJson(json: String): Result<Unit> = runCatching {
+    override suspend fun importJson(json: String): Result<Unit> = runCatching {
         val root = JSONObject(json)
         require(root.optString("app") == "kalkulasa") { "File backup bukan backup Kalkulasa" }
-        require(root.optInt("backupVersion") <= 1) { "Versi backup tidak didukung" }
+        require(root.optInt("backupVersion") <= BACKUP_VERSION) { "Versi backup tidak didukung" }
 
-        val profile = root.getJSONArray("business_profile").optJSONObject(0)?.toBusinessProfile()
-        val categories = root.getJSONArray("category").toList { it.toCategory() }
-        val products = root.getJSONArray("product").toList { it.toProduct() }
-        val movements = root.getJSONArray("stock_movement").toList { it.toStockMovement() }
-        val purchases = root.getJSONArray("purchase").toList { it.toPurchase() }
-        val purchaseItems = root.getJSONArray("purchase_item").toList { it.toPurchaseItem() }
-        val sales = root.getJSONArray("sale").toList { it.toSale() }
-        val saleItems = root.getJSONArray("sale_item").toList { it.toSaleItem() }
-        val expenses = root.getJSONArray("expense").toList { it.toExpense() }
-        val capitalEntries = root.getJSONArray("capital_entry").toList { it.toCapitalEntry() }
+        // Parse everything before touching the database so a corrupt file changes nothing.
+        val profile = root.optJSONArray("business_profile")?.optJSONObject(0)?.toBusinessProfile()
+        val categories = root.optJSONArray("category")?.toList { it.toCategory() } ?: emptyList()
+        val products = root.optJSONArray("product")?.toList { it.toProduct() } ?: emptyList()
+        val movements = root.optJSONArray("stock_movement")?.toList { it.toStockMovement() } ?: emptyList()
+        val purchases = root.optJSONArray("purchase")?.toList { it.toPurchase() } ?: emptyList()
+        val purchaseItems = root.optJSONArray("purchase_item")?.toList { it.toPurchaseItem() } ?: emptyList()
+        val sales = root.optJSONArray("sale")?.toList { it.toSale() } ?: emptyList()
+        val saleItems = root.optJSONArray("sale_item")?.toList { it.toSaleItem() } ?: emptyList()
+        val expenses = root.optJSONArray("expense")?.toList { it.toExpense() } ?: emptyList()
+        val capitalEntries = root.optJSONArray("capital_entry")?.toList { it.toCapitalEntry() } ?: emptyList()
+        val receivables = root.optJSONArray("receivable")?.toList { it.toReceivable() } ?: emptyList()
 
-        db.runInTransaction {
+        db.withTransaction {
             db.clearAllTables()
-            profile?.let { kotlinx.coroutines.runBlocking { db.businessProfileDao().upsert(it) } }
-            kotlinx.coroutines.runBlocking {
-                categories.forEach { db.categoryDao().upsert(it) }
-                products.forEach { db.productDao().upsert(it) }
-                movements.forEach { db.stockMovementDao().insert(it) }
-                purchases.forEach { db.purchaseDao().insert(it) }
-                purchaseItems.forEach { db.purchaseDao().insertItem(it) }
-                sales.forEach { db.saleDao().insert(it) }
-                saleItems.forEach { db.saleDao().insertItem(it) }
-                expenses.forEach { db.expenseDao().insert(it) }
-                capitalEntries.forEach { db.capitalEntryDao().insert(it) }
-            }
+            profile?.let { db.businessProfileDao().upsert(it) }
+            categories.forEach { db.categoryDao().upsert(it) }
+            products.forEach { db.productDao().upsert(it) }
+            movements.forEach { db.stockMovementDao().insert(it) }
+            purchases.forEach { db.purchaseDao().insert(it) }
+            purchaseItems.forEach { db.purchaseDao().insertItem(it) }
+            sales.forEach { db.saleDao().insert(it) }
+            saleItems.forEach { db.saleDao().insertItem(it) }
+            expenses.forEach { db.expenseDao().insert(it) }
+            capitalEntries.forEach { db.capitalEntryDao().insert(it) }
+            receivables.forEach { db.receivableDao().upsert(it) }
         }
     }
 
@@ -155,6 +158,15 @@ class BackupRepositoryImpl @Inject constructor(
         jPut(this, "deletedAt", deletedAt); put("deviceId", deviceId); put("syncStatus", syncStatus)
     }
 
+    private fun ReceivableEntity.toJson() = JSONObject().apply {
+        put("id", id); put("namaPelanggan", namaPelanggan)
+        jPut(this, "saleId", saleId)
+        put("nominal", nominal); put("terbayar", terbayar)
+        jPut(this, "jatuhTempo", jatuhTempo)
+        jPut(this, "catatan", catatan); put("waktu", waktu); put("updatedAt", updatedAt)
+        jPut(this, "deletedAt", deletedAt); put("deviceId", deviceId); put("syncStatus", syncStatus)
+    }
+
     private fun JSONObject.str(name: String): String? = if (isNull(name)) null else getString(name)
     private fun JSONObject.strOr(name: String): String? = str(name)
 
@@ -232,4 +244,18 @@ class BackupRepositoryImpl @Inject constructor(
         deletedAt = optLongOrNull("deletedAt"), deviceId = getString("deviceId"),
         syncStatus = optString("syncStatus", "PENDING"),
     )
+
+    private fun JSONObject.toReceivable() = ReceivableEntity(
+        id = getString("id"), namaPelanggan = getString("namaPelanggan"),
+        saleId = str("saleId"),
+        nominal = getLong("nominal"), terbayar = getLong("terbayar"),
+        jatuhTempo = optLongOrNull("jatuhTempo"),
+        catatan = str("catatan"), waktu = getLong("waktu"),
+        updatedAt = getLong("updatedAt"), deletedAt = optLongOrNull("deletedAt"),
+        deviceId = getString("deviceId"), syncStatus = optString("syncStatus", "PENDING"),
+    )
+
+    private companion object {
+        const val BACKUP_VERSION = 2
+    }
 }

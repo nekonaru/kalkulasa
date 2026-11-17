@@ -64,12 +64,14 @@ class FinanceRepositoryImpl @Inject constructor(
     override suspend fun cashBalance(): Long {
         val now = RepositorySupport.now()
         val allTimeFrom = 0L
-        val sales = db.saleDao().sumRevenueBetween(allTimeFrom, now)
+        // Hutang (credit) sales are not cash yet; count only cash/transfer/QRIS sales plus debt payments received.
+        val salesCash = db.saleDao().sumRevenueBetweenExcludingMethod(allTimeFrom, now, id.kalkulasa.domain.model.PaymentMethod.HUTANG)
+        val debtReceived = db.receivableDao().sumPaid()
         val purchases = db.purchaseDao().sumBetween(allTimeFrom, now)
         val expenses = db.expenseDao().sumBetween(allTimeFrom, now)
         val capital = db.capitalEntryDao().sumCapital()
         val draws = db.capitalEntryDao().sumPrivateDraws()
-        return HitungHppUseCase.cashBalance(capital, draws, sales, purchases, expenses)
+        return HitungHppUseCase.cashBalance(capital, draws, salesCash + debtReceived, purchases, expenses)
     }
 
     override suspend fun expensesBetween(from: Long, to: Long): Long =

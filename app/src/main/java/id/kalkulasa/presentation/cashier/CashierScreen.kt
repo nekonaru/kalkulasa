@@ -1,5 +1,7 @@
 package id.kalkulasa.presentation.cashier
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Remove
+import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -65,8 +68,10 @@ fun CashierScreen(
     val discountAmount by viewModel.discountAmount.collectAsStateWithLifecycle()
     val total by viewModel.total.collectAsStateWithLifecycle()
     val paymentMethod by viewModel.paymentMethod.collectAsStateWithLifecycle()
+    val namaPelanggan by viewModel.namaPelanggan.collectAsStateWithLifecycle()
     val todaySales by viewModel.todaySales.collectAsStateWithLifecycle()
     val saving by viewModel.saving.collectAsStateWithLifecycle()
+    var receiptToShare by remember { mutableStateOf<String?>(null) }
 
     val snackbar = remember { SnackbarHostState() }
     val context = LocalContext.current
@@ -79,9 +84,11 @@ fun CashierScreen(
                     when (event.text) {
                         "SALE_SAVED" -> context.getString(R.string.sale_saved)
                         "SALE_CANCELLED" -> context.getString(R.string.sale_cancelled)
+                        "CUSTOMER_NAME_REQUIRED" -> context.getString(R.string.customer_name_required)
                         else -> event.text
                     },
                 )
+                is CashierEvent.SaleSaved -> receiptToShare = event.receipt
             }
         }
     }
@@ -106,6 +113,8 @@ fun CashierScreen(
                     discountAmount = discountAmount,
                     total = total,
                     paymentMethod = paymentMethod,
+                    namaPelanggan = namaPelanggan,
+                    onNamaPelangganChange = viewModel::onNamaPelangganChange,
                     saving = saving,
                     todaySales = todaySales,
                     viewModel = viewModel,
@@ -129,6 +138,8 @@ fun CashierScreen(
                     discountAmount = discountAmount,
                     total = total,
                     paymentMethod = paymentMethod,
+                    namaPelanggan = namaPelanggan,
+                    onNamaPelangganChange = viewModel::onNamaPelangganChange,
                     saving = saving,
                     todaySales = todaySales,
                     viewModel = viewModel,
@@ -137,6 +148,32 @@ fun CashierScreen(
                 )
             }
         }
+    }
+
+    receiptToShare?.let { receiptText ->
+        AlertDialog(
+            onDismissRequest = { receiptToShare = null },
+            title = { Text(context.getString(R.string.receipt_saved_title)) },
+            text = { Text(receiptText) },
+            confirmButton = {
+                TextButton(onClick = {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://wa.me/?text=" + Uri.encode(receiptText)))
+                    try {
+                        context.startActivity(intent)
+                    } catch (_: Exception) {
+                        val fallback = Intent(Intent.ACTION_SEND).apply {
+                            type = "text/plain"
+                            putExtra(Intent.EXTRA_TEXT, receiptText)
+                        }
+                        context.startActivity(Intent.createChooser(fallback, null))
+                    }
+                    receiptToShare = null
+                }) { Text(context.getString(R.string.share_receipt)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { receiptToShare = null }) { Text(context.getString(R.string.receipt_later)) }
+            },
+        )
     }
 
     saleToCancel?.let { saleId ->
@@ -203,6 +240,8 @@ private fun CartSection(
     discountAmount: Long,
     total: Long,
     paymentMethod: String,
+    namaPelanggan: String,
+    onNamaPelangganChange: (String) -> Unit,
     saving: Boolean,
     todaySales: List<id.kalkulasa.domain.model.Sale>,
     viewModel: CashierViewModel,
@@ -252,6 +291,7 @@ private fun CartSection(
                 PaymentMethod.TUNAI to context.getString(R.string.payment_cash),
                 PaymentMethod.TRANSFER to context.getString(R.string.payment_transfer),
                 PaymentMethod.QRIS to context.getString(R.string.payment_qris),
+                PaymentMethod.HUTANG to context.getString(R.string.payment_hutang),
             ).forEach { (method, label) ->
                 FilterChip(
                     selected = paymentMethod == method,
@@ -260,9 +300,20 @@ private fun CartSection(
                 )
             }
         }
+        if (paymentMethod == PaymentMethod.HUTANG) {
+            OutlinedTextField(
+                value = namaPelanggan,
+                onValueChange = onNamaPelangganChange,
+                label = { Text(context.getString(R.string.customer_name)) },
+                placeholder = { Text(context.getString(R.string.customer_name_hint)) },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
         Button(
             onClick = viewModel::saveSale,
-            enabled = cart.isNotEmpty() && !saving,
+            enabled = cart.isNotEmpty() && !saving &&
+                (paymentMethod != PaymentMethod.HUTANG || namaPelanggan.isNotBlank()),
             modifier = Modifier.fillMaxWidth().height(52.dp),
         ) {
             Text(context.getString(R.string.button_pay), fontSize = 16.sp)
@@ -284,13 +335,19 @@ private fun CartSection(
                     Column {
                         Text(RupiahFormatter.format(sale.total), style = MaterialTheme.typography.bodyLarge)
                         Text(
-                            DateFormatter.formatDateTime(sale.waktu),
+                            DateFormatter.formatDateTime(sale.waktu) +
+                                if (sale.metodeBayar == PaymentMethod.HUTANG) " · ${context.getString(R.string.payment_hutang)}" else "",
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
-                    TextButton(onClick = { onRequestCancel(sale.id) }) {
-                        Text(context.getString(R.string.cancel_sale))
+                    Row {
+                        IconButton(onClick = { viewModel.shareSaleReceipt(sale) }) {
+                            Icon(Icons.Rounded.Share, contentDescription = context.getString(R.string.share_receipt))
+                        }
+                        TextButton(onClick = { onRequestCancel(sale.id) }) {
+                            Text(context.getString(R.string.cancel_sale))
+                        }
                     }
                 }
             }

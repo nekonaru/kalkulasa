@@ -57,6 +57,8 @@
 |---------|-------------|
 | **One-tap cashier** | Tap products to add them to the cart, adjust quantities, apply a discount in rupiah, pick cash / transfer / QRIS as a label |
 | **Automatic stock deduction** | Saving a sale deducts stock and records average cost (HPP) per sold item |
+| **Customer debt at the cashier** | Sell with Hutang, enter the customer name, debt lands in the receivables book automatically |
+| **Digital receipt** | Share the receipt via WhatsApp after saving a sale |
 | **Cancel with restock** | Cancelling a sale returns the stock and restores the movement history |
 
 ### Stock (Stok)
@@ -78,6 +80,14 @@
 | **Private draws (Prive)** | Owner takes are recorded separately so profit stays clean |
 | **Operating expenses** | Expenses per category (Electricity, Rent, Salary, Transport, Other); sales and stock purchases are recorded automatically |
 
+### Receivables (Piutang)
+
+| Feature | Description |
+|---------|-------------|
+| **Record debt** | From Hutang sales or manually with an optional due date |
+| **Partial payments** | Pay any amount, auto-settled when paid off; overpayments are rejected |
+| **Remind via WhatsApp** | Send a polite payment reminder to the customer with one tap |
+
 ### Dashboard (Beranda)
 
 | Feature | Description |
@@ -85,6 +95,7 @@
 | **Today at a glance** | Omzet, net profit, transaction count and low-stock count |
 | **7-day trend** | Bar chart of revenue with profit markers per day |
 | **Best sellers** | Top 3 products of the last 7 days |
+| **Business health score** | 0-100 score from margin, profit, inventory, receivables and cash, with three most impactful suggestions |
 
 ### Reports (Laporan)
 
@@ -108,6 +119,7 @@
 | Feature | Description |
 |---------|-------------|
 | **Theme** | Light, dark or follow the system |
+| **App language** | Bahasa Indonesia (default) or English, switch in Settings and it applies instantly |
 | **PIN lock** | Optional 6-digit PIN to protect the app |
 | **Business profile** | Edit business name and type anytime |
 
@@ -142,7 +154,7 @@
 ### Option A: Download the APK (easiest)
 
 1. Open the [Releases](https://github.com/nekonaru/kalkulasa/releases) page
-2. Download `kalkulasa-v1.0.0.apk`
+2. Download `kalkulasa-v1.1.0.apk`
 3. Open it on your phone and allow installs from unknown sources if asked
 4. Open the app and fill in your business profile
 

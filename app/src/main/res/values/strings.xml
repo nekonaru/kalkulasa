@@ -64,6 +64,15 @@
     <string name="payment_cash">Tunai</string>
     <string name="payment_transfer">Transfer</string>
     <string name="payment_qris">QRIS</string>
+    <string name="payment_hutang">Hutang</string>
+    <string name="customer_name">Nama pelanggan</string>
+    <string name="customer_name_hint">Contoh: Bu Ratna</string>
+    <string name="customer_name_required">Isi nama pelanggan untuk jualan hutang</string>
+    <string name="share_receipt">Bagikan struk</string>
+    <string name="receipt_saved_title">Penjualan tersimpan</string>
+    <string name="receipt_later">Tutup</string>
+    <string name="backup_too_big">File backup terlalu besar (maks 100 MB)</string>
+    <string name="error_backup_unreadable">File backup tidak bisa dibaca</string>
     <string name="button_pay">Simpan penjualan</string>
     <string name="sale_saved">Penjualan tersimpan</string>
     <string name="sale_insufficient_stock">Stok %1$s tidak cukup (sisa %2$s)</string>
@@ -139,6 +148,36 @@
     <string name="entry_expense">Pengeluaran</string>
     <string name="entry_purchase">Pembelian stok</string>
     <string name="entry_sale">Penjualan</string>
+
+    <string name="piutang_open">Piutang pelanggan</string>
+    <string name="piutang_title">Piutang</string>
+    <string name="piutang_outstanding">Belum ditagih</string>
+    <string name="piutang_empty">Tidak ada piutang. Jualan lunas, kas aman.</string>
+    <string name="piutang_add">Catat utang</string>
+    <string name="piutang_pay">Bayar</string>
+    <string name="piutang_pay_title">Bayar utang</string>
+    <string name="piutang_remaining">Sisa</string>
+    <string name="piutang_payment_saved">Pembayaran tercatat</string>
+    <string name="piutang_reminder">Ingatkan via WhatsApp</string>
+    <string name="piutang_paid">Lunas</string>
+    <string name="piutang_unpaid">Belum lunas</string>
+    <string name="piutang_note_hint">Catatan (opsional)</string>
+    <string name="piutang_due_date">Jatuh tempo (opsional, hari)</string>
+    <string name="piutang_added">Utang tercatat</string>
+    <string name="piutang_paid_full">Piutang lunas sepenuhnya!</string>
+
+    <string name="health_title">Kesehatan usaha</string>
+    <string name="health_details">Rincian skor</string>
+    <string name="health_verdict_prima">Prima</string>
+    <string name="health_verdict_sehat">Sehat</string>
+    <string name="health_verdict_cukup">Cukup</string>
+    <string name="health_verdict_attention">Perlu perhatian</string>
+    <string name="suggestion_margin">Cek biaya pokok dan harga jual. Margin di bawah 10 persen membuat usaha cepat boncos.</string>
+    <string name="suggestion_expenses">Pengeluaran lebih besar dari laba kotor. Pangkas satu pos pengeluaran bulan ini.</string>
+    <string name="suggestion_stock">Banyak barang menumpuk di stok. Utamakan menjual produk yang lambat laku.</string>
+    <string name="suggestion_piutang">Banyak uang mengendap di piutang. Tagih pelanggan yang belum lunas.</string>
+    <string name="suggestion_cash">Saldo kas menipis atau negatif. Kurangi pengeluaran tunai sampai pemasukan membaik.</string>
+    <string name="suggestion_keep">Pertahankan kebiasaan mencatat dan tagih piutang tepat waktu.</string>
 
     <!-- Laporan -->
     <string name="reports_title">Laporan</string>

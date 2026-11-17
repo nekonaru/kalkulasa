@@ -22,11 +22,8 @@ class StockRepositoryImpl @Inject constructor(
 ) : StockRepository {
 
     override fun observeRecentMovements(limit: Int): Flow<List<StockMovement>> =
-        db.stockMovementDao().observeRecent(limit).map { movements ->
-            movements.map { m ->
-                val name = db.productDao().getById(m.produkId)?.nama ?: "?"
-                m.toDomain(name)
-            }
+        db.stockMovementDao().observeRecentWithProduct(limit).map { movements ->
+            movements.map { m -> m.toDomain() }
         }
 
     override suspend fun recordStockIn(

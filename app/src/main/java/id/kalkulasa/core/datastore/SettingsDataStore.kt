@@ -41,10 +41,6 @@ class SettingsDataStore @Inject constructor(
         context.dataStore.edit { it[Keys.theme] = mode.key }
     }
 
-    val pinEnabled: Flow<Boolean> = context.dataStore.data.map {
-        !it[Keys.pinHash].isNullOrEmpty() && (it[Keys.pinEnabled] ?: true)
-    }
-
     val hasPin: Flow<Boolean> = context.dataStore.data.map { !it[Keys.pinHash].isNullOrEmpty() }
 
     /** Verify a PIN attempt against the stored hash. */

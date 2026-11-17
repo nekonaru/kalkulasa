@@ -68,6 +68,20 @@ data class Expense(
     val waktu: Long,
 )
 
+data class Receivable(
+    val id: String,
+    val namaPelanggan: String,
+    val saleId: String?,
+    val nominal: Long,
+    val terbayar: Long,
+    val jatuhTempo: Long?,
+    val catatan: String?,
+    val waktu: Long,
+) {
+    val sisa: Long get() = (nominal - terbayar).coerceAtLeast(0L)
+    val isLunas: Boolean get() = terbayar >= nominal
+}
+
 data class CapitalEntry(
     val id: String,
     val tipe: String,

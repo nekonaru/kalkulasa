@@ -8,7 +8,9 @@ import id.kalkulasa.domain.model.Expense
 import id.kalkulasa.domain.model.PeriodReport
 import id.kalkulasa.domain.model.Product
 import id.kalkulasa.domain.model.ProductSales
+import id.kalkulasa.domain.model.Receivable
 import id.kalkulasa.domain.model.Sale
+import id.kalkulasa.domain.model.SaleLine
 import id.kalkulasa.domain.model.StockMovement
 import kotlinx.coroutines.flow.Flow
 
@@ -42,9 +44,16 @@ interface StockRepository {
     suspend fun recordAdjustment(productId: String, newQty: Double, reason: String): Result<Unit>
 }
 
+interface ReceivableRepository {
+    fun observeAll(): Flow<List<Receivable>>
+    fun observeOutstanding(): Flow<Long>
+    suspend fun addManual(namaPelanggan: String, nominal: Long, jatuhTempo: Long?, catatan: String?)
+    suspend fun recordPayment(id: String, amount: Long): Result<Unit>
+}
+
 interface SaleRepository {
     fun observeRecentSales(limit: Int = 50): Flow<List<Sale>>
-    suspend fun recordSale(items: List<Pair<Product, Double>>, diskon: Long, metodeBayar: String, catatan: String?): Result<Sale>
+    suspend fun recordSale(items: List<Pair<Product, Double>>, diskon: Long, metodeBayar: String, catatan: String?, namaPelanggan: String? = null): Result<Sale>
     suspend fun cancelSale(saleId: String): Result<Unit>
     suspend fun salesBetween(from: Long, to: Long): List<Sale>
     suspend fun revenueBetween(from: Long, to: Long): Long
@@ -52,6 +61,7 @@ interface SaleRepository {
     suspend fun countBetween(from: Long, to: Long): Int
     suspend fun topProductsBetween(from: Long, to: Long, limit: Int): List<ProductSales>
     suspend fun dailyTrend(days: Int): List<DailyPoint>
+    suspend fun saleItems(saleId: String): List<SaleLine>
 }
 
 interface FinanceRepository {
@@ -76,5 +86,5 @@ interface BackupRepository {
     suspend fun exportJson(): String
 
     /** Replace all local data with the content of the given JSON backup. */
-    fun importJson(json: String): Result<Unit>
+    suspend fun importJson(json: String): Result<Unit>
 }

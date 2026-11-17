@@ -23,6 +23,7 @@ object PaymentMethod {
     const val TUNAI = "TUNAI"
     const val TRANSFER = "TRANSFER"
     const val QRIS = "QRIS"
+    const val HUTANG = "HUTANG"
 }
 
 object CapitalEntryType {

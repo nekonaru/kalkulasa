@@ -12,6 +12,7 @@ import id.kalkulasa.data.repository.BackupRepositoryImpl
 import id.kalkulasa.data.repository.FinanceRepositoryImpl
 import id.kalkulasa.data.repository.ProductRepositoryImpl
 import id.kalkulasa.data.repository.ProfileRepositoryImpl
+import id.kalkulasa.data.repository.ReceivableRepositoryImpl
 import id.kalkulasa.data.repository.ReportRepositoryImpl
 import id.kalkulasa.data.repository.SaleRepositoryImpl
 import id.kalkulasa.data.repository.StockRepositoryImpl
@@ -21,6 +22,7 @@ import id.kalkulasa.domain.repository.CategoryRepository
 import id.kalkulasa.domain.repository.FinanceRepository
 import id.kalkulasa.domain.repository.ProductRepository
 import id.kalkulasa.domain.repository.ProfileRepository
+import id.kalkulasa.domain.repository.ReceivableRepository
 import id.kalkulasa.domain.repository.ReportRepository
 import id.kalkulasa.domain.repository.SaleRepository
 import id.kalkulasa.domain.repository.StockRepository
@@ -75,6 +77,11 @@ object AppModule {
     @Singleton
     fun provideSaleRepository(db: KalkulasaDatabase, deviceId: String): SaleRepository =
         SaleRepositoryImpl(db, db.changeLogDao(), deviceId)
+
+    @Provides
+    @Singleton
+    fun provideReceivableRepository(db: KalkulasaDatabase, deviceId: String): ReceivableRepository =
+        ReceivableRepositoryImpl(db, db.changeLogDao(), deviceId)
 
     @Provides
     @Singleton

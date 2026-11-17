@@ -3,6 +3,7 @@
 import androidx.room.withTransaction
 import id.kalkulasa.data.local.KalkulasaDatabase
 import id.kalkulasa.data.local.dao.ChangeLogDao
+import id.kalkulasa.data.local.entity.ReceivableEntity
 import id.kalkulasa.data.local.entity.SaleEntity
 import id.kalkulasa.data.local.entity.SaleItemEntity
 import id.kalkulasa.domain.model.SaleStatus
@@ -10,9 +11,11 @@ import id.kalkulasa.data.local.entity.StockMovementEntity
 import id.kalkulasa.domain.model.StockMovementType
 import id.kalkulasa.data.mapper.toDomain
 import id.kalkulasa.domain.model.DailyPoint
+import id.kalkulasa.domain.model.PaymentMethod
 import id.kalkulasa.domain.model.Product
 import id.kalkulasa.domain.model.ProductSales
 import id.kalkulasa.domain.model.Sale
+import id.kalkulasa.domain.model.SaleLine
 import id.kalkulasa.domain.repository.SaleRepository
 import id.kalkulasa.core.util.DateFormatter
 import kotlinx.coroutines.flow.Flow
@@ -33,6 +36,7 @@ class SaleRepositoryImpl @Inject constructor(
         diskon: Long,
         metodeBayar: String,
         catatan: String?,
+        namaPelanggan: String?,
     ): Result<Sale> {
         if (items.isEmpty()) return Result.failure(IllegalArgumentException("Keranjang kosong"))
         return runCatching {
@@ -95,6 +99,23 @@ class SaleRepositoryImpl @Inject constructor(
                     deviceId = deviceId,
                 )
                 db.saleDao().insert(sale)
+                if (metodeBayar == PaymentMethod.HUTANG && total > 0L) {
+                    db.receivableDao().upsert(
+                        ReceivableEntity(
+                            id = RepositorySupport.newId(),
+                            namaPelanggan = namaPelanggan?.trim().orEmpty().ifBlank { "Pelanggan" },
+                            saleId = saleId,
+                            nominal = total,
+                            terbayar = 0L,
+                            jatuhTempo = null,
+                            catatan = catatan?.ifBlank { null },
+                            waktu = now,
+                            updatedAt = now,
+                            deviceId = deviceId,
+                        ),
+                    )
+                    RepositorySupport.log(changeLogDao, "receivable", saleId, "INSERT")
+                }
                 RepositorySupport.log(changeLogDao, "sale", saleId, "INSERT")
                 sale.toDomain()
             }
@@ -105,6 +126,9 @@ class SaleRepositoryImpl @Inject constructor(
         db.withTransaction {
             val saleDao = db.saleDao()
             val productDao = db.productDao()
+            val now0 = RepositorySupport.now()
+            // Soft-delete any receivable linked to this sale so a cancelled credit sale does not stay as debt.
+            db.receivableDao().softDeleteBySaleId(saleId, now0)
             val items = saleDao.getItems(saleId)
             val now = RepositorySupport.now()
             items.forEach { item ->
@@ -131,6 +155,17 @@ class SaleRepositoryImpl @Inject constructor(
             RepositorySupport.log(changeLogDao, "sale", saleId, "UPDATE")
         }
     }
+
+    override suspend fun saleItems(saleId: String): List<SaleLine> =
+        db.saleDao().getItems(saleId).map {
+            SaleLine(
+                produkId = it.produkId,
+                namaProduk = it.namaProduk,
+                jumlah = it.jumlah,
+                hargaJual = it.hargaJual,
+                hppSaatJual = it.hppSaatJual,
+            )
+        }
 
     override suspend fun salesBetween(from: Long, to: Long): List<Sale> =
         db.saleDao().getBetween(from, to).map { it.toDomain() }

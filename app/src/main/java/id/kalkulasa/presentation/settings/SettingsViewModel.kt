@@ -113,7 +113,7 @@ class SettingsViewModel @Inject constructor(
 
     /** Export a full JSON backup to the public Downloads folder (app-specific dir below API 29). */
     fun backupNow() {
-        viewModelScope.launch {
+        viewModelScope.launch(kotlinx.coroutines.Dispatchers.IO) {
             val json = backupRepository.exportJson()
             val fileName = "kalkulasa-backup-${DateFormatter.fileStamp(System.currentTimeMillis())}.json"
             val location: String = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -149,9 +149,15 @@ class SettingsViewModel @Inject constructor(
 
     /** Restore from a content URI chosen by the user. */
     fun restoreFrom(uri: Uri) {
-        viewModelScope.launch {
+        viewModelScope.launch(kotlinx.coroutines.Dispatchers.IO) {
             try {
-                val json = context.contentResolver.openInputStream(uri)?.bufferedReader()?.use { it.readText() }
+                val resolver = context.contentResolver
+                val size = resolver.openAssetFileDescriptor(uri, "r")?.use { it.length }
+                if (size != null && size > MAX_BACKUP_BYTES) {
+                    _events.send(SettingsEvent.Message("BACKUP_TOO_BIG"))
+                    return@launch
+                }
+                val json = resolver.openInputStream(uri)?.use { it.bufferedReader().readText() }
                 if (json == null) {
                     _events.send(SettingsEvent.Message("ERROR"))
                     return@launch
@@ -167,4 +173,8 @@ class SettingsViewModel @Inject constructor(
 
     /** Share the last backup? Kept minimal: restore only + backup export. */
     fun ignore() = Unit
+
+    private companion object {
+        const val MAX_BACKUP_BYTES = 100L * 1024 * 1024 // 100 MB: generous for years of shop data
+    }
 }

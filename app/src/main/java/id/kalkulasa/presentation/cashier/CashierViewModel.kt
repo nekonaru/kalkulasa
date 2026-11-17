@@ -1,15 +1,21 @@
 ﻿package id.kalkulasa.presentation.cashier
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import id.kalkulasa.core.util.DateFormatter
 import id.kalkulasa.core.util.RupiahFormatter
 import id.kalkulasa.domain.model.Product
 import id.kalkulasa.domain.model.Sale
 import id.kalkulasa.domain.model.PaymentMethod
 import id.kalkulasa.domain.repository.ProductRepository
+import id.kalkulasa.domain.repository.ProfileRepository
 import id.kalkulasa.domain.repository.SaleRepository
+import id.kalkulasa.domain.usecase.StrukUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -32,13 +38,18 @@ data class CartEntry(val product: Product, val qty: Double) {
 sealed interface CashierEvent {
     /** text is either an error message or one of the SALE_SAVED / SALE_CANCELLED markers. */
     data class Message(val text: String) : CashierEvent
+
+    /** Emitted after a sale is saved; carries a ready-to-share receipt text. */
+    data class SaleSaved(val receipt: String) : CashierEvent
 }
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class CashierViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val productRepository: ProductRepository,
     private val saleRepository: SaleRepository,
+    private val profileRepository: ProfileRepository,
 ) : ViewModel() {
 
     private val _query = MutableStateFlow("")
@@ -50,6 +61,9 @@ class CashierViewModel @Inject constructor(
 
     private val _paymentMethod = MutableStateFlow(PaymentMethod.TUNAI)
     val paymentMethod: StateFlow<String> = _paymentMethod.asStateFlow()
+
+    private val _namaPelanggan = MutableStateFlow("")
+    val namaPelanggan: StateFlow<String> = _namaPelanggan.asStateFlow()
 
     /** Products currently visible in the picker (filtered by query). */
     val products: StateFlow<List<Product>> = _query
@@ -91,6 +105,7 @@ class CashierViewModel @Inject constructor(
     fun onQueryChange(q: String) { _query.value = q }
     fun onDiscountChange(value: String) { _discount.value = value.filter { it.isDigit() }.take(12) }
     fun onPaymentMethodChange(method: String) { _paymentMethod.value = method }
+    fun onNamaPelangganChange(value: String) { _namaPelanggan.value = value }
 
     fun addToCart(product: Product) {
         _cart.value = _cart.value + (product.id to ((_cart.value[product.id] ?: 0.0) + 1))
@@ -114,25 +129,70 @@ class CashierViewModel @Inject constructor(
         _discount.value = ""
     }
 
+    fun canSaveSale(): Boolean =
+        cartEntries.value.isNotEmpty() && !_saving.value &&
+            (_paymentMethod.value != PaymentMethod.HUTANG || _namaPelanggan.value.trim().isNotEmpty())
+
     fun saveSale() {
         val entries = cartEntries.value
         if (entries.isEmpty() || _saving.value) return
+        if (_paymentMethod.value == PaymentMethod.HUTANG && _namaPelanggan.value.trim().isEmpty()) {
+            viewModelScope.launch { _events.send(CashierEvent.Message("CUSTOMER_NAME_REQUIRED")) }
+            return
+        }
         _saving.value = true
         viewModelScope.launch {
+            val metode = _paymentMethod.value
+            val namaPelanggan = _namaPelanggan.value.trim().ifEmpty { null }
             val result = saleRepository.recordSale(
                 items = entries.map { it.product to it.qty },
                 diskon = discountAmount.value,
-                metodeBayar = _paymentMethod.value,
+                metodeBayar = metode,
                 catatan = null,
+                namaPelanggan = namaPelanggan,
             )
             _saving.value = false
-            result.onSuccess {
+            result.onSuccess { sale ->
+                val receipt = buildReceipt(sale)
                 clearCart()
+                _namaPelanggan.value = ""
                 refreshTodaySales()
-                _events.send(CashierEvent.Message("SALE_SAVED"))
+                _events.send(CashierEvent.SaleSaved(receipt))
             }.onFailure { error ->
                 _events.send(CashierEvent.Message(error.message ?: "ERROR"))
             }
+        }
+    }
+
+    /** Share the receipt of any sale via WhatsApp (falls back to the system share sheet). */
+    fun shareSaleReceipt(sale: Sale) {
+        viewModelScope.launch { shareText(buildReceipt(sale)) }
+    }
+
+    private suspend fun buildReceipt(sale: Sale): String {
+        val profile = profileRepository.getProfile()
+        val items = saleRepository.saleItems(sale.id)
+        return StrukUseCase.build(
+            businessName = profile?.namaUsaha ?: context.getString(id.kalkulasa.R.string.app_name),
+            tanggal = DateFormatter.formatDateTime(sale.waktu),
+            items = items,
+            diskon = sale.diskon,
+            total = sale.total,
+            metodeBayar = sale.metodeBayar,
+        )
+    }
+
+    private fun shareText(text: String) {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://wa.me/?text=" + Uri.encode(text)))
+        try {
+            context.startActivity(intent.apply { addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) })
+        } catch (_: Exception) {
+            val fallback = Intent(Intent.ACTION_SEND).apply {
+                type = "text/plain"
+                putExtra(Intent.EXTRA_TEXT, text)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            context.startActivity(Intent.createChooser(fallback, null))
         }
     }
 

@@ -8,4 +8,5 @@ object Routes {
     const val FINANCE = "finance"
     const val REPORTS = "reports"
     const val SETTINGS = "settings"
+    const val PIUTANG = "piutang"
 }

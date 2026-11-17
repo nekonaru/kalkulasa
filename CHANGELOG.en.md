@@ -1,5 +1,30 @@
 # Changelog
 
+## v1.1.0
+
+Customer debt tracking, shareable digital receipts, and a business health score right on the home screen.
+
+### New features
+
+- **Receivables module.** Record customer debt from sales (pick Hutang at the cashier) or manually; partial or full payments with overpayment rejected; debt book with Unpaid / Paid tabs; remind customers via WhatsApp with one tap.
+- **Credit sales at the cashier.** Pick Hutang, enter the customer name, and the sale records plus the debt appears automatically in the receivables book. Cancelling a credit sale deletes its debt.
+- **Digital receipt.** After a sale is saved, share the receipt via WhatsApp or any app; receipts can also be shared per transaction from today's list.
+- **Business health score.** The home screen shows a 0-100 score with Prima / Sehat / Cukup / Perlu perhatian verdicts, built from margin, profit, inventory, receivables and cash, with the three most impactful suggestions.
+- **In-app language switch.** Settings > Language: Bahasa Indonesia (default) or English, applied instantly.
+
+### Improvements
+
+- **Bahasa Indonesia is now the project default** across the app, README, repo metadata and release notes; English stays as the second language.
+- **More accurate cash balance**: credit sales are not counted as cash; debt payments count when collected.
+- **Faster stock history** (single join query, no N+1).
+- **Safer backup**: backup versions supported up to the latest schema, files validated fully before replacement, 100 MB cap.
+
+### Bug fixes
+
+- **Backup restore no longer risks a crash**; parsing and restore now run on the IO thread inside an atomic database transaction.
+- **First-launch SQLCipher crash** fixed by loading the native library in Application.
+- **Network permission no longer declared** after removing the unused WorkManager; the manifest now has zero runtime permissions.
+
 ## v1.0.0
 
 First release of Kalkulasa: offline stock and cash recording for small businesses, with a one-tap cashier and automatic average cost.

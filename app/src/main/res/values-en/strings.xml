@@ -64,6 +64,15 @@
     <string name="payment_cash">Cash</string>
     <string name="payment_transfer">Transfer</string>
     <string name="payment_qris">QRIS</string>
+    <string name="payment_hutang">On credit</string>
+    <string name="customer_name">Customer name</string>
+    <string name="customer_name_hint">Example: Bu Ratna</string>
+    <string name="customer_name_required">Enter the customer name for credit sales</string>
+    <string name="share_receipt">Share receipt</string>
+    <string name="receipt_saved_title">Sale saved</string>
+    <string name="receipt_later">Close</string>
+    <string name="backup_too_big">Backup file is too large (max 100 MB)</string>
+    <string name="error_backup_unreadable">Backup file could not be read</string>
     <string name="button_pay">Save sale</string>
     <string name="sale_saved">Sale saved</string>
     <string name="sale_insufficient_stock">%1$s stock is not enough (%2$s left)</string>
@@ -139,6 +148,36 @@
     <string name="entry_expense">Expense</string>
     <string name="entry_purchase">Stock purchase</string>
     <string name="entry_sale">Sale</string>
+
+    <string name="piutang_open">Customer receivables</string>
+    <string name="piutang_title">Receivables</string>
+    <string name="piutang_outstanding">Outstanding</string>
+    <string name="piutang_empty">No outstanding debts. All sales paid up, good.</string>
+    <string name="piutang_add">Record debt</string>
+    <string name="piutang_pay">Pay</string>
+    <string name="piutang_pay_title">Pay debt</string>
+    <string name="piutang_remaining">Remaining</string>
+    <string name="piutang_payment_saved">Payment recorded</string>
+    <string name="piutang_reminder">Remind via WhatsApp</string>
+    <string name="piutang_paid">Paid</string>
+    <string name="piutang_unpaid">Unpaid</string>
+    <string name="piutang_note_hint">Note (optional)</string>
+    <string name="piutang_due_date">Due date (optional, days)</string>
+    <string name="piutang_added">Debt recorded</string>
+    <string name="piutang_paid_full">Debt fully paid!</string>
+
+    <string name="health_title">Business health</string>
+    <string name="health_details">Score details</string>
+    <string name="health_verdict_prima">Excellent</string>
+    <string name="health_verdict_sehat">Healthy</string>
+    <string name="health_verdict_cukup">Fair</string>
+    <string name="health_verdict_attention">Needs attention</string>
+    <string name="suggestion_margin">Check your cost price and selling price. A margin under 10 percent kills small shops fast.</string>
+    <string name="suggestion_expenses">Expenses are higher than gross profit. Cut one expense line this month.</string>
+    <string name="suggestion_stock">Stock is piling up. Prioritize selling slow-moving products.</string>
+    <string name="suggestion_piutang">Too much money is stuck in receivables. Chase customers who have not paid.</string>
+    <string name="suggestion_cash">Cash balance is thin or negative. Cut cash spending until income recovers.</string>
+    <string name="suggestion_keep">Keep the habit of recording and collect receivables on time.</string>
 
     <!-- Reports -->
     <string name="reports_title">Reports</string>

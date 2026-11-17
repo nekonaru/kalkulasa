@@ -9,7 +9,10 @@ import id.kalkulasa.domain.model.ProductSales
 import id.kalkulasa.domain.repository.FinanceRepository
 import id.kalkulasa.domain.repository.ProductRepository
 import id.kalkulasa.domain.repository.ProfileRepository
+import id.kalkulasa.domain.repository.ReceivableRepository
+import id.kalkulasa.domain.repository.ReportRepository
 import id.kalkulasa.domain.repository.SaleRepository
+import id.kalkulasa.domain.usecase.KesehatanUsahaUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -25,6 +28,8 @@ data class HomeUiState(
     val lowStockCount: Int = 0,
     val trend: List<DailyPoint> = emptyList(),
     val bestSellers: List<ProductSales> = emptyList(),
+    val piutangOutstanding: Long = 0L,
+    val health: KesehatanUsahaUseCase.Result? = null,
     val loading: Boolean = true,
 )
 
@@ -34,6 +39,8 @@ class HomeViewModel @Inject constructor(
     private val saleRepository: SaleRepository,
     private val financeRepository: FinanceRepository,
     private val productRepository: ProductRepository,
+    private val receivableRepository: ReceivableRepository,
+    private val reportRepository: ReportRepository,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(HomeUiState())
@@ -54,6 +61,21 @@ class HomeViewModel @Inject constructor(
             val trend = saleRepository.dailyTrend(7)
             val weekAgo = DateFormatter.startOfDayDaysAgo(6)
             val best = saleRepository.topProductsBetween(weekAgo, to, 3)
+            val piutang = receivableRepository.observeOutstanding().first()
+            // Business health for the last 30 days
+            val monthAgo = DateFormatter.startOfDayDaysAgo(29, System.currentTimeMillis())
+            val monthReport = reportRepository.reportBetween(monthAgo, to)
+            val saldoKas = financeRepository.cashBalance()
+            val health = KesehatanUsahaUseCase.evaluate(
+                KesehatanUsahaUseCase.Input(
+                    marginPersen = monthReport.marginPersen,
+                    labaBersih = monthReport.labaBersih,
+                    omzet = monthReport.omzet,
+                    nilaiPersediaan = monthReport.nilaiPersediaan,
+                    piutangOutstanding = piutang,
+                    saldoKas = saldoKas,
+                ),
+            )
             _state.value = HomeUiState(
                 namaUsaha = profile?.namaUsaha ?: "",
                 omzetToday = omzet,
@@ -62,6 +84,8 @@ class HomeViewModel @Inject constructor(
                 lowStockCount = lowStock,
                 trend = trend,
                 bestSellers = best,
+                piutangOutstanding = piutang,
+                health = health,
                 loading = false,
             )
         }

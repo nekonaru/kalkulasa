@@ -13,6 +13,7 @@ import id.kalkulasa.data.local.entity.ExpenseEntity
 import id.kalkulasa.data.local.entity.ProductEntity
 import id.kalkulasa.data.local.entity.PurchaseEntity
 import id.kalkulasa.data.local.entity.PurchaseItemEntity
+import id.kalkulasa.data.local.entity.ReceivableEntity
 import id.kalkulasa.data.local.entity.SaleEntity
 import id.kalkulasa.data.local.entity.SaleItemEntity
 import id.kalkulasa.data.local.entity.StockMovementEntity
@@ -86,10 +87,30 @@ interface ProductDao {
     suspend fun setArchived(id: String, archived: Boolean, now: Long)
 }
 
+data class MovementWithProduct(
+    val id: String,
+    val produkId: String,
+    val tipe: String,
+    val jumlah: Double,
+    val hargaSatuan: Long,
+    val referensiId: String?,
+    val catatan: String?,
+    val waktu: Long,
+    val produkNama: String,
+)
+
 @Dao
 interface StockMovementDao {
     @Query("SELECT * FROM stock_movement WHERE deletedAt IS NULL ORDER BY waktu DESC LIMIT :limit")
     fun observeRecent(limit: Int = 100): Flow<List<StockMovementEntity>>
+
+    @Query(
+        """SELECT m.id, m.produkId, m.tipe, m.jumlah, m.hargaSatuan, m.referensiId, m.catatan, m.waktu,
+                  p.nama AS produkNama
+           FROM stock_movement m JOIN product p ON p.id = m.produkId
+           WHERE m.deletedAt IS NULL ORDER BY m.waktu DESC LIMIT :limit"""
+    )
+    fun observeRecentWithProduct(limit: Int): Flow<List<MovementWithProduct>>
 
     @Query("SELECT * FROM stock_movement WHERE produkId = :productId AND deletedAt IS NULL ORDER BY waktu DESC")
     fun observeByProduct(productId: String): Flow<List<StockMovementEntity>>
@@ -133,6 +154,9 @@ interface SaleDao {
     @Query("SELECT * FROM sale WHERE deletedAt IS NULL ORDER BY waktu DESC LIMIT :limit")
     fun observeRecent(limit: Int = 50): Flow<List<SaleEntity>>
 
+    @Query("SELECT * FROM sale WHERE id = :id")
+    suspend fun getById(id: String): SaleEntity?
+
     @Query("SELECT * FROM sale WHERE deletedAt IS NULL AND waktu BETWEEN :from AND :to ORDER BY waktu DESC")
     suspend fun getBetween(from: Long, to: Long): List<SaleEntity>
 
@@ -147,6 +171,9 @@ interface SaleDao {
 
     @Query("SELECT COALESCE(SUM(total), 0) FROM sale WHERE deletedAt IS NULL AND status = 'SELESAI' AND waktu BETWEEN :from AND :to")
     suspend fun sumRevenueBetween(from: Long, to: Long): Long
+
+    @Query("SELECT COALESCE(SUM(total), 0) FROM sale WHERE deletedAt IS NULL AND status = 'SELESAI' AND metodeBayar != :method AND waktu BETWEEN :from AND :to")
+    suspend fun sumRevenueBetweenExcludingMethod(from: Long, to: Long, method: String): Long
 
     @Query("SELECT COUNT(*) FROM sale WHERE deletedAt IS NULL AND status = 'SELESAI' AND waktu BETWEEN :from AND :to")
     suspend fun countBetween(from: Long, to: Long): Int
@@ -201,6 +228,30 @@ interface CapitalEntryDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(entry: CapitalEntryEntity)
+}
+
+@Dao
+interface ReceivableDao {
+    @Query("SELECT * FROM receivable WHERE deletedAt IS NULL ORDER BY waktu DESC")
+    fun observeAll(): Flow<List<ReceivableEntity>>
+
+    @Query("SELECT COALESCE(SUM(nominal - terbayar), 0) FROM receivable WHERE deletedAt IS NULL AND nominal > terbayar")
+    fun observeOutstanding(): Flow<Long>
+
+    @Query("SELECT COALESCE(SUM(terbayar), 0) FROM receivable WHERE deletedAt IS NULL")
+    suspend fun sumPaid(): Long
+
+    @Query("SELECT * FROM receivable WHERE deletedAt IS NULL")
+    suspend fun getAll(): List<ReceivableEntity>
+
+    @Query("SELECT * FROM receivable WHERE id = :id AND deletedAt IS NULL")
+    suspend fun getById(id: String): ReceivableEntity?
+
+    @Query("UPDATE receivable SET deletedAt = :now, updatedAt = :now WHERE saleId = :saleId AND deletedAt IS NULL")
+    suspend fun softDeleteBySaleId(saleId: String, now: Long)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsert(receivable: ReceivableEntity)
 }
 
 @Dao

@@ -59,6 +59,7 @@ import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun FinanceScreen(
+    onOpenPiutang: () -> Unit,
     viewModel: FinanceViewModel = hiltViewModel(),
 ) {
     val balance by viewModel.cashBalance.collectAsStateWithLifecycle()
@@ -110,6 +111,7 @@ fun FinanceScreen(
                         TextButton(onClick = { sheet = SheetMode.CAPITAL }) { Text(context.getString(R.string.add_capital)) }
                         TextButton(onClick = { sheet = SheetMode.PRIVATE_DRAW }) { Text(context.getString(R.string.add_private_draw)) }
                     }
+                    TextButton(onClick = onOpenPiutang) { Text(context.getString(R.string.piutang_open)) }
                 }
             }
 

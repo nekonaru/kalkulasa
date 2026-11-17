@@ -57,6 +57,8 @@
 |---------|-------------|
 | **Kasir satu ketuk** | Ketuk produk untuk masukkan ke keranjang, atur jumlah, beri diskon dalam rupiah, pilih tunai / transfer / QRIS sebagai label |
 | **Stok otomatis berkurang** | Menyimpan penjualan mengurangi stok dan mencatat modal per barang terjual |
+| **Hutang pelanggan** | Jualan dengan metode Hutang, isi nama pelanggan, utang otomatis masuk buku Piutang |
+| **Struk digital** | Bagikan struk lewat WhatsApp setelah penjualan tersimpan |
 | **Batalkan dengan restock** | Membatalkan transaksi mengembalikan stok dan riwayat pergerakan |
 
 ### Stok
@@ -78,6 +80,14 @@
 | **Prive** | Pengambilan uang pribadi pemilik dicatat terpisah agar laba usaha tetap bersih |
 | **Pengeluaran operasional** | Pengeluaran per kategori (Listrik, Sewa, Gaji, Transportasi, Lainnya); penjualan dan pembelian stok tercatat otomatis |
 
+### Piutang
+
+| Fitur | Deskripsi |
+|---------|-------------|
+| **Catat utang** | Dari penjualan (pilih Hutang) atau tambah manual dengan jatuh tempo opsional |
+| **Bayar sebagian** | Cicilan berapa pun, lunas otomatis saat lunas; pembayaran berlebih ditolak |
+| **Ingatkan via WhatsApp** | Kirim pesan pengingat sopan ke pelanggan dengan satu ketukan |
+
 ### Beranda
 
 | Fitur | Deskripsi |
@@ -85,6 +95,7 @@
 | **Ringkasan hari ini** | Omzet, untung bersih, jumlah transaksi dan jumlah stok menipis |
 | **Tren 7 hari** | Grafik batang omzet dengan penanda untung per hari |
 | **Produk terlaris** | 3 produk terlaris 7 hari terakhir |
+| **Skor Kesehatan Usaha** | Skor 0-100 dari margin, laba, persediaan, piutang dan kas, dengan tiga saran paling berdampak |
 
 ### Laporan
 
@@ -108,6 +119,7 @@
 | Fitur | Deskripsi |
 |---------|-------------|
 | **Tema** | Terang, gelap atau ikut sistem |
+| **Bahasa aplikasi** | Bahasa Indonesia (default) atau English, ganti di Pengaturan dan langsung berlaku |
 | **Kunci PIN** | PIN 6 digit opsional untuk mengunci aplikasi |
 | **Profil usaha** | Ubah nama dan jenis usaha kapan pun |
 
@@ -142,7 +154,7 @@
 ### Opsi A: Unduh APK (paling mudah)
 
 1. Buka halaman [Releases](https://github.com/nekonaru/kalkulasa/releases)
-2. Unduh `kalkulasa-v1.0.0.apk`
+2. Unduh `kalkulasa-v1.1.0.apk`
 3. Buka di ponsel kamu dan izinkan instalasi dari sumber tidak dikenal jika diminta
 4. Buka aplikasi dan isi profil usaha kamu
 
