@@ -28,9 +28,11 @@ import androidx.compose.material.icons.rounded.Assessment
 import androidx.compose.material.icons.rounded.Settings
 import id.kalkulasa.R
 import id.kalkulasa.presentation.cashier.CashierScreen
+import id.kalkulasa.presentation.customer.CustomersScreen
 import id.kalkulasa.presentation.finance.FinanceScreen
 import id.kalkulasa.presentation.home.HomeScreen
 import id.kalkulasa.presentation.piutang.PiutangScreen
+import id.kalkulasa.presentation.stock.RestockScreen
 import id.kalkulasa.presentation.onboarding.OnboardingScreen
 import id.kalkulasa.presentation.reports.ReportsScreen
 import id.kalkulasa.presentation.settings.SettingsScreen
@@ -109,14 +111,29 @@ fun KalkulasaNavHost(startDestination: String) {
                 )
             }
             composable(Routes.CASHIER) { CashierScreen() }
-            composable(Routes.STOCK) { StockScreen() }
+            composable(Routes.STOCK) {
+                StockScreen(
+                    onOpenRestock = { navController.navigate(Routes.RESTOCK) },
+                )
+            }
             composable(Routes.FINANCE) {
                 FinanceScreen(
                     onOpenPiutang = { navController.navigate(Routes.PIUTANG) },
+                    onOpenCustomers = { navController.navigate(Routes.CUSTOMERS) },
                 )
             }
             composable(Routes.PIUTANG) {
                 PiutangScreen(
+                    onBack = { navController.popBackStack() },
+                )
+            }
+            composable(Routes.CUSTOMERS) {
+                CustomersScreen(
+                    onBack = { navController.popBackStack() },
+                )
+            }
+            composable(Routes.RESTOCK) {
+                RestockScreen(
                     onBack = { navController.popBackStack() },
                 )
             }

@@ -20,6 +20,7 @@ import id.kalkulasa.data.local.entity.CapitalEntryEntity
 import id.kalkulasa.data.local.entity.CategoryEntity
 import id.kalkulasa.domain.model.CategoryType
 import id.kalkulasa.data.local.entity.ChangeLogEntity
+import id.kalkulasa.data.local.entity.CustomerEntity
 import id.kalkulasa.data.local.entity.ExpenseEntity
 import id.kalkulasa.data.local.entity.ProductEntity
 import id.kalkulasa.data.local.entity.PurchaseEntity
@@ -44,8 +45,9 @@ import java.util.UUID
         CapitalEntryEntity::class,
         ChangeLogEntity::class,
         ReceivableEntity::class,
+        CustomerEntity::class,
     ],
-    version = 2,
+    version = 3,
     exportSchema = true,
 )
 abstract class KalkulasaDatabase : RoomDatabase() {
@@ -59,11 +61,12 @@ abstract class KalkulasaDatabase : RoomDatabase() {
     abstract fun capitalEntryDao(): CapitalEntryDao
     abstract fun changeLogDao(): ChangeLogDao
     abstract fun receivableDao(): id.kalkulasa.data.local.dao.ReceivableDao
+    abstract fun customerDao(): id.kalkulasa.data.local.dao.CustomerDao
 
     companion object {
         const val NAME = "kalkulasa.db"
 
-        /** Migration 1 -> 2: add the receivable (piutang) table, nothing else touched. */
+        /** Migration 1 -> 2: add the receivable (piutang) table. */
         val MIGRATION_1_2 = androidx.room.migration.Migration(1, 2) { db ->
             db.execSQL(
                 """CREATE TABLE IF NOT EXISTS `receivable` (
@@ -86,10 +89,30 @@ abstract class KalkulasaDatabase : RoomDatabase() {
             db.execSQL("CREATE INDEX IF NOT EXISTS `index_receivable_saleId` ON `receivable` (`saleId`)")
         }
 
+        /** Migration 2 -> 3: customer loyalty table + sale.customerId link. */
+        val MIGRATION_2_3 = androidx.room.migration.Migration(2, 3) { db ->
+            db.execSQL(
+                """CREATE TABLE IF NOT EXISTS `customer` (
+                    `id` TEXT NOT NULL PRIMARY KEY,
+                    `nama` TEXT NOT NULL,
+                    `poin` INTEGER NOT NULL,
+                    `kunjungan` INTEGER NOT NULL,
+                    `totalBelanja` INTEGER NOT NULL,
+                    `updatedAt` INTEGER NOT NULL,
+                    `deletedAt` INTEGER,
+                    `deviceId` TEXT NOT NULL,
+                    `syncStatus` TEXT NOT NULL
+                )""".trimIndent(),
+            )
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_customer_nama` ON `customer` (`nama`)")
+            db.execSQL("ALTER TABLE `sale` ADD COLUMN `customerId` TEXT")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_sale_customerId` ON `sale` (`customerId`)")
+        }
+
         fun build(context: Context, deviceId: String, passphrase: ByteArray): KalkulasaDatabase =
             Room.databaseBuilder(context, KalkulasaDatabase::class.java, NAME)
                 .openHelperFactory(SupportOpenHelperFactory(passphrase))
-                .addMigrations(MIGRATION_1_2)
+                .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
                 .addCallback(SeedCallback(deviceId))
                 .build()
     }

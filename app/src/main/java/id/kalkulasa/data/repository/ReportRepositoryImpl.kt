@@ -37,7 +37,7 @@ class ReportRepositoryImpl @Inject constructor(
     }
 
     override suspend fun exportCsv(from: Long, to: Long): String {
-        val sales = db.saleDao().getBetween(from, to)
+        val sales = db.saleDao().getBetween(from, to).filter { it.status == "SELESAI" }
         val builder = StringBuilder()
         builder.append("Waktu,Status,Metode bayar,Subtotal,Diskon,Total\n")
         sales.forEach { sale ->

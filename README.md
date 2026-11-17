@@ -58,6 +58,7 @@
 | **Kasir satu ketuk** | Ketuk produk untuk masukkan ke keranjang, atur jumlah, beri diskon dalam rupiah, pilih tunai / transfer / QRIS sebagai label |
 | **Stok otomatis berkurang** | Menyimpan penjualan mengurangi stok dan mencatat modal per barang terjual |
 | **Hutang pelanggan** | Jualan dengan metode Hutang, isi nama pelanggan, utang otomatis masuk buku Piutang |
+| **Poin loyalti** | Isi nama pelanggan saat penjualan, dapat poin otomatis (1 poin tiap Rp 1.000) |
 | **Struk digital** | Bagikan struk lewat WhatsApp setelah penjualan tersimpan |
 | **Batalkan dengan restock** | Membatalkan transaksi mengembalikan stok dan riwayat pergerakan |
 
@@ -79,6 +80,21 @@
 | **Pencatatan modal** | Modal awal dan tambahan modal tercatat sebagai entri terpisah |
 | **Prive** | Pengambilan uang pribadi pemilik dicatat terpisah agar laba usaha tetap bersih |
 | **Pengeluaran operasional** | Pengeluaran per kategori (Listrik, Sewa, Gaji, Transportasi, Lainnya); penjualan dan pembelian stok tercatat otomatis |
+
+### Pelanggan dan poin
+
+| Fitur | Deskripsi |
+|---------|-------------|
+| **Loyalti poin** | 1 poin untuk setiap Rp 1.000 yang dibelanjakan; poin terakumulasi per pelanggan sesuai nama yang diisi di kasir |
+| **Buku pelanggan** | Daftar pelanggan dengan total poin, jumlah kunjungan dan total belanja |
+| **Reset poin** | Reset poin per pelanggan kapan pun dibutuhkan |
+
+### Saran Restok
+
+| Fitur | Deskripsi |
+|---------|-------------|
+| **Saran restok otomatis** | Produk di bawah stok minimum ditandai dengan jumlah pesan ulang yang disarankan (target dua kali lipat stok minimum) |
+| **Bagikan ke pemasok** | Kirim saran restok lewat WhatsApp dengan satu ketukan |
 
 ### Piutang
 
@@ -119,6 +135,7 @@
 | Fitur | Deskripsi |
 |---------|-------------|
 | **Tema** | Terang, gelap atau ikut sistem |
+| **Mode Warung / Pro** | Mode Warung untuk tampilan sederhana, Mode Pro untuk fitur lengkap |
 | **Bahasa aplikasi** | Bahasa Indonesia (default) atau English, ganti di Pengaturan dan langsung berlaku |
 | **Kunci PIN** | PIN 6 digit opsional untuk mengunci aplikasi |
 | **Profil usaha** | Ubah nama dan jenis usaha kapan pun |
@@ -154,7 +171,7 @@
 ### Opsi A: Unduh APK (paling mudah)
 
 1. Buka halaman [Releases](https://github.com/nekonaru/kalkulasa/releases)
-2. Unduh `kalkulasa-v1.1.0.apk`
+2. Unduh `kalkulasa-v1.2.0.apk`
 3. Buka di ponsel kamu dan izinkan instalasi dari sumber tidak dikenal jika diminta
 4. Buka aplikasi dan isi profil usaha kamu
 

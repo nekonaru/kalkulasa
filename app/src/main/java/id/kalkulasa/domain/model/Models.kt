@@ -68,6 +68,14 @@ data class Expense(
     val waktu: Long,
 )
 
+data class Customer(
+    val id: String,
+    val nama: String,
+    val poin: Long,
+    val kunjungan: Int,
+    val totalBelanja: Long,
+)
+
 data class Receivable(
     val id: String,
     val namaPelanggan: String,

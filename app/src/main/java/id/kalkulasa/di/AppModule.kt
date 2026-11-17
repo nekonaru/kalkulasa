@@ -17,8 +17,10 @@ import id.kalkulasa.data.repository.ReportRepositoryImpl
 import id.kalkulasa.data.repository.SaleRepositoryImpl
 import id.kalkulasa.data.repository.StockRepositoryImpl
 import id.kalkulasa.data.repository.CategoryRepositoryImpl
+import id.kalkulasa.data.repository.CustomerRepositoryImpl
 import id.kalkulasa.domain.repository.BackupRepository
 import id.kalkulasa.domain.repository.CategoryRepository
+import id.kalkulasa.domain.repository.CustomerRepository
 import id.kalkulasa.domain.repository.FinanceRepository
 import id.kalkulasa.domain.repository.ProductRepository
 import id.kalkulasa.domain.repository.ProfileRepository
@@ -82,6 +84,11 @@ object AppModule {
     @Singleton
     fun provideReceivableRepository(db: KalkulasaDatabase, deviceId: String): ReceivableRepository =
         ReceivableRepositoryImpl(db, db.changeLogDao(), deviceId)
+
+    @Provides
+    @Singleton
+    fun provideCustomerRepository(db: KalkulasaDatabase): CustomerRepository =
+        CustomerRepositoryImpl(db)
 
     @Provides
     @Singleton

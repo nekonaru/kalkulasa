@@ -5,6 +5,7 @@ import id.kalkulasa.data.local.KalkulasaDatabase
 import id.kalkulasa.data.local.entity.BusinessProfileEntity
 import id.kalkulasa.data.local.entity.CapitalEntryEntity
 import id.kalkulasa.data.local.entity.CategoryEntity
+import id.kalkulasa.data.local.entity.CustomerEntity
 import id.kalkulasa.data.local.entity.ExpenseEntity
 import id.kalkulasa.data.local.entity.ProductEntity
 import id.kalkulasa.data.local.entity.PurchaseEntity
@@ -42,6 +43,7 @@ class BackupRepositoryImpl @Inject constructor(
         json.put("expense", JSONArray().also { arr -> db.expenseDao().getAll().forEach { arr.put(it.toJson()) } })
         json.put("capital_entry", JSONArray().also { arr -> db.capitalEntryDao().getAll().forEach { arr.put(it.toJson()) } })
         json.put("receivable", JSONArray().also { arr -> db.receivableDao().getAll().forEach { arr.put(it.toJson()) } })
+        json.put("customer", JSONArray().also { arr -> db.customerDao().getAll().forEach { arr.put(it.toJson()) } })
         return json.toString()
     }
 
@@ -62,6 +64,7 @@ class BackupRepositoryImpl @Inject constructor(
         val expenses = root.optJSONArray("expense")?.toList { it.toExpense() } ?: emptyList()
         val capitalEntries = root.optJSONArray("capital_entry")?.toList { it.toCapitalEntry() } ?: emptyList()
         val receivables = root.optJSONArray("receivable")?.toList { it.toReceivable() } ?: emptyList()
+        val customers = root.optJSONArray("customer")?.toList { it.toCustomer() } ?: emptyList()
 
         db.withTransaction {
             db.clearAllTables()
@@ -76,6 +79,7 @@ class BackupRepositoryImpl @Inject constructor(
             expenses.forEach { db.expenseDao().insert(it) }
             capitalEntries.forEach { db.capitalEntryDao().insert(it) }
             receivables.forEach { db.receivableDao().upsert(it) }
+            customers.forEach { db.customerDao().upsert(it) }
         }
     }
 
@@ -134,7 +138,15 @@ class BackupRepositoryImpl @Inject constructor(
     private fun SaleEntity.toJson() = JSONObject().apply {
         put("id", id); put("subtotal", subtotal); put("diskon", diskon); put("total", total)
         put("metodeBayar", metodeBayar); put("status", status); put("waktu", waktu)
-        jPut(this, "catatan", catatan); put("updatedAt", updatedAt)
+        jPut(this, "catatan", catatan)
+        jPut(this, "customerId", customerId)
+        put("updatedAt", updatedAt)
+        jPut(this, "deletedAt", deletedAt); put("deviceId", deviceId); put("syncStatus", syncStatus)
+    }
+
+    private fun CustomerEntity.toJson() = JSONObject().apply {
+        put("id", id); put("nama", nama); put("poin", poin); put("kunjungan", kunjungan)
+        put("totalBelanja", totalBelanja); put("updatedAt", updatedAt)
         jPut(this, "deletedAt", deletedAt); put("deviceId", deviceId); put("syncStatus", syncStatus)
     }
 
@@ -219,6 +231,14 @@ class BackupRepositoryImpl @Inject constructor(
         id = getString("id"), subtotal = getLong("subtotal"), diskon = getLong("diskon"),
         total = getLong("total"), metodeBayar = getString("metodeBayar"),
         status = getString("status"), waktu = getLong("waktu"), catatan = str("catatan"),
+        customerId = str("customerId"),
+        updatedAt = getLong("updatedAt"), deletedAt = optLongOrNull("deletedAt"),
+        deviceId = getString("deviceId"), syncStatus = optString("syncStatus", "PENDING"),
+    )
+
+    private fun JSONObject.toCustomer() = CustomerEntity(
+        id = getString("id"), nama = getString("nama"), poin = getLong("poin"),
+        kunjungan = getInt("kunjungan"), totalBelanja = getLong("totalBelanja"),
         updatedAt = getLong("updatedAt"), deletedAt = optLongOrNull("deletedAt"),
         deviceId = getString("deviceId"), syncStatus = optString("syncStatus", "PENDING"),
     )
@@ -256,6 +276,6 @@ class BackupRepositoryImpl @Inject constructor(
     )
 
     private companion object {
-        const val BACKUP_VERSION = 2
+        const val BACKUP_VERSION = 3
     }
 }

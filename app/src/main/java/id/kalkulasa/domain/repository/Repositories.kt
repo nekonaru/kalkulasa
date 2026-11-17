@@ -3,6 +3,7 @@ package id.kalkulasa.domain.repository
 import id.kalkulasa.domain.model.BusinessProfile
 import id.kalkulasa.domain.model.CapitalEntry
 import id.kalkulasa.domain.model.Category
+import id.kalkulasa.domain.model.Customer
 import id.kalkulasa.domain.model.DailyPoint
 import id.kalkulasa.domain.model.Expense
 import id.kalkulasa.domain.model.PeriodReport
@@ -42,6 +43,13 @@ interface StockRepository {
     fun observeRecentMovements(limit: Int = 100): Flow<List<StockMovement>>
     suspend fun recordStockIn(productId: String, qty: Double, hargaBeli: Long, pemasok: String?, catatan: String?): Result<Unit>
     suspend fun recordAdjustment(productId: String, newQty: Double, reason: String): Result<Unit>
+}
+
+interface CustomerRepository {
+    fun observeAll(): Flow<List<Customer>>
+    fun observeAll(query: String): Flow<List<Customer>>
+    suspend fun getById(id: String): Customer?
+    suspend fun resetPoints(id: String)
 }
 
 interface ReceivableRepository {

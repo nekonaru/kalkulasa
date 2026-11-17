@@ -25,8 +25,7 @@ class SettingsDataStore @Inject constructor(
     private object Keys {
         val theme = stringPreferencesKey("theme_mode")
         val pinHash = stringPreferencesKey("pin_hash") // sha256 hex, empty = no PIN
-        val pinEnabled = booleanPreferencesKey("pin_enabled")
-        val unlocked = booleanPreferencesKey("session_unlocked")
+        val warungMode = booleanPreferencesKey("warung_mode")
     }
 
     val themeMode: Flow<ThemeMode> = context.dataStore.data.map { prefs ->
@@ -50,17 +49,18 @@ class SettingsDataStore @Inject constructor(
     }
 
     suspend fun setPin(pin: String) {
-        context.dataStore.edit {
-            it[Keys.pinHash] = hash(pin)
-            it[Keys.pinEnabled] = true
-        }
+        context.dataStore.edit { it[Keys.pinHash] = hash(pin) }
     }
 
     suspend fun removePin() {
-        context.dataStore.edit {
-            it.remove(Keys.pinHash)
-            it[Keys.pinEnabled] = false
-        }
+        context.dataStore.edit { it.remove(Keys.pinHash) }
+    }
+
+    /** Mode Warung: simplified home for first-time sellers. False = Mode Pro (default). */
+    val warungMode: Flow<Boolean> = context.dataStore.data.map { it[Keys.warungMode] ?: false }
+
+    suspend fun setWarungMode(enabled: Boolean) {
+        context.dataStore.edit { it[Keys.warungMode] = enabled }
     }
 
     private fun hash(pin: String): String =

@@ -55,6 +55,13 @@ class SettingsViewModel @Inject constructor(
     val hasPin: StateFlow<Boolean> = settings.hasPin
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), false)
 
+    val warungMode: StateFlow<Boolean> = settings.warungMode
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), false)
+
+    fun setWarungMode(enabled: Boolean) {
+        viewModelScope.launch { settings.setWarungMode(enabled) }
+    }
+
     private val _language = MutableStateFlow(id.kalkulasa.core.localization.LanguagePreference.get(context))
     val language: StateFlow<String> = _language.asStateFlow()
 

@@ -300,16 +300,15 @@ private fun CartSection(
                 )
             }
         }
-        if (paymentMethod == PaymentMethod.HUTANG) {
-            OutlinedTextField(
-                value = namaPelanggan,
-                onValueChange = onNamaPelangganChange,
-                label = { Text(context.getString(R.string.customer_name)) },
-                placeholder = { Text(context.getString(R.string.customer_name_hint)) },
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth(),
-            )
-        }
+        OutlinedTextField(
+            value = namaPelanggan,
+            onValueChange = onNamaPelangganChange,
+            label = { Text(context.getString(R.string.customer_name_optional)) },
+            placeholder = { Text(context.getString(R.string.customer_name_hint)) },
+            supportingText = if (paymentMethod != PaymentMethod.HUTANG) ({ Text(context.getString(R.string.cashier_customer_hint)) }) else null,
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth(),
+        )
         Button(
             onClick = viewModel::saveSale,
             enabled = cart.isNotEmpty() && !saving &&

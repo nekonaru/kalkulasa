@@ -1,5 +1,22 @@
 # Changelog
 
+## v1.2.0
+
+Yang baru: Mode Warung untuk pemilik usaha pemula, program poin loyalti pelanggan, dan saran restok otomatis.
+
+### Fitur baru
+
+- **Mode Warung.** Tampilan super sederhana untuk pemilik usaha yang baru belajar, tombol besar dan hanya angka yang paling penting. Ganti ke Mode Pro kapan pun di Pengaturan > Tampilan.
+- **Pelanggan dan poin loyalti.** Isi nama pelanggan saat penjualan (opsional), setiap rupiah 1.000 otomatis jadi 1 poin. Layar Pelanggan menunjukkan riwayat poin, kunjungan dan total belanja per pelanggan, dengan opsi reset poin.
+- **Saran Restok.** Kalkulasa menandai produk yang stoknya di bawah batas minimum dan menghitung berapa buah yang harus dipesan ulang (target dua kali lipat stok minimum), bisa langsung dibagikan sebagai pesan WhatsApp ke pemasok.
+- **Catatan nama pelanggan di semua penjualan.** Nama pelanggan tidak hanya untuk jualan Hutang; siapa pun yang diisi namanya otomatis terkumpul poinnya.
+
+### Peningkatan
+
+- **Ekspor CSV** tidak lagi menyertakan transaksi yang dibatalkan.
+- **Migrasi database otomatis v2 ke v3**; data lama aman.
+- **Backup format v3** mencakup data pelanggan dan poin; restore untuk backup v1 dan v2 tetap didukung.
+
 ## v1.1.0
 
 Modul pelanggan dan piutang, struk digital yang bisa dibagikan, dan skor kesehatan usaha langsung di Beranda.

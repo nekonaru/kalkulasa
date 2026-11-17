@@ -102,16 +102,17 @@ data class PurchaseItemEntity(
     val syncStatus: String = SyncStatus.PENDING,
 )
 
-@Entity(tableName = "sale", indices = [Index("waktu"), Index("status")])
+@Entity(tableName = "sale", indices = [Index("waktu"), Index("status"), Index("customerId")])
 data class SaleEntity(
     @PrimaryKey val id: String,
     val subtotal: Long,
     val diskon: Long,
     val total: Long,
-    val metodeBayar: String, // TUNAI, TRANSFER, QRIS
+    val metodeBayar: String, // TUNAI, TRANSFER, QRIS, HUTANG
     val status: String, // SELESAI, BATAL
     val waktu: Long,
     val catatan: String?,
+    val customerId: String? = null,
     val updatedAt: Long,
     val deletedAt: Long? = null,
     val deviceId: String,
@@ -154,6 +155,19 @@ data class CapitalEntryEntity(
     val nominal: Long,
     val catatan: String?,
     val waktu: Long,
+    val updatedAt: Long,
+    val deletedAt: Long? = null,
+    val deviceId: String,
+    val syncStatus: String = SyncStatus.PENDING,
+)
+
+@Entity(tableName = "customer", indices = [Index("nama")])
+data class CustomerEntity(
+    @PrimaryKey val id: String,
+    val nama: String,
+    val poin: Long,
+    val kunjungan: Int,
+    val totalBelanja: Long,
     val updatedAt: Long,
     val deletedAt: Long? = null,
     val deviceId: String,

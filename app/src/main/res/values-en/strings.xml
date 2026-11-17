@@ -149,6 +149,23 @@
     <string name="entry_purchase">Stock purchase</string>
     <string name="entry_sale">Sale</string>
 
+    <string name="customer_name_optional">Customer name (optional)</string>
+    <string name="cashier_customer_hint">Enter a name to earn loyalty points</string>
+    <string name="customers_title">Customers and Points</string>
+    <string name="customers_search">Search customers…</string>
+    <string name="customers_empty">No customers yet. Enter a customer name at the cashier to start earning points.</string>
+    <string name="customers_points_label">%1$d points</string>
+    <string name="customers_visits_label">%1$d visits</string>
+    <string name="customers_reset_points">Reset points</string>
+    <string name="customers_spent_label">Total spent: %1$s</string>
+    <string name="restock_title">Restock Suggestions</string>
+    <string name="restock_empty">All stock is fine. No product below its minimum.</string>
+    <string name="restock_suggested">Suggested: +%1$s %2$s</string>
+    <string name="restock_share">Share restock suggestions</string>
+    <string name="restock_share_title">Restock suggestions from %1$s</string>
+    <string name="settings_display_mode">Display mode</string>
+    <string name="mode_warung">Warung mode (simple)</string>
+    <string name="mode_pro">Pro mode (full)</string>
     <string name="piutang_open">Customer receivables</string>
     <string name="piutang_title">Receivables</string>
     <string name="piutang_outstanding">Outstanding</string>

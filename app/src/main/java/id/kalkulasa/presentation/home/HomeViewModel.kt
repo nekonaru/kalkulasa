@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import id.kalkulasa.core.util.DateFormatter
+import id.kalkulasa.core.datastore.SettingsDataStore
 import id.kalkulasa.domain.model.DailyPoint
 import id.kalkulasa.domain.model.ProductSales
 import id.kalkulasa.domain.repository.FinanceRepository
@@ -13,10 +14,12 @@ import id.kalkulasa.domain.repository.ReceivableRepository
 import id.kalkulasa.domain.repository.ReportRepository
 import id.kalkulasa.domain.repository.SaleRepository
 import id.kalkulasa.domain.usecase.KesehatanUsahaUseCase
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -41,10 +44,14 @@ class HomeViewModel @Inject constructor(
     private val productRepository: ProductRepository,
     private val receivableRepository: ReceivableRepository,
     private val reportRepository: ReportRepository,
+    private val settings: SettingsDataStore,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(HomeUiState())
     val state: StateFlow<HomeUiState> = _state.asStateFlow()
+
+    val warungMode: StateFlow<Boolean> = settings.warungMode
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), false)
 
     init { refresh() }
 

@@ -9,6 +9,7 @@ import id.kalkulasa.data.local.entity.BusinessProfileEntity
 import id.kalkulasa.data.local.entity.CapitalEntryEntity
 import id.kalkulasa.data.local.entity.CategoryEntity
 import id.kalkulasa.data.local.entity.ChangeLogEntity
+import id.kalkulasa.data.local.entity.CustomerEntity
 import id.kalkulasa.data.local.entity.ExpenseEntity
 import id.kalkulasa.data.local.entity.ProductEntity
 import id.kalkulasa.data.local.entity.PurchaseEntity
@@ -228,6 +229,29 @@ interface CapitalEntryDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(entry: CapitalEntryEntity)
+}
+
+@Dao
+interface CustomerDao {
+    @Query(
+        """SELECT * FROM customer WHERE deletedAt IS NULL
+           AND (:query = '' OR nama LIKE '%' || :query || '%')
+           ORDER BY totalBelanja DESC"""
+    )
+    fun observeAll(query: String): Flow<List<CustomerEntity>>
+
+    @Query("SELECT * FROM customer WHERE deletedAt IS NULL ORDER BY totalBelanja DESC")
+    suspend fun getAll(): List<CustomerEntity>
+
+    @Query("""SELECT * FROM customer WHERE deletedAt IS NULL AND LOWER(nama) = LOWER(:name)
+              ORDER BY totalBelanja DESC LIMIT 1""")
+    suspend fun findByName(name: String): CustomerEntity?
+
+    @Query("SELECT * FROM customer WHERE id = :id")
+    suspend fun getById(id: String): CustomerEntity?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsert(customer: CustomerEntity)
 }
 
 @Dao

@@ -55,6 +55,7 @@ fun SettingsScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val themeMode by viewModel.themeMode.collectAsStateWithLifecycle()
     val hasPin by viewModel.hasPin.collectAsStateWithLifecycle()
+    val warungMode by viewModel.warungMode.collectAsStateWithLifecycle()
     val language by viewModel.language.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val snackbar = remember { SnackbarHostState() }
@@ -135,6 +136,21 @@ fun SettingsScreen(
                     FilterChip(
                         selected = themeMode == mode,
                         onClick = { viewModel.setThemeMode(mode) },
+                        label = { Text(context.getString(label)) },
+                    )
+                }
+            }
+
+            // Display mode (Warung vs Pro)
+            SectionHeader(context.getString(R.string.settings_display_mode))
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                listOf(
+                    false to R.string.mode_pro,
+                    true to R.string.mode_warung,
+                ).forEach { (warung, label) ->
+                    FilterChip(
+                        selected = warungMode == warung,
+                        onClick = { viewModel.setWarungMode(warung) },
                         label = { Text(context.getString(label)) },
                     )
                 }

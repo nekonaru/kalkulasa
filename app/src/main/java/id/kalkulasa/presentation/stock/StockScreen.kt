@@ -67,6 +67,7 @@ import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun StockScreen(
+    onOpenRestock: () -> Unit,
     viewModel: StockViewModel = hiltViewModel(),
 ) {
     val query by viewModel.query.collectAsStateWithLifecycle()
@@ -120,6 +121,7 @@ fun StockScreen(
                     onQueryChange = viewModel::onQueryChange,
                     onEdit = { editingProduct = it },
                     onToggleArchive = { viewModel.setArchived(it.id, !it.diarsipkan) },
+                    onOpenRestock = onOpenRestock,
                 )
                 1 -> StockEntryTab(viewModel = viewModel, products = products)
                 2 -> HistoryTab(movements = movements)
@@ -160,16 +162,20 @@ private fun ProductsTab(
     onQueryChange: (String) -> Unit,
     onEdit: (Product) -> Unit,
     onToggleArchive: (Product) -> Unit,
+    onOpenRestock: () -> Unit,
 ) {
     val context = LocalContext.current
     Column(modifier = Modifier.fillMaxSize().padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        OutlinedTextField(
-            value = query,
-            onValueChange = onQueryChange,
-            label = { Text(context.getString(R.string.search)) },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
-        )
+        Row(horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+            OutlinedTextField(
+                value = query,
+                onValueChange = onQueryChange,
+                label = { Text(context.getString(R.string.search)) },
+                singleLine = true,
+                modifier = Modifier.weight(1f),
+            )
+            TextButton(onClick = onOpenRestock) { Text(context.getString(R.string.restock_title)) }
+        }
         if (products.isEmpty()) {
             KalkulasaEmptyState(
                 title = context.getString(R.string.product_empty_title),

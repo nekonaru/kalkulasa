@@ -16,6 +16,7 @@ import id.kalkulasa.domain.model.Product
 import id.kalkulasa.domain.model.ProductSales
 import id.kalkulasa.domain.model.Sale
 import id.kalkulasa.domain.model.SaleLine
+import id.kalkulasa.domain.usecase.PoinLoyalitasUseCase
 import id.kalkulasa.domain.repository.SaleRepository
 import id.kalkulasa.core.util.DateFormatter
 import kotlinx.coroutines.flow.Flow
@@ -56,6 +57,40 @@ class SaleRepositoryImpl @Inject constructor(
                 val now = RepositorySupport.now()
                 val saleId = RepositorySupport.newId()
 
+                // Loyalty: named customer earns 1 point per Rp 1.000 spent
+                val customerName = namaPelanggan?.trim().orEmpty()
+                var linkedCustomerId: String? = null
+                if (customerName.isNotEmpty()) {
+                    val existing = db.customerDao().findByName(customerName)
+                    val points = PoinLoyalitasUseCase.pointsFor(total)
+                    if (existing != null) {
+                        linkedCustomerId = existing.id
+                        db.customerDao().upsert(
+                            existing.copy(
+                                poin = existing.poin + points,
+                                kunjungan = existing.kunjungan + 1,
+                                totalBelanja = existing.totalBelanja + total,
+                                updatedAt = now,
+                            ),
+                        )
+                    } else {
+                        val newCustomerId = RepositorySupport.newId()
+                        linkedCustomerId = newCustomerId
+                        db.customerDao().upsert(
+                            id.kalkulasa.data.local.entity.CustomerEntity(
+                                id = newCustomerId,
+                                nama = customerName,
+                                poin = points,
+                                kunjungan = 1,
+                                totalBelanja = total,
+                                updatedAt = now,
+                                deviceId = deviceId,
+                            ),
+                        )
+                    }
+                    RepositorySupport.log(changeLogDao, "customer", linkedCustomerId, "UPDATE")
+                }
+
                 resolved.forEach { (fresh, qty) ->
                     db.saleDao().insertItem(
                         SaleItemEntity(
@@ -95,6 +130,7 @@ class SaleRepositoryImpl @Inject constructor(
                     status = SaleStatus.SELESAI,
                     waktu = now,
                     catatan = catatan?.ifBlank { null },
+                    customerId = linkedCustomerId,
                     updatedAt = now,
                     deviceId = deviceId,
                 )

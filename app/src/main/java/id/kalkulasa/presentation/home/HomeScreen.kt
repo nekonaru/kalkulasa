@@ -56,6 +56,7 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val warungMode by viewModel.warungMode.collectAsStateWithLifecycle()
     val context = LocalContext.current
     OnLifecycleResume { viewModel.refresh() }
 
@@ -106,45 +107,60 @@ fun HomeScreen(
                 )
             }
         }
-        item {
-            HealthScoreCard(health = state.health)
-        }
-        if (state.piutangOutstanding > 0) {
+        if (warungMode) {
             item {
-                PiutangCard(outstanding = state.piutangOutstanding, onOpenPiutang = onOpenPiutang)
+                Button(
+                    onClick = onOpenCashier,
+                    modifier = Modifier.fillMaxWidth().height(64.dp),
+                ) {
+                    Icon(Icons.Rounded.Add, contentDescription = null, modifier = Modifier.size(24.dp))
+                    Text(context.getString(R.string.home_cta_sell), style = MaterialTheme.typography.titleLarge)
+                }
             }
         }
-        item {
-            SectionHeader(context.getString(R.string.trend_7_days))
-            TrendChart(points = state.trend, modifier = Modifier.fillMaxWidth().height(160.dp).padding(top = 8.dp))
-        }
-        item { SectionHeader(context.getString(R.string.best_sellers)) }
-        if (state.bestSellers.isEmpty()) {
+        if (!warungMode) {
             item {
-                KalkulasaEmptyState(
-                    title = context.getString(R.string.home_empty),
-                    body = "",
-                    action = {
-                        Button(onClick = onOpenCashier) {
-                            Icon(Icons.Rounded.Add, contentDescription = null, modifier = Modifier.size(18.dp))
-                            Text(context.getString(R.string.home_cta_sell))
+                HealthScoreCard(health = state.health)
+            }
+            if (state.piutangOutstanding > 0) {
+                item {
+                    PiutangCard(outstanding = state.piutangOutstanding, onOpenPiutang = onOpenPiutang)
+                }
+            }
+            item {
+                SectionHeader(context.getString(R.string.trend_7_days))
+                TrendChart(points = state.trend, modifier = Modifier.fillMaxWidth().height(160.dp).padding(top = 8.dp))
+            }
+        }
+        if (!warungMode) {
+            item { SectionHeader(context.getString(R.string.best_sellers)) }
+            if (state.bestSellers.isEmpty()) {
+                item {
+                    KalkulasaEmptyState(
+                        title = context.getString(R.string.home_empty),
+                        body = "",
+                        action = {
+                            Button(onClick = onOpenCashier) {
+                                Icon(Icons.Rounded.Add, contentDescription = null, modifier = Modifier.size(18.dp))
+                                Text(context.getString(R.string.home_cta_sell))
+                            }
+                        },
+                    )
+                }
+            } else {
+                items(state.bestSellers) { product ->
+                    Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(12.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                        ) {
+                            Text(product.namaProduk, style = MaterialTheme.typography.bodyLarge)
+                            Text(
+                                "${product.qty.toLong()}x",
+                                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+                                color = MaterialTheme.colorScheme.primary,
+                            )
                         }
-                    },
-                )
-            }
-        } else {
-            items(state.bestSellers) { product ->
-                Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth().padding(12.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                    ) {
-                        Text(product.namaProduk, style = MaterialTheme.typography.bodyLarge)
-                        Text(
-                            "${product.qty.toLong()}x",
-                            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
-                            color = MaterialTheme.colorScheme.primary,
-                        )
                     }
                 }
             }

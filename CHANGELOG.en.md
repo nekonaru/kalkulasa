@@ -1,5 +1,22 @@
 # Changelog
 
+## v1.2.0
+
+What is new: Warung mode for first-time sellers, customer loyalty points, and automatic restock suggestions.
+
+### New features
+
+- **Warung mode.** A super-simple experience for owners who are just learning: big buttons, only the numbers that matter. Switch anytime in Settings > Display mode.
+- **Customers and loyalty points.** Enter a customer name at the cashier (optional); every 1,000 rupiah earns 1 point. The Customers screen shows points history, visits and total spent per customer, with point resets.
+- **Restock suggestions.** Kalkulasa flags products below their minimum stock and computes how many units to reorder (target twice the minimum), ready to share as a WhatsApp message to your supplier.
+- **Customer names on all sales.** Names are not only for Hutang sales; any named sale accumulates loyalty points.
+
+### Improvements
+
+- **CSV export** no longer includes cancelled sales.
+- **Automatic database migration v2 to v3**; old data is safe.
+- **Backup format v3** includes customer and points data; restoring v1 and v2 backups is still supported.
+
 ## v1.1.0
 
 Customer debt tracking, shareable digital receipts, and a business health score right on the home screen.

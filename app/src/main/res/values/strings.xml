@@ -149,6 +149,23 @@
     <string name="entry_purchase">Pembelian stok</string>
     <string name="entry_sale">Penjualan</string>
 
+    <string name="customer_name_optional">Nama pelanggan (opsional)</string>
+    <string name="cashier_customer_hint">Isi nama untuk dapat poin loyalti</string>
+    <string name="customers_title">Pelanggan dan Poin</string>
+    <string name="customers_search">Cari pelanggan…</string>
+    <string name="customers_empty">Belum ada pelanggan. Isi nama pelanggan di kasir untuk mulai mengumpulkan poin.</string>
+    <string name="customers_points_label">%1$d poin</string>
+    <string name="customers_visits_label">%1$d kunjungan</string>
+    <string name="customers_reset_points">Reset poin</string>
+    <string name="customers_spent_label">Total belanja: %1$s</string>
+    <string name="restock_title">Saran Restok</string>
+    <string name="restock_empty">Semua stok aman. Tidak ada produk di bawah batas minimum.</string>
+    <string name="restock_suggested">Saran: +%1$s %2$s</string>
+    <string name="restock_share">Bagikan saran restok</string>
+    <string name="restock_share_title">Saran restok dari %1$s</string>
+    <string name="settings_display_mode">Mode tampilan</string>
+    <string name="mode_warung">Mode Warung (sederhana)</string>
+    <string name="mode_pro">Mode Pro (lengkap)</string>
     <string name="piutang_open">Piutang pelanggan</string>
     <string name="piutang_title">Piutang</string>
     <string name="piutang_outstanding">Belum ditagih</string>

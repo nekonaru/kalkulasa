@@ -58,6 +58,7 @@
 | **One-tap cashier** | Tap products to add them to the cart, adjust quantities, apply a discount in rupiah, pick cash / transfer / QRIS as a label |
 | **Automatic stock deduction** | Saving a sale deducts stock and records average cost (HPP) per sold item |
 | **Customer debt at the cashier** | Sell with Hutang, enter the customer name, debt lands in the receivables book automatically |
+| **Loyalty points** | Enter a customer name and earn points automatically (1 point per Rp 1,000) |
 | **Digital receipt** | Share the receipt via WhatsApp after saving a sale |
 | **Cancel with restock** | Cancelling a sale returns the stock and restores the movement history |
 
@@ -79,6 +80,21 @@
 | **Capital tracking** | Starting capital and additional capital recorded as separate entries |
 | **Private draws (Prive)** | Owner takes are recorded separately so profit stays clean |
 | **Operating expenses** | Expenses per category (Electricity, Rent, Salary, Transport, Other); sales and stock purchases are recorded automatically |
+
+### Customers and points
+
+| Feature | Description |
+|---------|-------------|
+| **Loyalty points** | 1 point per Rp 1,000 spent; points accumulate per customer matching the name entered at the cashier |
+| **Customer book** | Customer list with total points, visits and total spent |
+| **Point reset** | Reset points per customer anytime |
+
+### Restock suggestions
+
+| Feature | Description |
+|---------|-------------|
+| **Automatic restock suggestions** | Products below their minimum are flagged with a suggested reorder quantity (twice the minimum) |
+| **Share with supplier** | Send the restock list via WhatsApp with one tap |
 
 ### Receivables (Piutang)
 
@@ -119,6 +135,7 @@
 | Feature | Description |
 |---------|-------------|
 | **Theme** | Light, dark or follow the system |
+| **Warung / Pro mode** | Warung mode for a simplified view, Pro mode for the full feature set |
 | **App language** | Bahasa Indonesia (default) or English, switch in Settings and it applies instantly |
 | **PIN lock** | Optional 6-digit PIN to protect the app |
 | **Business profile** | Edit business name and type anytime |
@@ -154,7 +171,7 @@
 ### Option A: Download the APK (easiest)
 
 1. Open the [Releases](https://github.com/nekonaru/kalkulasa/releases) page
-2. Download `kalkulasa-v1.1.0.apk`
+2. Download `kalkulasa-v1.2.0.apk`
 3. Open it on your phone and allow installs from unknown sources if asked
 4. Open the app and fill in your business profile
 

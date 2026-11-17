@@ -9,4 +9,6 @@ object Routes {
     const val REPORTS = "reports"
     const val SETTINGS = "settings"
     const val PIUTANG = "piutang"
+    const val CUSTOMERS = "customers"
+    const val RESTOCK = "restock"
 }
