@@ -2,18 +2,18 @@
 
 ## v1.0.0
 
-First release of Kalkulasa: offline stock and cash recording for small businesses, with a one-tap cashier and automatic average cost.
+Rilis pertama Kalkulasa: pencatatan stok dan kas offline untuk UMKM, dengan kasir satu ketuk dan modal per barang otomatis.
 
-### New features
+### Fitur baru
 
-- **One-tap cashier.** Tap products into the cart, apply a rupiah discount, pick cash / transfer / QRIS as a payment label, and sales deduct stock with average cost recorded per item.
-- **Product and stock management.** Create, edit, search, archive and restore products; stock in with purchase price; stock adjustment with reasons; full movement history.
-- **Automatic average cost (HPP).** Stock in recalculates weighted-average cost, and historical profit never shifts when prices change.
-- **Low stock warnings.** Beranda and Stok highlight products at or below their minimum stock.
-- **Finance module.** Starting and additional capital, private draws kept separate, operating expenses per category, and a live cash balance.
-- **Dashboard.** Omzet, net profit, transaction count, low-stock count, 7-day revenue trend and best sellers.
-- **Reports.** Simple profit and loss for today, 7 days, 30 days or this month; inventory value; PDF and CSV export; share a text summary via WhatsApp.
-- **Encrypted local database.** SQLCipher database with the key sealed by the Android Keystore; no network, no permissions, no account.
-- **Backup and restore.** Full JSON backup to the Downloads folder and restore on the same or a new phone.
-- **PIN lock and themes.** Optional 6-digit PIN, plus light, dark and system themes.
-- **Bahasa Indonesia and English.** Bahasa Indonesia is the default; English follows the device language.
+- **Kasir satu ketuk.** Ketuk produk ke keranjang, beri diskon rupiah, pilih tunai / transfer / QRIS sebagai label pembayaran; penjualan mengurangi stok dengan modal per barang tercatat per item.
+- **Manajemen produk dan stok.** Tambah, ubah, cari, arsipkan dan kembalikan produk; stok masuk dengan harga beli; penyesuaian stok dengan alasan; riwayat pergerakan lengkap.
+- **Modal per barang (HPP) otomatis.** Stok masuk menghitung ulang rata-rata tertimbang; laba historis tidak berubah saat harga berubah.
+- **Peringatan stok menipis.** Beranda dan Stok menandai produk yang stoknya di batas minimum atau kurang.
+- **Modul keuangan.** Modal awal dan tambahan modal, prive tercatat terpisah, pengeluaran operasional per kategori, dan saldo kas yang hidup.
+- **Beranda.** Omzet, untung bersih, jumlah transaksi, jumlah stok menipis, tren omzet 7 hari dan produk terlaris.
+- **Laporan.** Laba rugi sederhana untuk hari ini, 7 hari, 30 hari atau bulan ini; nilai persediaan; ekspor PDF dan CSV; bagikan ringkasan via WhatsApp.
+- **Database lokal terenkripsi.** Database SQLCipher dengan kunci yang digembok Android Keystore; tanpa jaringan, tanpa izin, tanpa akun.
+- **Backup dan pulihkan.** Backup JSON lengkap ke folder Unduhan dan pulihkan di ponsel yang sama atau baru.
+- **Kunci PIN dan tema.** PIN 6 digit opsional, plus tema terang, gelap dan ikut sistem.
+- **Bahasa Indonesia dan English.** Bahasa Indonesia adalah default; English mengikuti bahasa perangkat.

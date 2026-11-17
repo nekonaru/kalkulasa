@@ -55,6 +55,7 @@ fun SettingsScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val themeMode by viewModel.themeMode.collectAsStateWithLifecycle()
     val hasPin by viewModel.hasPin.collectAsStateWithLifecycle()
+    val language by viewModel.language.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val snackbar = remember { SnackbarHostState() }
 
@@ -134,6 +135,24 @@ fun SettingsScreen(
                     FilterChip(
                         selected = themeMode == mode,
                         onClick = { viewModel.setThemeMode(mode) },
+                        label = { Text(context.getString(label)) },
+                    )
+                }
+            }
+
+            // Language
+            SectionHeader(context.getString(R.string.settings_language))
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                listOf(
+                    id.kalkulasa.core.localization.LanguagePreference.INDONESIAN to R.string.language_indonesian,
+                    id.kalkulasa.core.localization.LanguagePreference.ENGLISH to R.string.language_english,
+                ).forEach { (lang, label) ->
+                    FilterChip(
+                        selected = language == lang,
+                        onClick = {
+                            viewModel.setLanguage(lang)
+                            (context as? android.app.Activity)?.recreate()
+                        },
                         label = { Text(context.getString(label)) },
                     )
                 }

@@ -19,6 +19,8 @@ Guidance for AI agents working on this repository.
 - PIPELINE: direct
 
 Assumptions: the owner asked for direct, gradual pushes to the final
-repository, so `PIPELINE` is `direct`. The display language in the app is
-Bahasa Indonesia with English available alongside; documentation stays
-bilingual with English as the source.
+repository, so `PIPELINE` is `direct`. Owner's language directive (overrides
+the usual defaults): Bahasa Indonesia is the default everywhere, including the
+app UI, README, repository metadata and release notes; English stays as the
+bilingual counterpart (`README.en.md`, `CHANGELOG.en.md`, release notes list
+Bahasa Indonesia first). Documentation files are synced between the two.

@@ -55,6 +55,15 @@ class SettingsViewModel @Inject constructor(
     val hasPin: StateFlow<Boolean> = settings.hasPin
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), false)
 
+    private val _language = MutableStateFlow(id.kalkulasa.core.localization.LanguagePreference.get(context))
+    val language: StateFlow<String> = _language.asStateFlow()
+
+    /** Persist the language choice; the caller should recreate the activity. */
+    fun setLanguage(lang: String) {
+        id.kalkulasa.core.localization.LanguagePreference.set(context, lang)
+        _language.value = lang
+    }
+
     private val _events = Channel<SettingsEvent>(Channel.BUFFERED)
     val events: Flow<SettingsEvent> = _events.receiveAsFlow()
 

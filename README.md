@@ -1,8 +1,8 @@
 <div align="center">
-  <img src="assets/kalkulasa-mark.png" alt="Kalkulasa logo" width="120" />
-  <h1>Kalkulasa: Stock and Cash for Small Business</h1>
-  <p><b>Run the daily stock and cash of a small shop with a one-tap cashier,<br/>
-  automatic average cost, and simple profit reports.</b></p>
+  <img src="assets/kalkulasa-mark.png" alt="Logo Kalkulasa" width="120" />
+  <h1>Kalkulasa: Stok dan Kas untuk UMKM</h1>
+  <p><b>Urusi stok dan kas harian warung kamu dengan kasir satu ketuk,<br/>
+  modal per barang otomatis, dan laporan untung yang simpel.</b></p>
 
   <a href="https://github.com/nekonaru/kalkulasa/releases"><img src="https://img.shields.io/github/v/release/nekonaru/kalkulasa?style=flat-square&color=blue" alt="Release" /></a>
   <a href="https://github.com/nekonaru/kalkulasa/actions/workflows/ci.yml"><img src="https://github.com/nekonaru/kalkulasa/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
@@ -14,147 +14,147 @@
 
 <br />
 
-**English** | [Bahasa Indonesia](README.id.md)
+**Bahasa Indonesia** | [English](README.en.md)
 
 > [!NOTE]
-> Kalkulasa works fully offline. Your data never leaves the phone unless you export a backup yourself.
+> Kalkulasa bekerja sepenuhnya offline. Data kamu tidak pernah keluar dari ponsel kecuali kamu sendiri yang mengekspor backup.
 
 ---
 
-## Table of Contents
+## Daftar Isi
 
-- [About](#about)
-- [Features](#features)
-- [Requirements](#requirements)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Display Language](#display-language)
-- [Project Structure](#project-structure)
-- [Development](#development)
-- [Testing](#testing)
-- [Security](#security)
+- [Tentang](#tentang)
+- [Fitur](#fitur)
+- [Kebutuhan](#kebutuhan)
+- [Instalasi](#instalasi)
+- [Cara Pakai](#cara-pakai)
+- [Bahasa Tampilan](#bahasa-tampilan)
+- [Struktur Proyek](#struktur-proyek)
+- [Pengembangan](#pengembangan)
+- [Pengujian](#pengujian)
+- [Keamanan](#keamanan)
 - [Continuous Integration](#continuous-integration)
 - [FAQ](#faq)
-- [Author](#author)
+- [Penulis](#penulis)
 - [Disclaimer](#disclaimer)
-- [License](#license)
+- [Lisensi](#lisensi)
 
 ---
 
-## About
+## Tentang
 
-**Kalkulasa** is a free, offline-first Android app for small businesses and home shops: stock in, stock out, a one-tap cashier, and profit reports with average cost (HPP) calculated automatically. Your business data stays on your phone in an encrypted local database. No account, no ads, no internet required.
+**Kalkulasa** adalah aplikasi Android gratis dan offline-first untuk UMKM dan warung: stok masuk, stok keluar, kasir satu ketuk, dan laporan untung dengan perhitungan modal per barang (HPP) otomatis. Data usaha kamu tersimpan di ponsel dalam database lokal yang terenkripsi. Tanpa akun, tanpa iklan, tanpa internet.
 
-> _"Small business, everything sorted."_
-
----
-
-## Features
-
-### Cashier (Kasir)
-
-| Feature | Description |
-|---------|-------------|
-| **One-tap cashier** | Tap products to add them to the cart, adjust quantities, apply a discount in rupiah, pick cash / transfer / QRIS as a label |
-| **Automatic stock deduction** | Saving a sale deducts stock and records average cost (HPP) per sold item |
-| **Cancel with restock** | Cancelling a sale returns the stock and restores the movement history |
-
-### Stock (Stok)
-
-| Feature | Description |
-|---------|-------------|
-| **Product management** | Create, edit, search, archive and restore products with unit, barcode field and minimum stock |
-| **Stock in with price** | Record purchases per product; average cost is recalculated automatically |
-| **Stock adjustment** | Set the counted stock with a reason (damaged, lost, expired, opname) |
-| **Movement history** | Every stock in, stock out, adjustment and return is logged |
-| **Low stock warnings** | Beranda and Stok highlight products at or below their minimum stock |
-
-### Finance (Keuangan)
-
-| Feature | Description |
-|---------|-------------|
-| **Cash balance** | One glance at the cash position, computed from capital, sales, purchases, expenses and private draws |
-| **Capital tracking** | Starting capital and additional capital recorded as separate entries |
-| **Private draws (Prive)** | Owner takes are recorded separately so profit stays clean |
-| **Operating expenses** | Expenses per category (Electricity, Rent, Salary, Transport, Other); sales and stock purchases are recorded automatically |
-
-### Dashboard (Beranda)
-
-| Feature | Description |
-|---------|-------------|
-| **Today at a glance** | Omzet, net profit, transaction count and low-stock count |
-| **7-day trend** | Bar chart of revenue with profit markers per day |
-| **Best sellers** | Top 3 products of the last 7 days |
-
-### Reports (Laporan)
-
-| Feature | Description |
-|---------|-------------|
-| **Simple profit and loss** | Revenue, cost of goods sold, gross profit, operating expenses and net profit, for today, 7 days, 30 days or this month |
-| **Inventory value** | Current stock valued at average cost |
-| **Export PDF and CSV** | Customer-ready PDF summary or spreadsheet-ready CSV export |
-| **Share to WhatsApp** | Send a text summary of a period report via WhatsApp or any app |
-
-### Data and backup
-
-| Feature | Description |
-|---------|-------------|
-| **Encrypted local database** | All data is stored in an SQLCipher-encrypted Room database, unlocked by a key held in the Android Keystore |
-| **JSON backup** | Export a full backup to the Downloads folder and restore it later on the same or a new phone |
-| **Sync-ready schema** | Every table uses UUID ids with `updatedAt`, `deletedAt`, `deviceId` and `syncStatus` columns |
-
-### Settings (Pengaturan)
-
-| Feature | Description |
-|---------|-------------|
-| **Theme** | Light, dark or follow the system |
-| **PIN lock** | Optional 6-digit PIN to protect the app |
-| **Business profile** | Edit business name and type anytime |
+> _"Usaha kecil, semua urusan beres."_
 
 ---
 
-## Requirements
+## Fitur
 
-| Dependency | Minimum Version | Notes |
+### Kasir
+
+| Fitur | Deskripsi |
+|---------|-------------|
+| **Kasir satu ketuk** | Ketuk produk untuk masukkan ke keranjang, atur jumlah, beri diskon dalam rupiah, pilih tunai / transfer / QRIS sebagai label |
+| **Stok otomatis berkurang** | Menyimpan penjualan mengurangi stok dan mencatat modal per barang terjual |
+| **Batalkan dengan restock** | Membatalkan transaksi mengembalikan stok dan riwayat pergerakan |
+
+### Stok
+
+| Fitur | Deskripsi |
+|---------|-------------|
+| **Manajemen produk** | Tambah, ubah, cari, arsipkan dan kembalikan produk dengan satuan, barcode dan stok minimum |
+| **Stok masuk dengan harga** | Catat pembelian per produk; modal per barang dihitung ulang otomatis |
+| **Penyesuaian stok** | Isi stok hasil hitung fisik dengan alasan (rusak, hilang, kedaluwarsa, opname) |
+| **Riwayat pergerakan** | Semua stok masuk, keluar, penyesuaian dan retur tercatat |
+| **Peringatan stok menipis** | Beranda dan Stok menandai produk yang stoknya di batas minimum atau kurang |
+
+### Keuangan
+
+| Fitur | Deskripsi |
+|---------|-------------|
+| **Saldo kas** | Sekilas posisi kas, dihitung dari modal, penjualan, pembelian, pengeluaran dan prive |
+| **Pencatatan modal** | Modal awal dan tambahan modal tercatat sebagai entri terpisah |
+| **Prive** | Pengambilan uang pribadi pemilik dicatat terpisah agar laba usaha tetap bersih |
+| **Pengeluaran operasional** | Pengeluaran per kategori (Listrik, Sewa, Gaji, Transportasi, Lainnya); penjualan dan pembelian stok tercatat otomatis |
+
+### Beranda
+
+| Fitur | Deskripsi |
+|---------|-------------|
+| **Ringkasan hari ini** | Omzet, untung bersih, jumlah transaksi dan jumlah stok menipis |
+| **Tren 7 hari** | Grafik batang omzet dengan penanda untung per hari |
+| **Produk terlaris** | 3 produk terlaris 7 hari terakhir |
+
+### Laporan
+
+| Fitur | Deskripsi |
+|---------|-------------|
+| **Laba rugi sederhana** | Omzet, modal per barang terjual, laba kotor, pengeluaran operasional dan untung bersih, untuk hari ini, 7 hari, 30 hari atau bulan ini |
+| **Nilai persediaan** | Nilai stok saat ini dengan modal per barang |
+| **Ekspor PDF dan CSV** | Ringkasan PDF siap bagi atau CSV untuk dibuka di spreadsheet |
+| **Bagikan ke WhatsApp** | Kirim ringkasan laporan via WhatsApp atau aplikasi lain |
+
+### Data dan backup
+
+| Fitur | Deskripsi |
+|---------|-------------|
+| **Database lokal terenkripsi** | Semua data tersimpan di database Room yang dienkripsi SQLCipher, kuncinya dipegang Android Keystore |
+| **Backup JSON** | Ekspor backup lengkap ke folder Unduhan dan pulihkan kapan pun di ponsel yang sama atau baru |
+| **Skema siap sinkron** | Semua tabel memakai id UUID dengan kolom `updatedAt`, `deletedAt`, `deviceId` dan `syncStatus` |
+
+### Pengaturan
+
+| Fitur | Deskripsi |
+|---------|-------------|
+| **Tema** | Terang, gelap atau ikut sistem |
+| **Kunci PIN** | PIN 6 digit opsional untuk mengunci aplikasi |
+| **Profil usaha** | Ubah nama dan jenis usaha kapan pun |
+
+---
+
+## Kebutuhan
+
+| Dependensi | Versi Minimum | Catatan |
 |------------|-----------------|-------|
-| **JDK** | 17 (21 recommended) | Required only to build from source |
-| **Android SDK** | API 35 | Required only to build from source |
-| **Android device or emulator** | Android 7.0 (API 24) | Required to run the app |
+| **JDK** | 17 (21 direkomendasikan) | Hanya untuk build dari source |
+| **Android SDK** | API 35 | Hanya untuk build dari source |
+| **Perangkat atau emulator Android** | Android 7.0 (API 24) | Untuk menjalankan aplikasi |
 
 > [!TIP]
-> If you only want to use the app, you do not need JDK or the Android SDK. Download the APK from the [Releases](https://github.com/nekonaru/kalkulasa/releases) page instead.
+> Kalau kamu hanya ingin memakai aplikasinya, kamu tidak butuh JDK atau Android SDK. Unduh APK dari halaman [Releases](https://github.com/nekonaru/kalkulasa/releases).
 
-### Never used a terminal? Start here
+### Belum pernah pakai terminal? Mulai dari sini
 
 <details>
-<summary><b>How to open a terminal on Windows</b></summary>
+<summary><b>Cara membuka terminal di Windows</b></summary>
 
-1. Press the **Windows** key, type `PowerShell`, then press **Enter**
-2. A blue window opens. That is where you type commands
-3. Every `git ...` or `./gradlew ...` command in this guide is typed in that window, followed by **Enter**
+1. Tekan tombol **Windows**, ketik `PowerShell`, lalu tekan **Enter**
+2. Jendela biru terbuka. Di situlah kamu mengetik perintah
+3. Setiap perintah `git ...` atau `./gradlew ...` di panduan ini diketik di jendela itu, diakhiri **Enter**
 
 </details>
 
 ---
 
-## Installation
+## Instalasi
 
-### Option A: Download the APK (easiest)
+### Opsi A: Unduh APK (paling mudah)
 
-1. Open the [Releases](https://github.com/nekonaru/kalkulasa/releases) page
-2. Download `kalkulasa-v1.0.0.apk`
-3. Open it on your phone and allow installs from unknown sources if asked
-4. Open the app and fill in your business profile
+1. Buka halaman [Releases](https://github.com/nekonaru/kalkulasa/releases)
+2. Unduh `kalkulasa-v1.0.0.apk`
+3. Buka di ponsel kamu dan izinkan instalasi dari sumber tidak dikenal jika diminta
+4. Buka aplikasi dan isi profil usaha kamu
 
 > [!IMPORTANT]
-> Kalkulasa requests no runtime permissions. Allow "install from unknown sources" only to install the APK you downloaded yourself from this repository.
+> Kalkulasa tidak meminta izin runtime apa pun. Izinkan "instal dari sumber tidak dikenal" hanya untuk memasang APK yang kamu unduh sendiri dari repo ini.
 
-### Option B: Build from source (for development / to read or change the code)
+### Opsi B: Build dari source (untuk pengembangan / membaca atau mengubah kode)
 
-#### 1. Get the project code
+#### 1. Ambil kode proyek
 
 <details>
-<summary><b>I have Git installed</b></summary>
+<summary><b>Saya sudah punya Git</b></summary>
 
 ```bash
 git clone https://github.com/nekonaru/kalkulasa.git
@@ -164,12 +164,12 @@ cd kalkulasa
 </details>
 
 <details>
-<summary><b>I don't have Git</b></summary>
+<summary><b>Saya belum punya Git</b></summary>
 
-1. Open the repository page on GitHub
-2. Click the green **`Code`** button, choose **`Download ZIP`**
-3. Extract the ZIP to a folder of your choice
-4. In the terminal, go into the extracted folder, for example:
+1. Buka halaman repo di GitHub
+2. Klik tombol hijau **`Code`**, pilih **`Download ZIP`**
+3. Extract ZIP ke folder pilihan kamu
+4. Di terminal, masuk ke folder hasil extract, misalnya:
 
 ```bash
 cd Downloads/kalkulasa-main
@@ -177,15 +177,15 @@ cd Downloads/kalkulasa-main
 
 </details>
 
-#### 2. Build the APK
+#### 2. Build APK
 
 ```bash
 ./gradlew :app:assembleDebug
 ```
 
-The result is at `app/build/outputs/apk/debug/app-debug.apk`.
+Hasilnya ada di `app/build/outputs/apk/debug/app-debug.apk`.
 
-#### 3. Install on a device or emulator
+#### 3. Install ke perangkat atau emulator
 
 ```bash
 ./gradlew :app:installDebug
@@ -193,146 +193,144 @@ The result is at `app/build/outputs/apk/debug/app-debug.apk`.
 
 ---
 
-## Usage
+## Cara Pakai
 
-### First launch
+### Peluncuran pertama
 
-1. Open Kalkulasa and fill in your business name, business type and starting capital
-2. Open the **Stok** tab, add your products (name, buy price, sell price, stock, minimum stock)
-3. Record a **Stok Masuk** entry each time you restock
-4. Sell from the **Kasir** tab; stock goes down and profit is recorded automatically
-5. Open **Beranda** and **Laporan** to see how the shop is doing
+1. Buka Kalkulasa dan isi nama usaha, jenis usaha dan modal awal
+2. Buka tab **Stok**, tambahkan produk kamu (nama, harga beli, harga jual, stok, stok minimum)
+3. Catat **Stok Masuk** setiap kali kamu belanja stok
+4. Jual dari tab **Kasir**; stok otomatis berkurang dan laba tercatat otomatis
+5. Buka **Beranda** dan **Laporan** untuk melihat kondisi usaha kamu
 
-### Everyday use
+### Pemakaian sehari-hari
 
-- Sell: **Kasir**, tap products, tap **Simpan penjualan**
-- Restock: **Stok**, tab **Stok Masuk**, pick the product, fill quantity and buy price
-- Check profit: **Beranda** for today, **Laporan** for a period
-- Back up your data monthly: **Pengaturan**, **Backup data**
-
----
-
-## Display Language
-
-The app UI ships in **Bahasa Indonesia** (default) and **English**. The language follows your phone's system language. On devices with no matching locale, the app falls back to Bahasa Indonesia.
-
-To keep using English, set your phone language to English. To go back, set it to Indonesian.
+- Jualan: **Kasir**, ketuk produk, ketuk **Simpan penjualan**
+- Restok: **Stok**, tab **Stok Masuk**, pilih produk, isi jumlah dan harga beli
+- Cek untung: **Beranda** untuk hari ini, **Laporan** untuk periode tertentu
+- Backup data tiap bulan: **Pengaturan**, **Backup data**
 
 ---
 
-## Project Structure
+## Bahasa Tampilan
+
+Teks aplikasi tersedia dalam **Bahasa Indonesia** (default) dan **English**. Aplikasi selalu terbuka dalam Bahasa Indonesia, apa pun bahasa sistem ponsel kamu. Untuk beralih ke English, buka **Pengaturan** dan pilih **English** di bagian **Bahasa**. Pilihanmu tersimpan dan langsung berlaku.
+
+---
+
+## Struktur Proyek
 
 ```
 kalkulasa/
 ├── app/
-│   ├── schemas/                  # Room schema history (generated, committed)
+│   ├── schemas/                  # riwayat skema Room (dibuat otomatis, di-commit)
 │   └── src/main/
 │       ├── java/id/kalkulasa/
-│       │   ├── core/             # formatters (Rupiah, dates), DataStore preferences
-│       │   ├── data/             # Room entities, DAOs, database, repositories
-│       │   ├── domain/           # pure Kotlin models, repository interfaces, use cases
-│       │   ├── di/               # Hilt modules
-│       │   └── presentation/     # screens per feature, theme, navigation
-│       └── res/                  # strings (Indonesian default, English), icons, theme
-├── assets/                       # app mark and store assets
-├── .github/workflows/            # ci.yml (build and test), release.yml (signed APK)
+│       │   ├── core/             # formatter (Rupiah, tanggal), preferensi DataStore
+│       │   ├── data/             # entity Room, DAO, database, repository
+│       │   ├── domain/           # model Kotlin murni, interface repository, use case
+│       │   ├── di/               # modul Hilt
+│       │   └── presentation/     # layar per fitur, tema, navigasi
+│       └── res/                  # strings (default Indonesia, English), ikon, tema
+├── assets/                       # mark aplikasi dan aset Play Store
+├── .github/workflows/            # ci.yml (build dan test), release.yml (APK bertanda tangan)
 ├── LICENSE
-├── README.md                     # documentation (English)
-└── README.id.md                  # dokumentasi (Bahasa Indonesia)
+├── README.en.md                  # documentation (English)
+└── README.md                     # dokumentasi (Bahasa Indonesia)
 ```
 
 ---
 
-## Development
+## Pengembangan
 
-### Adding a new user-facing string
+### Menambah string yang tampil ke pengguna
 
-1. Add the key to `app/src/main/res/values/strings.xml` (Bahasa Indonesia) and `app/src/main/res/values-en/strings.xml` (English)
-2. Use it with `stringResource(R.string.your_key)` or from a ViewModel via the context
+1. Tambahkan key ke `app/src/main/res/values/strings.xml` (Bahasa Indonesia) dan `app/src/main/res/values-en/strings.xml` (English)
+2. Pakai dengan `stringResource(R.string.key_kamu)` atau dari ViewModel lewat context
 
-### Adding a new screen
+### Menambah layar baru
 
-1. Create `presentation/<feature>/<Feature>Screen.kt` and `<Feature>ViewModel.kt`
-2. Register the route in `presentation/navigation/Routes.kt` and `KalkulasaNavHost.kt`
-3. Keep business logic in the domain layer (use cases in `domain/usecase`), never in composables
+1. Buat `presentation/<fitur>/<Fitur>Screen.kt` dan `<Fitur>ViewModel.kt`
+2. Daftarkan route di `presentation/navigation/Routes.kt` dan `KalkulasaNavHost.kt`
+3. Simpan logika bisnis di domain layer (use case di `domain/usecase`), jangan di composable
 
 > [!WARNING]
-> `app/schemas/` is generated by Room on every build. Commit it, but never edit it by hand.
+> `app/schemas/` dibuat otomatis oleh Room pada setiap build. Commit isinya, tapi jangan pernah edit manual.
 
 ---
 
-## Testing
+## Pengujian
 
-Run the checks before pushing:
+Jalankan pemeriksaan sebelum push:
 
 ```bash
 ./gradlew :app:testDebugUnitTest
 ./gradlew :app:assembleDebug
 ```
 
-| Check | Requirement |
+| Pemeriksaan | Kebutuhan |
 |-------|-------------|
-| `./gradlew :app:testDebugUnitTest` | Must pass the full suite |
-| `./gradlew :app:assembleDebug` | Must build without errors |
-| `./gradlew :app:assembleRelease` | Release must pass lint and R8 |
+| `./gradlew :app:testDebugUnitTest` | Harus lolos seluruh suite |
+| `./gradlew :app:assembleDebug` | Harus build tanpa error |
+| `./gradlew :app:assembleRelease` | Release harus lolos lint dan R8 |
 
-Lint is enforced by Android Gradle Plugin's `lintVitalRelease` on release builds.
+Lint diberlakukan oleh `lintVitalRelease` bawaan Android Gradle Plugin pada build release.
 
 ---
 
-## Security
+## Keamanan
 
-Kalkulasa stores everything locally in an SQLCipher-encrypted database; the key is generated on the device and sealed by the Android Keystore. The app makes no network connections and requests no permissions. Backups you export are plain JSON; store them somewhere private. See [`SECURITY.md`](SECURITY.md) for how to report a vulnerability.
+Kalkulasa menyimpan semuanya secara lokal di database terenkripsi SQLCipher; kuncinya dibuat di perangkat dan digembok oleh Android Keystore. Aplikasi tidak membuat koneksi jaringan dan tidak meminta izin apa pun. Backup yang kamu ekspor adalah JSON biasa; simpan di tempat yang privat. Lihat [`SECURITY.md`](SECURITY.md) untuk cara melaporkan kerentanan.
 
 > [!NOTE]
-> A local PIN only gates the UI. Anyone with full access to an unlocked phone can read the data the app shows.
+> PIN lokal hanya mengunci UI. Siapa pun dengan akses penuh ke ponsel yang tidak terkunci bisa membaca data yang ditampilkan aplikasi.
 
 ---
 
 ## Continuous Integration
 
-| Workflow | Purpose |
+| Workflow | Tujuan |
 |----------|---------|
-| `ci.yml` | Unit tests and debug APK build on every push and pull request |
-| `release.yml` | Signed release APK and GitHub Release on `v*` tags |
+| `ci.yml` | Unit test dan build APK debug di setiap push dan pull request |
+| `release.yml` | APK release bertanda tangan dan GitHub Release pada tag `v*` |
 
-The release workflow signs the APK with a keystore held in repository secrets and generates the release notes from `CHANGELOG.md` and `CHANGELOG.id.md`.
+Workflow release menandatangani APK dengan keystore yang tersimpan di secret repository dan membuat catatan rilis dari `CHANGELOG.md` dan `CHANGELOG.en.md`.
 
 ---
 
 ## FAQ
 
 <details>
-<summary><b>Where is my data stored?</b></summary>
+<summary><b>Di mana data saya tersimpan?</b></summary>
 
-On your phone, in an encrypted local database. Nothing is uploaded anywhere. Export a JSON backup monthly from **Pengaturan** to protect yourself from losing or breaking the phone.
-
-</details>
-
-<details>
-<summary><b>Is English supported?</b></summary>
-
-Yes. The UI follows your phone's language: Bahasa Indonesia by default, English when the phone language is English.
+Di ponsel kamu, di database lokal yang terenkripsi. Tidak ada yang diunggah ke mana pun. Ekspor backup JSON setiap bulan dari **Pengaturan** supaya aman dari ponsel hilang atau rusak.
 
 </details>
 
 <details>
-<summary><b>Does it need internet?</b></summary>
+<summary><b>Apakah Bahasa Inggris didukung?</b></summary>
 
-No. Every feature works without internet. Internet is only used if you choose to share a report to WhatsApp.
+Ya. Teks aplikasi mengikuti bahasa ponsel: Bahasa Indonesia secara default, English kalau bahasa ponsel di-set English.
 
 </details>
 
 <details>
-<summary><b>Can I scan barcodes?</b></summary>
+<summary><b>Apakah butuh internet?</b></summary>
 
-Products have a barcode field, but scanning is not implemented yet. It is on the roadmap.
+Tidak. Semua fitur berjalan tanpa internet. Internet hanya dipakai kalau kamu memilih membagikan laporan ke WhatsApp.
+
+</details>
+
+<details>
+<summary><b>Apakah bisa scan barcode?</b></summary>
+
+Produk punya kolom barcode, tapi fitur scan belum diimplementasikan. Itu masuk roadmap.
 
 </details>
 
 ---
 
-## Author
+## Penulis
 
 <div align="center">
 
@@ -347,10 +345,10 @@ Products have a barcode field, but scanning is not implemented yet. It is on the
 
 ## Disclaimer
 
-Kalkulasa is a recording tool. Net profit and reports are estimates computed from your own records; they are not tax, accounting or legal advice. Consult a professional for anything official.
+Kalkulasa adalah alat pencatatan. Untung bersih dan laporan adalah estimasi dari catatan kamu sendiri; bukan nasihat pajak, akuntansi atau hukum. Konsultasikan ke profesional untuk keperluan resmi.
 
 ---
 
-## License
+## Lisensi
 
-Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for more information.
+Didistribusikan di bawah **MIT License**. Lihat [`LICENSE`](LICENSE) untuk informasi selengkapnya.

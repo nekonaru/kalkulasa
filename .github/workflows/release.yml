@@ -39,15 +39,15 @@ jobs:
           awk -v ver="$VERSION" '
             /^## v/ { on = ($0 == "## v" ver); next }
             on { print }
-          ' CHANGELOG.md > /tmp/part_en.md
+          ' CHANGELOG.en.md > /tmp/part_en.md
           awk -v ver="$VERSION" '
             /^## v/ { on = ($0 == "## v" ver); next }
             on { print }
-          ' CHANGELOG.id.md > /tmp/part_id.md
+          ' CHANGELOG.md > /tmp/part_id.md
           {
-            echo "# English"
+            echo "# Bahasa Indonesia"
             echo
-            cat /tmp/part_en.md
+            cat /tmp/part_id.md
             echo
             echo "<br>"
             echo
@@ -55,9 +55,9 @@ jobs:
             echo
             echo "<br>"
             echo
-            echo "# Bahasa Indonesia"
+            echo "# English"
             echo
-            cat /tmp/part_id.md
+            cat /tmp/part_en.md
           } > RELEASE_BODY.md
           cat RELEASE_BODY.md
 

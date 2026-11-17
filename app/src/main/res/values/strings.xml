@@ -163,6 +163,9 @@
     <string name="settings_title">Pengaturan</string>
     <string name="settings_business">Profil usaha</string>
     <string name="settings_appearance">Tampilan</string>
+    <string name="settings_language">Bahasa</string>
+    <string name="language_indonesian">Bahasa Indonesia</string>
+    <string name="language_english">English</string>
     <string name="theme_system">Ikut sistem</string>
     <string name="theme_light">Terang</string>
     <string name="theme_dark">Gelap</string>

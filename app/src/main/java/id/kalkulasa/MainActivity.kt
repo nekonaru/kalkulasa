@@ -1,5 +1,6 @@
 package id.kalkulasa
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -30,6 +31,15 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var settings: SettingsDataStore
+
+    override fun attachBaseContext(newBase: Context) {
+        val lang = id.kalkulasa.core.localization.LanguagePreference.get(newBase)
+        val locale = java.util.Locale(lang)
+        java.util.Locale.setDefault(locale)
+        val config = android.content.res.Configuration(newBase.resources.configuration)
+        config.setLocale(locale)
+        super.attachBaseContext(newBase.createConfigurationContext(config))
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
