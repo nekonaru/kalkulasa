@@ -43,8 +43,17 @@ interface CategoryDao {
     @Query("SELECT * FROM category WHERE deletedAt IS NULL ORDER BY nama")
     suspend fun getAll(): List<CategoryEntity>
 
+    @Query("SELECT * FROM category WHERE id = :id")
+    suspend fun getById(id: String): CategoryEntity?
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(category: CategoryEntity)
+
+    @Query("UPDATE category SET nama = :nama, updatedAt = :now WHERE id = :id")
+    suspend fun rename(id: String, nama: String, now: Long)
+
+    @Query("UPDATE category SET deletedAt = :now, updatedAt = :now WHERE id = :id")
+    suspend fun softDelete(id: String, now: Long)
 }
 
 @Dao
@@ -192,11 +201,22 @@ interface SaleDao {
               GROUP BY si.namaProduk ORDER BY qty DESC LIMIT :limit""")
     suspend fun topProductsBetween(from: Long, to: Long, limit: Int): List<ProductSalesProjection>
 
+    @Query("""SELECT si.namaProduk, SUM(si.jumlah) AS qty,
+              SUM(si.jumlah * (si.hargaJual - si.hppSaatJual)) AS profit
+              FROM sale_item si
+              JOIN sale s ON s.id = si.saleId
+              WHERE si.deletedAt IS NULL AND s.deletedAt IS NULL AND s.status = 'SELESAI'
+              AND s.waktu BETWEEN :from AND :to
+              GROUP BY si.namaProduk ORDER BY profit DESC LIMIT :limit""")
+    suspend fun mostProfitableBetween(from: Long, to: Long, limit: Int): List<ProductProfitProjection>
+
     @Query("UPDATE sale SET status = 'BATAL', updatedAt = :now WHERE id = :id")
     suspend fun markCancelled(id: String, now: Long)
 }
 
 data class ProductSalesProjection(val namaProduk: String, val qty: Double)
+
+data class ProductProfitProjection(val namaProduk: String, val qty: Double, val profit: Long)
 
 @Dao
 interface ExpenseDao {

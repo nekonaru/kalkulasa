@@ -117,6 +117,8 @@ data class DailyPoint(val label: String, val omzet: Long, val laba: Long)
 
 data class ProductSales(val namaProduk: String, val qty: Double)
 
+data class ProductProfit(val namaProduk: String, val qty: Double, val profit: Long)
+
 sealed class FinanceEntry(val waktu: Long) {
     data class SaleEntry(val sale: Sale) : FinanceEntry(sale.waktu)
     data class PurchaseEntry(val total: Long, val pemasok: String?, val waktuMillis: Long, val id: String) : FinanceEntry(waktuMillis)

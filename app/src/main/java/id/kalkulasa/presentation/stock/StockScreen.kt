@@ -68,6 +68,7 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun StockScreen(
     onOpenRestock: () -> Unit,
+    onOpenCategories: () -> Unit,
     viewModel: StockViewModel = hiltViewModel(),
 ) {
     val query by viewModel.query.collectAsStateWithLifecycle()
@@ -122,6 +123,7 @@ fun StockScreen(
                     onEdit = { editingProduct = it },
                     onToggleArchive = { viewModel.setArchived(it.id, !it.diarsipkan) },
                     onOpenRestock = onOpenRestock,
+                    onOpenCategories = onOpenCategories,
                 )
                 1 -> StockEntryTab(viewModel = viewModel, products = products)
                 2 -> HistoryTab(movements = movements)
@@ -163,6 +165,7 @@ private fun ProductsTab(
     onEdit: (Product) -> Unit,
     onToggleArchive: (Product) -> Unit,
     onOpenRestock: () -> Unit,
+    onOpenCategories: () -> Unit,
 ) {
     val context = LocalContext.current
     Column(modifier = Modifier.fillMaxSize().padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -175,6 +178,7 @@ private fun ProductsTab(
                 modifier = Modifier.weight(1f),
             )
             TextButton(onClick = onOpenRestock) { Text(context.getString(R.string.restock_title)) }
+            TextButton(onClick = onOpenCategories) { Text(context.getString(R.string.categories_title)) }
         }
         if (products.isEmpty()) {
             KalkulasaEmptyState(

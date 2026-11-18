@@ -12,6 +12,7 @@ datastore = "1.1.1"
 coroutines = "1.9.0"
 sqlcipher = "4.6.1"
 coreKtx = "1.15.0"
+coreSplashScreen = "1.0.1"
 junit = "4.13.2"
 junit5 = "5.11.3"
 mockk = "1.13.13"
@@ -20,6 +21,7 @@ truth = "1.4.4"
 
 [libraries]
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
+androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashScreen" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
 androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle" }

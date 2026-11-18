@@ -1,4 +1,4 @@
-package id.kalkulasa.data.repository
+﻿package id.kalkulasa.data.repository
 
 import android.graphics.Paint
 import android.graphics.pdf.PdfDocument
@@ -83,7 +83,7 @@ class ReportRepositoryImpl @Inject constructor(
             "Laba kotor" to RupiahFormatter.format(report.labaKotor),
             "Pengeluaran operasional" to RupiahFormatter.format(report.pengeluaran),
             "Untung bersih" to RupiahFormatter.format(report.labaBersih),
-            "Margin" to String.format(java.util.Locale("in", "ID"), "%.1f%%", report.marginPersen),
+            "Margin" to String.format(java.util.Locale.forLanguageTag("id-ID"), "%.1f%%", report.marginPersen),
             "Jumlah transaksi" to report.jumlahTransaksi.toString(),
             "Nilai persediaan" to RupiahFormatter.format(report.nilaiPersediaan),
         )
@@ -126,7 +126,7 @@ class ReportRepositoryImpl @Inject constructor(
         appendLine("Laba kotor: ${RupiahFormatter.format(report.labaKotor)}")
         appendLine("Pengeluaran operasional: ${RupiahFormatter.format(report.pengeluaran)}")
         appendLine("Untung bersih: ${RupiahFormatter.format(report.labaBersih)}")
-        appendLine("Margin: ${String.format(java.util.Locale("in", "ID"), "%.1f%%", report.marginPersen)}")
+        appendLine("Margin: ${String.format(java.util.Locale.forLanguageTag("id-ID"), "%.1f%%", report.marginPersen)}")
         appendLine("Jumlah transaksi: ${report.jumlahTransaksi}")
     }
 }

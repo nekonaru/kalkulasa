@@ -3,11 +3,13 @@ package id.kalkulasa.domain.repository
 import id.kalkulasa.domain.model.BusinessProfile
 import id.kalkulasa.domain.model.CapitalEntry
 import id.kalkulasa.domain.model.Category
+import id.kalkulasa.domain.model.CategoryType
 import id.kalkulasa.domain.model.Customer
 import id.kalkulasa.domain.model.DailyPoint
 import id.kalkulasa.domain.model.Expense
 import id.kalkulasa.domain.model.PeriodReport
 import id.kalkulasa.domain.model.Product
+import id.kalkulasa.domain.model.ProductProfit
 import id.kalkulasa.domain.model.ProductSales
 import id.kalkulasa.domain.model.Receivable
 import id.kalkulasa.domain.model.Sale
@@ -36,7 +38,10 @@ interface ProductRepository {
 interface CategoryRepository {
     fun observeByType(jenis: String): Flow<List<Category>>
     fun observeAll(): Flow<List<Category>>
+    fun observeProductCategories(): Flow<List<Category>> = observeByType(CategoryType.PRODUCT)
     suspend fun addCategory(name: String, jenis: String)
+    suspend fun rename(id: String, name: String)
+    suspend fun delete(id: String)
 }
 
 interface StockRepository {
@@ -70,6 +75,7 @@ interface SaleRepository {
     suspend fun topProductsBetween(from: Long, to: Long, limit: Int): List<ProductSales>
     suspend fun dailyTrend(days: Int): List<DailyPoint>
     suspend fun saleItems(saleId: String): List<SaleLine>
+    suspend fun mostProfitableBetween(from: Long, to: Long, limit: Int): List<ProductProfit>
 }
 
 interface FinanceRepository {

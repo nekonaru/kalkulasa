@@ -55,7 +55,8 @@
 
 | Fitur | Deskripsi |
 |---------|-------------|
-| **Kasir satu ketuk** | Ketuk produk untuk masukkan ke keranjang, atur jumlah, beri diskon dalam rupiah, pilih tunai / transfer / QRIS sebagai label |
+| **Kasir satu ketuk** | Ketuk produk untuk masukkan ke keranjang, atur jumlah, beri diskon dalam rupiah, pilih tunai / transfer / QRIS / Hutang sebagai label |
+| **Kembalian otomatis** | Saat bayar Tunai, isi uang diterima dan Kalkulasa hitung kembalian |
 | **Stok otomatis berkurang** | Menyimpan penjualan mengurangi stok dan mencatat modal per barang terjual |
 | **Hutang pelanggan** | Jualan dengan metode Hutang, isi nama pelanggan, utang otomatis masuk buku Piutang |
 | **Poin loyalti** | Isi nama pelanggan saat penjualan, dapat poin otomatis (1 poin tiap Rp 1.000) |
@@ -71,6 +72,7 @@
 | **Penyesuaian stok** | Isi stok hasil hitung fisik dengan alasan (rusak, hilang, kedaluwarsa, opname) |
 | **Riwayat pergerakan** | Semua stok masuk, keluar, penyesuaian dan retur tercatat |
 | **Peringatan stok menipis** | Beranda dan Stok menandai produk yang stoknya di batas minimum atau kurang |
+| **Manajemen kategori** | Tambah, ubah, dan hapus kategori produk dari tab Stok |
 
 ### Keuangan
 
@@ -119,6 +121,7 @@
 |---------|-------------|
 | **Laba rugi sederhana** | Omzet, modal per barang terjual, laba kotor, pengeluaran operasional dan untung bersih, untuk hari ini, 7 hari, 30 hari atau bulan ini |
 | **Nilai persediaan** | Nilai stok saat ini dengan modal per barang |
+| **Produk paling menguntungkan** | Lima produk dengan laba terbesar periode ini, dengan jumlah terjual |
 | **Ekspor PDF dan CSV** | Ringkasan PDF siap bagi atau CSV untuk dibuka di spreadsheet |
 | **Bagikan ke WhatsApp** | Kirim ringkasan laporan via WhatsApp atau aplikasi lain |
 
@@ -171,7 +174,7 @@
 ### Opsi A: Unduh APK (paling mudah)
 
 1. Buka halaman [Releases](https://github.com/nekonaru/kalkulasa/releases)
-2. Unduh `kalkulasa-v1.2.0.apk`
+2. Unduh `kalkulasa-v1.3.0.apk`
 3. Buka di ponsel kamu dan izinkan instalasi dari sumber tidak dikenal jika diminta
 4. Buka aplikasi dan isi profil usaha kamu
 

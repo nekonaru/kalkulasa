@@ -1,4 +1,4 @@
-package id.kalkulasa.core.util
+﻿package id.kalkulasa.core.util
 
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -7,9 +7,9 @@ import java.util.Locale
 
 /** Date and quantity helpers shared across features. */
 object DateFormatter {
-    private val dayMonth = SimpleDateFormat("d MMM", Locale("in", "ID"))
-    private val dayMonthYear = SimpleDateFormat("d MMM yyyy", Locale("in", "ID"))
-    private val dateTime = SimpleDateFormat("d MMM yyyy HH:mm", Locale("in", "ID"))
+    private val dayMonth = SimpleDateFormat("d MMM", Locale.forLanguageTag("id-ID"))
+    private val dayMonthYear = SimpleDateFormat("d MMM yyyy", Locale.forLanguageTag("id-ID"))
+    private val dateTime = SimpleDateFormat("d MMM yyyy HH:mm", Locale.forLanguageTag("id-ID"))
     private val fileStamp = SimpleDateFormat("yyyyMMdd-HHmmss", Locale.US)
 
     fun formatDayMonth(millis: Long): String = dayMonth.format(Date(millis))
@@ -44,5 +44,5 @@ object DateFormatter {
 
     /** Quantity display: drops the decimal part when whole. */
     fun formatQty(qty: Double): String =
-        if (qty == qty.toLong().toDouble()) qty.toLong().toString() else String.format(Locale("in", "ID"), "%.2f", qty)
+        if (qty == qty.toLong().toDouble()) qty.toLong().toString() else String.format(Locale.forLanguageTag("id-ID"), "%.2f", qty)
 }

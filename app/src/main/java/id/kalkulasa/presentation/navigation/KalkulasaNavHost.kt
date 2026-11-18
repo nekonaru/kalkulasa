@@ -27,6 +27,7 @@ import androidx.compose.material.icons.rounded.Inventory2
 import androidx.compose.material.icons.rounded.Assessment
 import androidx.compose.material.icons.rounded.Settings
 import id.kalkulasa.R
+import id.kalkulasa.presentation.categories.CategoriesScreen
 import id.kalkulasa.presentation.cashier.CashierScreen
 import id.kalkulasa.presentation.customer.CustomersScreen
 import id.kalkulasa.presentation.finance.FinanceScreen
@@ -114,6 +115,12 @@ fun KalkulasaNavHost(startDestination: String) {
             composable(Routes.STOCK) {
                 StockScreen(
                     onOpenRestock = { navController.navigate(Routes.RESTOCK) },
+                    onOpenCategories = { navController.navigate(Routes.CATEGORIES) },
+                )
+            }
+            composable(Routes.CATEGORIES) {
+                CategoriesScreen(
+                    onBack = { navController.popBackStack() },
                 )
             }
             composable(Routes.FINANCE) {

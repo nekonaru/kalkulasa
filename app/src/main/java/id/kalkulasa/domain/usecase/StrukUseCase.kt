@@ -1,4 +1,4 @@
-package id.kalkulasa.domain.usecase
+﻿package id.kalkulasa.domain.usecase
 
 import id.kalkulasa.domain.model.SaleLine
 import java.text.NumberFormat
@@ -6,7 +6,7 @@ import java.util.Locale
 
 /** Builds a plain-text receipt (struk) for sharing via WhatsApp or other apps. */
 object StrukUseCase {
-    private val rupiah = NumberFormat.getCurrencyInstance(Locale("in", "ID")).apply {
+    private val rupiah = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("id-ID")).apply {
         maximumFractionDigits = 0
         minimumFractionDigits = 0
     }
@@ -26,7 +26,7 @@ object StrukUseCase {
             val qty = if (line.jumlah == line.jumlah.toLong().toDouble()) {
                 line.jumlah.toLong().toString()
             } else {
-                String.format(Locale("in", "ID"), "%.2f", line.jumlah)
+                String.format(Locale.forLanguageTag("id-ID"), "%.2f", line.jumlah)
             }
             appendLine("${line.namaProduk}  ${qty} x ${rupiah.format(line.hargaJual)}")
         }

@@ -65,6 +65,8 @@
     <string name="payment_transfer">Transfer</string>
     <string name="payment_qris">QRIS</string>
     <string name="payment_hutang">On credit</string>
+    <string name="tendered_label">Amount received</string>
+    <string name="change_label">Change</string>
     <string name="customer_name">Customer name</string>
     <string name="customer_name_hint">Example: Bu Ratna</string>
     <string name="customer_name_required">Enter the customer name for credit sales</string>
@@ -158,6 +160,9 @@
     <string name="customers_visits_label">%1$d visits</string>
     <string name="customers_reset_points">Reset points</string>
     <string name="customers_spent_label">Total spent: %1$s</string>
+    <string name="categories_title">Product categories</string>
+    <string name="categories_empty">No categories. Add one above.</string>
+    <string name="categories_delete_title">Delete category?</string>
     <string name="restock_title">Restock Suggestions</string>
     <string name="restock_empty">All stock is fine. No product below its minimum.</string>
     <string name="restock_suggested">Suggested: +%1$s %2$s</string>
@@ -203,6 +208,7 @@
     <string name="period_30_days">30 days</string>
     <string name="period_this_month">This month</string>
     <string name="profit_loss">Simple profit and loss</string>
+    <string name="reports_most_profitable">Most profitable products</string>
     <string name="revenue">Revenue</string>
     <string name="cogs">Cost of goods sold</string>
     <string name="gross_profit">Gross profit</string>

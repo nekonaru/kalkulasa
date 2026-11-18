@@ -1,4 +1,4 @@
-package id.kalkulasa.presentation.stock
+﻿package id.kalkulasa.presentation.stock
 
 import android.content.Context
 import android.content.Intent
@@ -66,5 +66,5 @@ class RestockViewModel @Inject constructor(
 
     private fun trim(value: Double): String =
         if (value == value.toLong().toDouble()) value.toLong().toString()
-        else String.format(java.util.Locale("in", "ID"), "%.2f", value)
+        else String.format(java.util.Locale.forLanguageTag("id-ID"), "%.2f", value)
 }

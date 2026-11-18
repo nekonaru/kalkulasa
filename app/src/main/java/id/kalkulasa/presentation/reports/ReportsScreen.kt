@@ -1,4 +1,4 @@
-package id.kalkulasa.presentation.reports
+﻿package id.kalkulasa.presentation.reports
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,6 +21,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -38,6 +39,7 @@ fun ReportsScreen(
     viewModel: ReportsViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val mostProfitable by viewModel.mostProfitable.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
     Scaffold { padding ->
@@ -87,8 +89,41 @@ fun ReportsScreen(
                         RupiahFormatter.format(report.labaBersih),
                         emphasize = true,
                     )
-                    LabeledValueRow(context.getString(R.string.margin), String.format(java.util.Locale("in", "ID"), "%.1f%%", report.marginPersen))
+                    LabeledValueRow(context.getString(R.string.margin), String.format(java.util.Locale.forLanguageTag("id-ID"), "%.1f%%", report.marginPersen))
                     LabeledValueRow(context.getString(R.string.inventory_value), RupiahFormatter.format(report.nilaiPersediaan))
+                }
+            }
+
+            if (mostProfitable.isNotEmpty()) {
+                Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
+                    Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+                        Text(
+                            context.getString(R.string.reports_most_profitable),
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.primary,
+                        )
+                        mostProfitable.forEach { item ->
+                            Row(
+                                modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text(item.namaProduk, style = MaterialTheme.typography.bodyLarge, maxLines = 1)
+                                    Text(
+                                        "${id.kalkulasa.core.util.DateFormatter.formatQty(item.qty)}x terjual",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    )
+                                }
+                                Text(
+                                    RupiahFormatter.format(item.profit),
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = Sukses,
+                                )
+                            }
+                        }
+                    }
                 }
             }
 

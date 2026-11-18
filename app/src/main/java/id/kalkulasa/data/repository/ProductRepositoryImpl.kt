@@ -91,4 +91,14 @@ class CategoryRepositoryImpl @Inject constructor(
         )
         RepositorySupport.log(changeLogDao, "category", id, "INSERT")
     }
+
+    override suspend fun rename(id: String, name: String) {
+        dao.rename(id, name.trim(), RepositorySupport.now())
+        RepositorySupport.log(changeLogDao, "category", id, "UPDATE")
+    }
+
+    override suspend fun delete(id: String) {
+        dao.softDelete(id, RepositorySupport.now())
+        RepositorySupport.log(changeLogDao, "category", id, "DELETE")
+    }
 }

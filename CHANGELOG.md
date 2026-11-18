@@ -1,5 +1,21 @@
 # Changelog
 
+## v1.3.0
+
+Fitur lanjutan kasir dan laporan, plus perbaikan performa dan polesan UI/UX.
+
+### Fitur baru
+
+- **Kalkulator kembalian (Tunai).** Saat memilih metode bayar Tunai, isi uang yang diterima dan Kalkulasa langsung menghitung kembaliannya.
+- **Manajemen kategori produk.** Tambah, ubah nama, dan hapus kategori langsung dari tab Produk di Stok.
+- **Produk paling menguntungkan.** Laporan menampilkan lima produk dengan laba terbesar untuk periode yang dipilih, lengkap dengan jumlah terjual dan untung.
+
+### Peningkatan
+
+- **Splash screen branded** dengan logo Kalkulasa.
+- **Kompatibilitas dan kebersihan kode**: pengganti Locale deprecated, ikon WhatsApp modern.
+- **Perbaikan peringatan di layar Piutang** (ikon auto-mirror).
+
 ## v1.2.0
 
 Yang baru: Mode Warung untuk pemilik usaha pemula, program poin loyalti pelanggan, dan saran restok otomatis.

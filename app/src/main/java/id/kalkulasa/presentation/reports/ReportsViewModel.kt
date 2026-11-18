@@ -10,7 +10,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import id.kalkulasa.core.util.DateFormatter
 import id.kalkulasa.domain.model.PeriodReport
+import id.kalkulasa.domain.model.ProductProfit
 import id.kalkulasa.domain.repository.ReportRepository
+import id.kalkulasa.domain.repository.SaleRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -33,10 +35,14 @@ data class ReportsUiState(
 class ReportsViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val reportRepository: ReportRepository,
+    private val saleRepository: SaleRepository,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(ReportsUiState())
     val state: StateFlow<ReportsUiState> = _state.asStateFlow()
+
+    private val _mostProfitable = MutableStateFlow<List<ProductProfit>>(emptyList())
+    val mostProfitable: StateFlow<List<ProductProfit>> = _mostProfitable.asStateFlow()
 
     init { load() }
 
@@ -56,6 +62,7 @@ class ReportsViewModel @Inject constructor(
         val s = _state.value
         viewModelScope.launch {
             val report = reportRepository.reportBetween(s.from, s.to)
+            _mostProfitable.value = saleRepository.mostProfitableBetween(s.from, s.to, 5)
             _state.value = _state.value.copy(report = report, loading = false)
         }
     }

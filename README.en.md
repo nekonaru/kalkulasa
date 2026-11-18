@@ -55,7 +55,8 @@
 
 | Feature | Description |
 |---------|-------------|
-| **One-tap cashier** | Tap products to add them to the cart, adjust quantities, apply a discount in rupiah, pick cash / transfer / QRIS as a label |
+| **One-tap cashier** | Tap products to add them to the cart, adjust quantities, apply a discount in rupiah, pick cash / transfer / QRIS / Hutang as a label |
+| **Automatic change calculation** | When paying with cash, enter the amount received and Kalkulasa computes the change |
 | **Automatic stock deduction** | Saving a sale deducts stock and records average cost (HPP) per sold item |
 | **Customer debt at the cashier** | Sell with Hutang, enter the customer name, debt lands in the receivables book automatically |
 | **Loyalty points** | Enter a customer name and earn points automatically (1 point per Rp 1,000) |
@@ -71,6 +72,7 @@
 | **Stock adjustment** | Set the counted stock with a reason (damaged, lost, expired, opname) |
 | **Movement history** | Every stock in, stock out, adjustment and return is logged |
 | **Low stock warnings** | Beranda and Stok highlight products at or below their minimum stock |
+| **Category management** | Add, rename, and delete product categories from the Stok tab |
 
 ### Finance (Keuangan)
 
@@ -119,6 +121,7 @@
 |---------|-------------|
 | **Simple profit and loss** | Revenue, cost of goods sold, gross profit, operating expenses and net profit, for today, 7 days, 30 days or this month |
 | **Inventory value** | Current stock valued at average cost |
+| **Most profitable products** | Top five products by profit for the selected period, with units sold |
 | **Export PDF and CSV** | Customer-ready PDF summary or spreadsheet-ready CSV export |
 | **Share to WhatsApp** | Send a text summary of a period report via WhatsApp or any app |
 
@@ -171,7 +174,7 @@
 ### Option A: Download the APK (easiest)
 
 1. Open the [Releases](https://github.com/nekonaru/kalkulasa/releases) page
-2. Download `kalkulasa-v1.2.0.apk`
+2. Download `kalkulasa-v1.3.0.apk`
 3. Open it on your phone and allow installs from unknown sources if asked
 4. Open the app and fill in your business profile
 

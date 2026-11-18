@@ -11,4 +11,5 @@ object Routes {
     const val PIUTANG = "piutang"
     const val CUSTOMERS = "customers"
     const val RESTOCK = "restock"
+    const val CATEGORIES = "categories"
 }

@@ -62,6 +62,11 @@ class CashierViewModel @Inject constructor(
     private val _paymentMethod = MutableStateFlow(PaymentMethod.TUNAI)
     val paymentMethod: StateFlow<String> = _paymentMethod.asStateFlow()
 
+    private val _tendered = MutableStateFlow("")
+    val tendered: StateFlow<String> = _tendered.asStateFlow()
+
+    fun onTenderedChange(value: String) { _tendered.value = value.filter { it.isDigit() }.take(12) }
+
     private val _namaPelanggan = MutableStateFlow("")
     val namaPelanggan: StateFlow<String> = _namaPelanggan.asStateFlow()
 
@@ -89,6 +94,12 @@ class CashierViewModel @Inject constructor(
     val total: StateFlow<Long> = combine(subtotal, discountAmount) { sub, diskon -> (sub - diskon).coerceAtLeast(0) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 0L)
 
+    /** Change to give back for Tunai payments. 0 when tendered is insufficient or not filled. */
+    val change: StateFlow<Long> = combine(total, _tendered) { totalValue, tenderText ->
+        val paid = tenderText.filter { it.isDigit() }.toLongOrNull() ?: 0L
+        (paid - totalValue).coerceAtLeast(0L)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 0L)
+
     private val _todaySales = MutableStateFlow<List<Sale>>(emptyList())
     val todaySales: StateFlow<List<Sale>> = _todaySales.asStateFlow()
 
@@ -104,7 +115,7 @@ class CashierViewModel @Inject constructor(
 
     fun onQueryChange(q: String) { _query.value = q }
     fun onDiscountChange(value: String) { _discount.value = value.filter { it.isDigit() }.take(12) }
-    fun onPaymentMethodChange(method: String) { _paymentMethod.value = method }
+    fun onPaymentMethodChange(method: String) { _paymentMethod.value = method.also { if (it != PaymentMethod.TUNAI) _tendered.value = "" } }
     fun onNamaPelangganChange(value: String) { _namaPelanggan.value = value }
 
     fun addToCart(product: Product) {
@@ -127,6 +138,7 @@ class CashierViewModel @Inject constructor(
     fun clearCart() {
         _cart.value = emptyMap()
         _discount.value = ""
+        _tendered.value = ""
     }
 
     fun canSaveSale(): Boolean =

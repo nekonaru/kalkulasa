@@ -68,6 +68,8 @@ fun CashierScreen(
     val discountAmount by viewModel.discountAmount.collectAsStateWithLifecycle()
     val total by viewModel.total.collectAsStateWithLifecycle()
     val paymentMethod by viewModel.paymentMethod.collectAsStateWithLifecycle()
+    val tendered by viewModel.tendered.collectAsStateWithLifecycle()
+    val change by viewModel.change.collectAsStateWithLifecycle()
     val namaPelanggan by viewModel.namaPelanggan.collectAsStateWithLifecycle()
     val todaySales by viewModel.todaySales.collectAsStateWithLifecycle()
     val saving by viewModel.saving.collectAsStateWithLifecycle()
@@ -113,6 +115,9 @@ fun CashierScreen(
                     discountAmount = discountAmount,
                     total = total,
                     paymentMethod = paymentMethod,
+                    tendered = tendered,
+                    change = change,
+                    onTenderedChange = viewModel::onTenderedChange,
                     namaPelanggan = namaPelanggan,
                     onNamaPelangganChange = viewModel::onNamaPelangganChange,
                     saving = saving,
@@ -138,6 +143,9 @@ fun CashierScreen(
                     discountAmount = discountAmount,
                     total = total,
                     paymentMethod = paymentMethod,
+                    tendered = tendered,
+                    change = change,
+                    onTenderedChange = viewModel::onTenderedChange,
                     namaPelanggan = namaPelanggan,
                     onNamaPelangganChange = viewModel::onNamaPelangganChange,
                     saving = saving,
@@ -240,6 +248,9 @@ private fun CartSection(
     discountAmount: Long,
     total: Long,
     paymentMethod: String,
+    tendered: String,
+    change: Long,
+    onTenderedChange: (String) -> Unit,
     namaPelanggan: String,
     onNamaPelangganChange: (String) -> Unit,
     saving: Boolean,
@@ -280,6 +291,22 @@ private fun CartSection(
         TotalRow(context.getString(R.string.subtotal), RupiahFormatter.format(subtotal))
         TotalRow(context.getString(R.string.discount), "- ${RupiahFormatter.format(discountAmount)}")
         TotalRow(context.getString(R.string.total), RupiahFormatter.format(total), emphasize = true)
+        if (paymentMethod == PaymentMethod.TUNAI) {
+            OutlinedTextField(
+                value = tendered,
+                onValueChange = onTenderedChange,
+                label = { Text(context.getString(R.string.tendered_label)) },
+                prefix = { Text("Rp ") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+            )
+            if (change > 0) {
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    Text(context.getString(R.string.change_label), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
+                    Text(RupiahFormatter.format(change), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
+                }
+            }
+        }
 
         Text(
             context.getString(R.string.payment_method),

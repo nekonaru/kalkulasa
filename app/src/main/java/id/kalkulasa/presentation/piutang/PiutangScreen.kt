@@ -14,7 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Chat
+import androidx.compose.material.icons.automirrored.rounded.Chat
 import androidx.compose.material.icons.rounded.Payments
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -204,7 +204,7 @@ private fun ReceivableRow(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     IconButton(onClick = { onRemind(item) }) {
-                        Icon(Icons.Rounded.Chat, contentDescription = context.getString(R.string.piutang_reminder), tint = MaterialTheme.colorScheme.primary)
+                        Icon(Icons.AutoMirrored.Rounded.Chat, contentDescription = context.getString(R.string.piutang_reminder), tint = MaterialTheme.colorScheme.primary)
                     }
                     TextButton(onClick = { onPay(item) }) {
                         Text(context.getString(R.string.piutang_pay))

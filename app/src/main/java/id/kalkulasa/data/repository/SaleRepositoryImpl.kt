@@ -13,6 +13,7 @@ import id.kalkulasa.data.mapper.toDomain
 import id.kalkulasa.domain.model.DailyPoint
 import id.kalkulasa.domain.model.PaymentMethod
 import id.kalkulasa.domain.model.Product
+import id.kalkulasa.domain.model.ProductProfit
 import id.kalkulasa.domain.model.ProductSales
 import id.kalkulasa.domain.model.Sale
 import id.kalkulasa.domain.model.SaleLine
@@ -214,6 +215,10 @@ class SaleRepositoryImpl @Inject constructor(
 
     override suspend fun countBetween(from: Long, to: Long): Int =
         db.saleDao().countBetween(from, to)
+
+    override suspend fun mostProfitableBetween(from: Long, to: Long, limit: Int): List<ProductProfit> =
+        db.saleDao().mostProfitableBetween(from, to, limit)
+            .map { ProductProfit(it.namaProduk, it.qty, it.profit) }
 
     override suspend fun topProductsBetween(from: Long, to: Long, limit: Int): List<ProductSales> =
         db.saleDao().topProductsBetween(from, to, limit)

@@ -1,11 +1,11 @@
-package id.kalkulasa.core.util
+﻿package id.kalkulasa.core.util
 
 import java.text.NumberFormat
 import java.util.Locale
 
 /** Rupiah currency formatting without decimals, id-ID locale. */
 object RupiahFormatter {
-    private val formatter: NumberFormat = NumberFormat.getCurrencyInstance(Locale("in", "ID")).apply {
+    private val formatter: NumberFormat = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("id-ID")).apply {
         maximumFractionDigits = 0
         minimumFractionDigits = 0
     }

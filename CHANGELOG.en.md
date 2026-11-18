@@ -1,5 +1,21 @@
 # Changelog
 
+## v1.3.0
+
+Advanced cashier and reporting features, plus performance and UI/UX polish.
+
+### New features
+
+- **Change calculator (Cash).** When paying with cash, enter the amount received and Kalkulasa computes the change instantly.
+- **Product category management.** Add, rename, and delete categories directly from the Products tab in Stok.
+- **Most profitable products.** Reports show the five most profitable products for the selected period, with units sold and profit.
+
+### Improvements
+
+- **Branded splash screen** with the Kalkulasa logo.
+- **Compatibility and code hygiene**: replaced deprecated Locale calls and modernized the WhatsApp icon.
+- **Piutang screen reminder icon** switched to the auto-mirrored variant.
+
 ## v1.2.0
 
 What is new: Warung mode for first-time sellers, customer loyalty points, and automatic restock suggestions.
