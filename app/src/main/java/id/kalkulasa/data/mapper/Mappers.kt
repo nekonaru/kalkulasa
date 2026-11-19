@@ -32,6 +32,7 @@ fun ProductEntity.toDomain() = Product(
     stokMinimum = stokMinimum,
     fotoUri = fotoUri,
     diarsipkan = diarsipkan,
+    isPinned = isPinned,
 )
 
 fun StockMovementEntity.toDomain(produkNama: String) = StockMovement(

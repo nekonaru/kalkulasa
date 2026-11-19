@@ -20,6 +20,8 @@ import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Remove
 import androidx.compose.material.icons.rounded.Share
+import androidx.compose.material.icons.filled.PushPin
+import androidx.compose.material.icons.outlined.PushPin
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -107,6 +109,7 @@ fun CashierScreen(
                     products = products,
                     onQueryChange = viewModel::onQueryChange,
                     onAdd = viewModel::addToCart,
+                    onTogglePin = viewModel::togglePin,
                     modifier = Modifier.weight(1.15f).padding(12.dp),
                 )
                 CartSection(
@@ -136,6 +139,7 @@ fun CashierScreen(
                     products = products,
                     onQueryChange = viewModel::onQueryChange,
                     onAdd = viewModel::addToCart,
+                    onTogglePin = viewModel::togglePin,
                     modifier = Modifier.fillMaxWidth().weight(1f).padding(horizontal = 12.dp, vertical = 8.dp),
                 )
                 CartSection(
@@ -211,6 +215,7 @@ private fun ProductPickerSection(
     products: List<Product>,
     onQueryChange: (String) -> Unit,
     onAdd: (Product) -> Unit,
+    onTogglePin: (Product) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -236,7 +241,7 @@ private fun ProductPickerSection(
                 modifier = Modifier.fillMaxSize(),
             ) {
                 gridItems(products, key = { it.id }) { product ->
-                    ProductPickCard(product = product, onClick = { onAdd(product) })
+                    ProductPickCard(product = product, onClick = { onAdd(product) }, onTogglePin = onTogglePin)
                 }
             }
         }
@@ -392,14 +397,32 @@ private fun CartSection(
     }
 }
 
+@OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 @Composable
-private fun ProductPickCard(product: Product, onClick: () -> Unit) {
+private fun ProductPickCard(product: Product, onClick: () -> Unit, onTogglePin: (Product) -> Unit) {
     Card(
         onClick = onClick,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
     ) {
         Column(modifier = Modifier.padding(12.dp).fillMaxWidth()) {
-            Text(product.nama, style = MaterialTheme.typography.bodyLarge, maxLines = 2)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(product.nama, style = MaterialTheme.typography.bodyLarge, maxLines = 2, modifier = Modifier.weight(1f))
+                IconButton(
+                    onClick = { onTogglePin(product) },
+                    modifier = Modifier.size(32.dp),
+                ) {
+                    Icon(
+                        if (product.isPinned) Icons.Filled.PushPin else Icons.Outlined.PushPin,
+                        contentDescription = if (product.isPinned) "Lepaskan produk" else "Sematkan produk",
+                        modifier = Modifier.size(18.dp),
+                        tint = if (product.isPinned) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
+                    )
+                }
+            }
             Text(
                 RupiahFormatter.format(product.hargaJual),
                 style = MaterialTheme.typography.titleMedium,

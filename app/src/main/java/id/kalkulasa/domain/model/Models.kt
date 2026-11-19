@@ -24,6 +24,7 @@ data class Product(
     val stokMinimum: Double,
     val fotoUri: String?,
     val diarsipkan: Boolean,
+    val isPinned: Boolean = false,
 ) {
     val isLowStock: Boolean get() = stok <= stokMinimum
 }

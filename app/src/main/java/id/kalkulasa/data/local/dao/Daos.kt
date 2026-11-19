@@ -61,14 +61,14 @@ interface ProductDao {
     @Query(
         """SELECT * FROM product WHERE deletedAt IS NULL AND diarsipkan = 0
            AND (:query = '' OR nama LIKE '%' || :query || '%' OR barcode = :query)
-           ORDER BY nama"""
+           ORDER BY isPinned DESC, nama"""
     )
     fun observeActive(query: String): Flow<List<ProductEntity>>
 
     @Query(
         """SELECT * FROM product WHERE deletedAt IS NULL
            AND (:query = '' OR nama LIKE '%' || :query || '%' OR barcode = :query)
-           ORDER BY diarsipkan, nama"""
+           ORDER BY isPinned DESC, diarsipkan, nama"""
     )
     fun observeAll(query: String): Flow<List<ProductEntity>>
 
@@ -95,6 +95,9 @@ interface ProductDao {
 
     @Query("UPDATE product SET diarsipkan = :archived, updatedAt = :now WHERE id = :id")
     suspend fun setArchived(id: String, archived: Boolean, now: Long)
+
+    @Query("UPDATE product SET isPinned = :pinned, updatedAt = :now WHERE id = :id")
+    suspend fun setPinned(id: String, pinned: Boolean, now: Long)
 }
 
 data class MovementWithProduct(

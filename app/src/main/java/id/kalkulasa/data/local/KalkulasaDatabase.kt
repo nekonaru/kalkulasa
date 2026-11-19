@@ -47,7 +47,7 @@ import java.util.UUID
         ReceivableEntity::class,
         CustomerEntity::class,
     ],
-    version = 3,
+    version = 4,
     exportSchema = true,
 )
 abstract class KalkulasaDatabase : RoomDatabase() {
@@ -65,6 +65,11 @@ abstract class KalkulasaDatabase : RoomDatabase() {
 
     companion object {
         const val NAME = "kalkulasa.db"
+
+        /** Migration 3 -> 4: add product.isPinned for the cashier fast-lane. */
+        val MIGRATION_3_4 = androidx.room.migration.Migration(3, 4) { db ->
+            db.execSQL("ALTER TABLE `product` ADD COLUMN `isPinned` INTEGER NOT NULL DEFAULT 0")
+        }
 
         /** Migration 1 -> 2: add the receivable (piutang) table. */
         val MIGRATION_1_2 = androidx.room.migration.Migration(1, 2) { db ->
@@ -112,7 +117,7 @@ abstract class KalkulasaDatabase : RoomDatabase() {
         fun build(context: Context, deviceId: String, passphrase: ByteArray): KalkulasaDatabase =
             Room.databaseBuilder(context, KalkulasaDatabase::class.java, NAME)
                 .openHelperFactory(SupportOpenHelperFactory(passphrase))
-                .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+                .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
                 .addCallback(SeedCallback(deviceId))
                 .build()
     }

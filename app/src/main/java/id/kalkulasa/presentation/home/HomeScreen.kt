@@ -66,12 +66,17 @@ fun HomeScreen(
     ) {
         item {
             Column {
+                val greeting = greetingForTimeOfDay(context)
                 Text(
-                    text = state.namaUsaha.ifEmpty { context.getString(R.string.app_name) },
+                    text = greeting,
                     style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.primary,
                 )
-                Text(context.getString(R.string.home_today), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(
+                    text = state.namaUsaha.ifEmpty { context.getString(R.string.home_greeting_line) },
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
         }
         item {
@@ -165,6 +170,16 @@ fun HomeScreen(
                 }
             }
         }
+    }
+}
+
+private fun greetingForTimeOfDay(context: android.content.Context): String {
+    val hour = java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY)
+    return when (hour) {
+        in 4..10 -> context.getString(R.string.home_greeting_morning)
+        in 11..14 -> context.getString(R.string.home_greeting_afternoon)
+        in 15..18 -> context.getString(R.string.home_greeting_evening)
+        else -> context.getString(R.string.home_greeting_night)
     }
 }
 

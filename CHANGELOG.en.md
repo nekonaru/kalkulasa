@@ -1,5 +1,19 @@
 # Changelog
 
+## v1.6.0
+
+Cleaner design and quick access to best-sellers at the cashier.
+
+### New features
+
+- **Best-sellers pinned to the top of the cashier.** Tap pin on a product card; pinned products surface first, then the rest. Ideal for frequently bought items.
+- **Time-aware greeting on Beranda.** Good morning, afternoon or evening follows the device clock.
+
+### Improvements
+
+- **Product pin state persists** and travels with backups.
+- **Beranda header** remembers your business name with a time-aware greeting.
+
 ## v1.5.0
 
 Design polish, the Suppliers module, and a fuller finance history.

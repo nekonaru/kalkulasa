@@ -55,6 +55,7 @@ class ProductRepositoryImpl @Inject constructor(
                 stokMinimum = product.stokMinimum,
                 fotoUri = product.fotoUri,
                 diarsipkan = product.diarsipkan,
+                isPinned = product.isPinned,
                 updatedAt = now,
                 deletedAt = null,
                 deviceId = deviceId,
@@ -65,6 +66,11 @@ class ProductRepositoryImpl @Inject constructor(
 
     override suspend fun setArchived(id: String, archived: Boolean) {
         dao.setArchived(id, archived, RepositorySupport.now())
+        RepositorySupport.log(changeLogDao, "product", id, "UPDATE")
+    }
+
+    override suspend fun setPinned(id: String, pinned: Boolean) {
+        dao.setPinned(id, pinned, RepositorySupport.now())
         RepositorySupport.log(changeLogDao, "product", id, "UPDATE")
     }
 

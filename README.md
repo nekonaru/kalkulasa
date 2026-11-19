@@ -56,6 +56,7 @@
 | Fitur | Deskripsi |
 |---------|-------------|
 | **Kasir satu ketuk** | Ketuk produk untuk masukkan ke keranjang, atur jumlah, beri diskon dalam rupiah, pilih tunai / transfer / QRIS / Hutang sebagai label |
+| **Produk pin di kasir** | Sematkan produk yang paling sering dibeli agar selalu muncul di atas |
 | **Kembalian otomatis** | Saat bayar Tunai, isi uang diterima dan Kalkulasa hitung kembalian |
 | **Riwayat penjualan** | Semua transaksi per periode, omzet per periode, bagikan struk dan batal transaksi dari satu layar |
 | **Stok otomatis berkurang** | Menyimpan penjualan mengurangi stok dan mencatat modal per barang terjual |
@@ -178,7 +179,7 @@
 ### Opsi A: Unduh APK (paling mudah)
 
 1. Buka halaman [Releases](https://github.com/nekonaru/kalkulasa/releases)
-2. Unduh `kalkulasa-v1.5.0.apk`
+2. Unduh `kalkulasa-v1.6.0.apk`
 3. Buka di ponsel kamu dan izinkan instalasi dari sumber tidak dikenal jika diminta
 4. Buka aplikasi dan isi profil usaha kamu
 

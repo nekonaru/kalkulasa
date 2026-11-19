@@ -111,7 +111,7 @@ class BackupRepositoryImpl @Inject constructor(
         put("satuan", satuan); jPut(this, "barcode", barcode)
         put("hargaBeliRata2", hargaBeliRata2); put("hargaJual", hargaJual)
         put("stok", stok); put("stokMinimum", stokMinimum)
-        jPut(this, "fotoUri", fotoUri); put("diarsipkan", diarsipkan)
+        jPut(this, "fotoUri", fotoUri); put("diarsipkan", diarsipkan); put("isPinned", isPinned)
         put("updatedAt", updatedAt); jPut(this, "deletedAt", deletedAt)
         put("deviceId", deviceId); put("syncStatus", syncStatus)
     }
@@ -201,6 +201,7 @@ class BackupRepositoryImpl @Inject constructor(
         hargaBeliRata2 = getLong("hargaBeliRata2"), hargaJual = getLong("hargaJual"),
         stok = getDouble("stok"), stokMinimum = getDouble("stokMinimum"),
         fotoUri = str("fotoUri"), diarsipkan = getBoolean("diarsipkan"),
+        isPinned = optBoolean("isPinned", false),
         updatedAt = getLong("updatedAt"), deletedAt = optLongOrNull("deletedAt"),
         deviceId = getString("deviceId"), syncStatus = optString("syncStatus", "PENDING"),
     )

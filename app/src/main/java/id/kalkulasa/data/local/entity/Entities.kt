@@ -51,6 +51,7 @@ data class ProductEntity(
     val stokMinimum: Double,
     val fotoUri: String?,
     val diarsipkan: Boolean,
+    val isPinned: Boolean = false,
     val updatedAt: Long,
     val deletedAt: Long? = null,
     val deviceId: String,

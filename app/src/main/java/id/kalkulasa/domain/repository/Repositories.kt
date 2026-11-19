@@ -38,6 +38,7 @@ interface ProductRepository {
     suspend fun setArchived(id: String, archived: Boolean)
     /** Bulk-import products atomically. Returns count imported. */
     suspend fun importProducts(products: List<ImportProdukUseCase.ImportedProduct>): Int
+    suspend fun setPinned(id: String, pinned: Boolean)
 }
 
 interface SupplierRepository {

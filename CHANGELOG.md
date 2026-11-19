@@ -1,5 +1,19 @@
 # Changelog
 
+## v1.6.0
+
+Desain lebih rapi dan produk terlaris cepat muncul di kasir.
+
+### Fitur baru
+
+- **Produk terlaris disematkan ke atas kasir.** Ketuk pin pada kartu produk; produk pin muncul paling atas, produk lain menyusul. Cocok untuk barang yang paling sering dibeli.
+- **Sapaan sesuai waktu di Beranda.** Selamat pagi, siang, sore atau malam muncul sesuai jam perangkat.
+
+### Peningkatan
+
+- **Status pin produk** tersimpan permanen; tidak berubah saat pindah perangkat (ikut backup).
+- **Header Beranda** membaca nama usaha kamu dengan sapaan waktu.
+
 ## v1.5.0
 
 Poles desain, modul Pemasok, dan riwayat keuangan lebih lengkap.

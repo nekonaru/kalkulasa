@@ -122,6 +122,10 @@ class CashierViewModel @Inject constructor(
         _cart.value = _cart.value + (product.id to ((_cart.value[product.id] ?: 0.0) + 1))
     }
 
+    fun togglePin(product: Product) {
+        viewModelScope.launch { productRepository.setPinned(product.id, !product.isPinned) }
+    }
+
     fun removeFromCart(productId: String) {
         _cart.value = _cart.value - productId
     }
