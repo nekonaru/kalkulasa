@@ -1,5 +1,19 @@
 # Changelog
 
+## v1.5.0
+
+Poles desain, modul Pemasok, dan riwayat keuangan lebih lengkap.
+
+### Fitur baru
+
+- **Modul Pemasok.** Layar baru di Keuangan menampilkan daftar pemasok dari riwayat pembelian (kode pembelian diinput bebas, misal "Distributor Jawa"), total belanja per pemasok, jumlah transaksi, dan tanggal transaksi terakhir.
+- **Baris pembelian stok di riwayat keuangan.** Setiap kali stok masuk, tercatat di Riwayat keuangan sebagai pengeluaran dengan label pemasoknya.
+- **Kartu statistik lebih lapang, ikon dalam chip kecil, dan empty state lebih ramah.**
+
+### Peningkatan
+
+- **Komponen desain disederhanakan dan dipadukan** (rounded corner 20dp, tonal icons).
+
 ## v1.4.0
 
 Riwayat penjualan lengkap dan impor produk dari CSV, plus penghapusan kode deprecated.

@@ -84,6 +84,8 @@
 | **Pencatatan modal** | Modal awal dan tambahan modal tercatat sebagai entri terpisah |
 | **Prive** | Pengambilan uang pribadi pemilik dicatat terpisah agar laba usaha tetap bersih |
 | **Pengeluaran operasional** | Pengeluaran per kategori (Listrik, Sewa, Gaji, Transportasi, Lainnya); penjualan dan pembelian stok tercatat otomatis |
+| **Riwayat pembelian** | Setiap stok masuk tercatat di riwayat keuangan dengan label pemasoknya |
+| **Pemasok** | Total belanja, jumlah transaksi dan tanggal pembelian terakhir per pemasok |
 
 ### Pelanggan dan poin
 
@@ -176,7 +178,7 @@
 ### Opsi A: Unduh APK (paling mudah)
 
 1. Buka halaman [Releases](https://github.com/nekonaru/kalkulasa/releases)
-2. Unduh `kalkulasa-v1.4.0.apk`
+2. Unduh `kalkulasa-v1.5.0.apk`
 3. Buka di ponsel kamu dan izinkan instalasi dari sumber tidak dikenal jika diminta
 4. Buka aplikasi dan isi profil usaha kamu
 

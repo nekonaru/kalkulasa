@@ -14,4 +14,5 @@ object Routes {
     const val CATEGORIES = "categories"
     const val SALES_HISTORY = "sales-history"
     const val IMPORT_PRODUCTS = "import-products"
+    const val SUPPLIERS = "suppliers"
 }

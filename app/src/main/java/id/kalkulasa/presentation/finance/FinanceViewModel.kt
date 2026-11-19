@@ -7,6 +7,7 @@ import id.kalkulasa.domain.model.CapitalEntry
 import id.kalkulasa.domain.model.Category
 import id.kalkulasa.domain.model.CategoryType
 import id.kalkulasa.domain.model.Expense
+import id.kalkulasa.domain.model.PurchaseRecord
 import id.kalkulasa.domain.repository.CategoryRepository
 import id.kalkulasa.domain.repository.FinanceRepository
 import kotlinx.coroutines.channels.Channel
@@ -24,6 +25,7 @@ import javax.inject.Inject
 sealed class FinanceItem(val waktu: Long) {
     data class Capital(val entry: CapitalEntry) : FinanceItem(entry.waktu)
     data class ExpenseItem(val expense: Expense) : FinanceItem(expense.waktu)
+    data class Purchase(val purchase: PurchaseRecord) : FinanceItem(purchase.waktu)
 }
 
 sealed interface FinanceEvent {
@@ -47,8 +49,11 @@ class FinanceViewModel @Inject constructor(
     val items: StateFlow<List<FinanceItem>> = combine(
         financeRepository.observeRecentCapitalEntries(100),
         financeRepository.observeRecentExpenses(100),
-    ) { capital, expenses ->
-        (capital.map { FinanceItem.Capital(it) } + expenses.map { FinanceItem.ExpenseItem(it) })
+        financeRepository.observeRecentPurchases(100),
+    ) { capital, expenses, purchases ->
+        (capital.map { FinanceItem.Capital(it) } +
+            expenses.map { FinanceItem.ExpenseItem(it) } +
+            purchases.map { FinanceItem.Purchase(it) })
             .sortedByDescending { it.waktu }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 

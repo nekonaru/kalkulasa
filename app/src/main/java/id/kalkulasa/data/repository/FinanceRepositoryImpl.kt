@@ -8,6 +8,7 @@ import id.kalkulasa.data.local.entity.ExpenseEntity
 import id.kalkulasa.data.mapper.toDomain
 import id.kalkulasa.domain.model.CapitalEntry
 import id.kalkulasa.domain.model.Expense
+import id.kalkulasa.domain.model.PurchaseRecord
 import id.kalkulasa.domain.repository.FinanceRepository
 import id.kalkulasa.domain.usecase.HitungHppUseCase
 import kotlinx.coroutines.flow.Flow
@@ -25,6 +26,11 @@ class FinanceRepositoryImpl @Inject constructor(
 
     override fun observeRecentCapitalEntries(limit: Int): Flow<List<CapitalEntry>> =
         db.capitalEntryDao().observeRecent(limit).map { list -> list.map { it.toDomain() } }
+
+    override fun observeRecentPurchases(limit: Int): Flow<List<PurchaseRecord>> =
+        db.purchaseDao().observeRecent(limit).map { list ->
+            list.map { PurchaseRecord(it.id, it.pemasok, it.total, it.catatan, it.waktu) }
+        }
 
     override suspend fun addCapital(tipe: String, nominal: Long, catatan: String?) {
         val now = RepositorySupport.now()

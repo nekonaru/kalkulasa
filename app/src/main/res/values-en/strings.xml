@@ -150,6 +150,7 @@
     <string name="entry_expense">Expense</string>
     <string name="entry_purchase">Stock purchase</string>
     <string name="entry_sale">Sale</string>
+    <string name="supplier_unknown">No supplier</string>
 
     <string name="customer_name_optional">Customer name (optional)</string>
     <string name="cashier_customer_hint">Enter a name to earn loyalty points</string>
@@ -187,6 +188,12 @@
     <string name="import_run">Import now</string>
     <string name="import_done">%1$d products imported</string>
 
+    <string name="suppliers_title">Suppliers</string>
+    <string name="suppliers_total_spent">Total spent</string>
+    <string name="suppliers_frequency">%1$d purchases</string>
+    <string name="suppliers_last_purchase">Last: %1$s</string>
+    <string name="suppliers_empty">No purchases yet. Record stock in to start tracking suppliers.</string>
+    <string name="suppliers_entry">Suppliers</string>
     <string name="piutang_open">Customer receivables</string>
     <string name="piutang_title">Receivables</string>
     <string name="piutang_outstanding">Outstanding</string>

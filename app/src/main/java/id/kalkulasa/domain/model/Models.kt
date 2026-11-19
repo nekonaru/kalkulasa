@@ -68,6 +68,21 @@ data class Expense(
     val waktu: Long,
 )
 
+data class SupplierSpend(
+    val pemasok: String,
+    val totalSpent: Long,
+    val purchaseCount: Int,
+    val lastPurchaseAt: Long,
+)
+
+data class PurchaseRecord(
+    val id: String,
+    val pemasok: String?,
+    val total: Long,
+    val catatan: String?,
+    val waktu: Long,
+)
+
 data class Customer(
     val id: String,
     val nama: String,

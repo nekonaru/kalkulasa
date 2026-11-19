@@ -61,6 +61,7 @@ import kotlinx.coroutines.flow.collectLatest
 fun FinanceScreen(
     onOpenPiutang: () -> Unit,
     onOpenCustomers: () -> Unit,
+    onOpenSuppliers: () -> Unit,
     viewModel: FinanceViewModel = hiltViewModel(),
 ) {
     val balance by viewModel.cashBalance.collectAsStateWithLifecycle()
@@ -114,6 +115,7 @@ fun FinanceScreen(
                     }
                     TextButton(onClick = onOpenPiutang) { Text(context.getString(R.string.piutang_open)) }
                     TextButton(onClick = onOpenCustomers) { Text(context.getString(R.string.customers_title)) }
+                    TextButton(onClick = onOpenSuppliers) { Text(context.getString(R.string.suppliers_entry)) }
                 }
             }
 
@@ -134,7 +136,7 @@ fun FinanceScreen(
                     modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    items(items, key = { when (it) { is FinanceItem.Capital -> "c-${it.entry.id}"; is FinanceItem.ExpenseItem -> "e-${it.expense.id}" } }) { item ->
+                    items(items, key = { when (it) { is FinanceItem.Capital -> "c-${it.entry.id}"; is FinanceItem.ExpenseItem -> "e-${it.expense.id}"; is FinanceItem.Purchase -> "p-${it.purchase.id}" } }) { item ->
                         FinanceRow(item)
                     }
                 }
@@ -197,6 +199,11 @@ private fun FinanceRow(item: FinanceItem) {
             item.expense.nominal,
             false,
         )
+        is FinanceItem.Purchase -> {
+            val pemasok = item.purchase.pemasok?.takeIf { it.isNotBlank() }
+                ?: context.getString(R.string.supplier_unknown)
+            Triple("${context.getString(R.string.entry_purchase)}: $pemasok", item.purchase.total, false)
+        }
     }
     Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
         Row(
@@ -215,6 +222,7 @@ private fun FinanceRow(item: FinanceItem) {
                     DateFormatter.formatDateTime(item.waktu) + (when (item) {
                         is FinanceItem.Capital -> item.entry.catatan
                         is FinanceItem.ExpenseItem -> item.expense.catatan
+                        is FinanceItem.Purchase -> item.purchase.catatan
                     }?.let { " · $it" } ?: ""),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,

@@ -140,8 +140,19 @@ interface PurchaseDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertItem(item: PurchaseItemEntity)
 
+    @Query("SELECT * FROM purchase WHERE deletedAt IS NULL ORDER BY waktu DESC LIMIT :limit")
+    fun observeRecent(limit: Int): kotlinx.coroutines.flow.Flow<List<PurchaseEntity>>
+
     @Query("SELECT * FROM purchase WHERE deletedAt IS NULL AND waktu BETWEEN :from AND :to ORDER BY waktu DESC")
     suspend fun getBetween(from: Long, to: Long): List<PurchaseEntity>
+
+    @Query(
+        """SELECT pemasok, SUM(total) AS totalSpent, COUNT(*) AS purchaseCount, MAX(waktu) AS lastPurchaseAt
+           FROM purchase WHERE deletedAt IS NULL
+           GROUP BY LOWER(TRIM(COALESCE(pemasok, '')))
+           ORDER BY totalSpent DESC"""
+    )
+    suspend fun supplierSpend(): List<SupplierSpendProjection>
 
     @Query("SELECT * FROM purchase WHERE deletedAt IS NULL")
     suspend fun getAll(): List<PurchaseEntity>
@@ -273,6 +284,8 @@ interface CustomerDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(customer: CustomerEntity)
 }
+
+data class SupplierSpendProjection(val pemasok: String?, val totalSpent: Long, val purchaseCount: Int, val lastPurchaseAt: Long)
 
 @Dao
 interface ReceivableDao {

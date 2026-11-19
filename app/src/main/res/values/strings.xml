@@ -150,6 +150,7 @@
     <string name="entry_expense">Pengeluaran</string>
     <string name="entry_purchase">Pembelian stok</string>
     <string name="entry_sale">Penjualan</string>
+    <string name="supplier_unknown">Tanpa pemasok</string>
 
     <string name="customer_name_optional">Nama pelanggan (opsional)</string>
     <string name="cashier_customer_hint">Isi nama untuk dapat poin loyalti</string>
@@ -187,6 +188,12 @@
     <string name="import_run">Impor sekarang</string>
     <string name="import_done">%1$d produk diimpor</string>
 
+    <string name="suppliers_title">Pemasok</string>
+    <string name="suppliers_total_spent">Total belanja</string>
+    <string name="suppliers_frequency">%1$d transaksi</string>
+    <string name="suppliers_last_purchase">Terakhir: %1$s</string>
+    <string name="suppliers_empty">Belum ada pembelian. Catat stok masuk untuk mulai melacak pemasok.</string>
+    <string name="suppliers_entry">Pemasok</string>
     <string name="piutang_open">Piutang pelanggan</string>
     <string name="piutang_title">Piutang</string>
     <string name="piutang_outstanding">Belum ditagih</string>

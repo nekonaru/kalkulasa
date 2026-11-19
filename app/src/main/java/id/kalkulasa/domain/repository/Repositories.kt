@@ -1,6 +1,7 @@
 package id.kalkulasa.domain.repository
 
 import id.kalkulasa.domain.model.BusinessProfile
+import id.kalkulasa.domain.model.PurchaseRecord
 import id.kalkulasa.domain.model.CapitalEntry
 import id.kalkulasa.domain.model.Category
 import id.kalkulasa.domain.model.CategoryType
@@ -15,6 +16,7 @@ import id.kalkulasa.domain.model.Receivable
 import id.kalkulasa.domain.model.Sale
 import id.kalkulasa.domain.model.SaleLine
 import id.kalkulasa.domain.model.StockMovement
+import id.kalkulasa.domain.model.SupplierSpend
 import id.kalkulasa.domain.usecase.ImportProdukUseCase
 import kotlinx.coroutines.flow.Flow
 
@@ -36,6 +38,10 @@ interface ProductRepository {
     suspend fun setArchived(id: String, archived: Boolean)
     /** Bulk-import products atomically. Returns count imported. */
     suspend fun importProducts(products: List<ImportProdukUseCase.ImportedProduct>): Int
+}
+
+interface SupplierRepository {
+    suspend fun supplierSpend(): List<SupplierSpend>
 }
 
 interface CategoryRepository {
@@ -84,6 +90,7 @@ interface SaleRepository {
 interface FinanceRepository {
     fun observeRecentExpenses(limit: Int = 100): Flow<List<Expense>>
     fun observeRecentCapitalEntries(limit: Int = 100): Flow<List<CapitalEntry>>
+    fun observeRecentPurchases(limit: Int = 100): Flow<List<PurchaseRecord>>
     suspend fun addCapital(tipe: String, nominal: Long, catatan: String?)
     suspend fun addExpense(kategoriId: String?, kategoriNama: String, nominal: Long, catatan: String?)
     suspend fun cashBalance(): Long

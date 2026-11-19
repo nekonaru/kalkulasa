@@ -84,6 +84,8 @@
 | **Capital tracking** | Starting capital and additional capital recorded as separate entries |
 | **Private draws (Prive)** | Owner takes are recorded separately so profit stays clean |
 | **Operating expenses** | Expenses per category (Electricity, Rent, Salary, Transport, Other); sales and stock purchases are recorded automatically |
+| **Purchase history** | Every stock-in is recorded in the finance history labeled with the supplier |
+| **Suppliers** | Total spend, transaction count and last purchase date per supplier |
 
 ### Customers and points
 
@@ -176,7 +178,7 @@
 ### Option A: Download the APK (easiest)
 
 1. Open the [Releases](https://github.com/nekonaru/kalkulasa/releases) page
-2. Download `kalkulasa-v1.4.0.apk`
+2. Download `kalkulasa-v1.5.0.apk`
 3. Open it on your phone and allow installs from unknown sources if asked
 4. Open the app and fill in your business profile
 

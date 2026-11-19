@@ -1,5 +1,19 @@
 # Changelog
 
+## v1.5.0
+
+Design polish, the Suppliers module, and a fuller finance history.
+
+### New features
+
+- **Suppliers module.** A new screen in Finance listing suppliers from your purchase history (supplier entered free-form, e.g. "Distributor Jawa"), total spend per supplier, number of transactions, and last purchase date.
+- **Stock purchases in finance history.** Every stock-in is now recorded in Finance history as an outflow labeled with the supplier.
+- **Roomier stat cards, smaller tonal icons, friendlier empty states.**
+
+### Improvements
+
+- **Design components simplified and unified** (20dp rounded corners, tonal chips).
+
 ## v1.4.0
 
 Complete sales history and CSV product import, plus removal of deprecated code.

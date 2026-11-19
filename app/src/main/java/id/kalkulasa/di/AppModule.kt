@@ -16,6 +16,7 @@ import id.kalkulasa.data.repository.ReceivableRepositoryImpl
 import id.kalkulasa.data.repository.ReportRepositoryImpl
 import id.kalkulasa.data.repository.SaleRepositoryImpl
 import id.kalkulasa.data.repository.StockRepositoryImpl
+import id.kalkulasa.data.repository.SupplierRepositoryImpl
 import id.kalkulasa.data.repository.CategoryRepositoryImpl
 import id.kalkulasa.data.repository.CustomerRepositoryImpl
 import id.kalkulasa.domain.repository.BackupRepository
@@ -28,6 +29,7 @@ import id.kalkulasa.domain.repository.ReceivableRepository
 import id.kalkulasa.domain.repository.ReportRepository
 import id.kalkulasa.domain.repository.SaleRepository
 import id.kalkulasa.domain.repository.StockRepository
+import id.kalkulasa.domain.repository.SupplierRepository
 import java.io.File
 import java.util.UUID
 import javax.inject.Singleton
@@ -89,6 +91,11 @@ object AppModule {
     @Singleton
     fun provideCustomerRepository(db: KalkulasaDatabase): CustomerRepository =
         CustomerRepositoryImpl(db)
+
+    @Provides
+    @Singleton
+    fun provideSupplierRepository(db: KalkulasaDatabase): SupplierRepository =
+        SupplierRepositoryImpl(db)
 
     @Provides
     @Singleton
