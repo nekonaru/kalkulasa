@@ -179,6 +179,10 @@
     <string name="mode_warung">Mode Warung (sederhana)</string>
     <string name="mode_pro">Mode Pro (lengkap)</string>
     <string name="sales_history_title">Riwayat penjualan</string>
+    <string name="repeat_last_sale">Ulangi transaksi terakhir</string>
+    <string name="repeat_ok">Transaksi terakhir dimuat (%1$d produk)</string>
+    <string name="repeat_empty">Semua produk dari transaksi terakhir tidak tersedia lagi</string>
+    <string name="repeat_none">Belum ada transaksi sebelumnya</string>
     <string name="sales_history_empty">Belum ada penjualan pada periode ini.</string>
     <string name="sales_history_all">Lihat semua transaksi</string>
     <string name="sales_history_period_7">7 hari terakhir</string>

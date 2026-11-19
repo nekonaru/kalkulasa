@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.7.0
+
+Fitur ulangi transaksi untuk mempercepat kasir.
+
+### Fitur baru
+
+- **Ulangi transaksi terakhir.** Satu ketuk di Kasir mengisi keranjang dengan isi dari transaksi terakhir yang selesai; produk diarsipkan atau stok kosong otomatis dilewati.
+
 ## v1.6.0
 
 Desain lebih rapi dan produk terlaris cepat muncul di kasir.

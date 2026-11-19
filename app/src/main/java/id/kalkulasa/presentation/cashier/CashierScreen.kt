@@ -20,6 +20,7 @@ import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Remove
 import androidx.compose.material.icons.rounded.Share
+import androidx.compose.material.icons.rounded.History
 import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.material.icons.outlined.PushPin
 import androidx.compose.material3.AlertDialog
@@ -86,10 +87,13 @@ fun CashierScreen(
         viewModel.events.collectLatest { event ->
             when (event) {
                 is CashierEvent.Message -> snackbar.showSnackbar(
-                    when (event.text) {
-                        "SALE_SAVED" -> context.getString(R.string.sale_saved)
-                        "SALE_CANCELLED" -> context.getString(R.string.sale_cancelled)
-                        "CUSTOMER_NAME_REQUIRED" -> context.getString(R.string.customer_name_required)
+                    when {
+                        event.text == "SALE_SAVED" -> context.getString(R.string.sale_saved)
+                        event.text == "SALE_CANCELLED" -> context.getString(R.string.sale_cancelled)
+                        event.text == "CUSTOMER_NAME_REQUIRED" -> context.getString(R.string.customer_name_required)
+                        event.text == "NO_LAST_SALE" -> context.getString(R.string.repeat_none)
+                        event.text == "REPEAT_EMPTY" -> context.getString(R.string.repeat_empty)
+                        event.text.startsWith("REPEAT_OK:") -> String.format(context.getString(R.string.repeat_ok), event.text.removePrefix("REPEAT_OK:").toIntOrNull() ?: 0)
                         else -> event.text
                     },
                 )
@@ -110,6 +114,7 @@ fun CashierScreen(
                     onQueryChange = viewModel::onQueryChange,
                     onAdd = viewModel::addToCart,
                     onTogglePin = viewModel::togglePin,
+                    onRepeatLast = viewModel::repeatLastSale,
                     modifier = Modifier.weight(1.15f).padding(12.dp),
                 )
                 CartSection(
@@ -140,6 +145,7 @@ fun CashierScreen(
                     onQueryChange = viewModel::onQueryChange,
                     onAdd = viewModel::addToCart,
                     onTogglePin = viewModel::togglePin,
+                    onRepeatLast = viewModel::repeatLastSale,
                     modifier = Modifier.fillMaxWidth().weight(1f).padding(horizontal = 12.dp, vertical = 8.dp),
                 )
                 CartSection(
@@ -216,6 +222,7 @@ private fun ProductPickerSection(
     onQueryChange: (String) -> Unit,
     onAdd: (Product) -> Unit,
     onTogglePin: (Product) -> Unit,
+    onRepeatLast: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -227,6 +234,14 @@ private fun ProductPickerSection(
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
         )
+        TextButton(onClick = onRepeatLast) {
+            Icon(
+                Icons.Rounded.History,
+                contentDescription = null,
+                modifier = Modifier.size(18.dp),
+            )
+            Text(context.getString(R.string.repeat_last_sale))
+        }
         if (products.isEmpty()) {
             KalkulasaEmptyState(
                 title = context.getString(R.string.product_empty_title),

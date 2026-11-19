@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.7.0
+
+Repeat-sale shortcut to cut cashier time.
+
+### New features
+
+- **Repeat last sale.** One tap on Kasir loads the last completed sale into the cart; archived or out-of-stock products are skipped automatically.
+
 ## v1.6.0
 
 Cleaner design and quick access to best-sellers at the cashier.

@@ -179,6 +179,10 @@
     <string name="mode_warung">Warung mode (simple)</string>
     <string name="mode_pro">Pro mode (full)</string>
     <string name="sales_history_title">Sales history</string>
+    <string name="repeat_last_sale">Repeat last sale</string>
+    <string name="repeat_ok">Loaded previous sale (%1$d products)</string>
+    <string name="repeat_empty">No items from the last sale are available anymore</string>
+    <string name="repeat_none">No previous sale</string>
     <string name="sales_history_empty">No sales in this period yet.</string>
     <string name="sales_history_all">View all transactions</string>
     <string name="sales_history_period_7">Last 7 days</string>

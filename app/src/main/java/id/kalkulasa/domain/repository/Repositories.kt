@@ -86,6 +86,7 @@ interface SaleRepository {
     suspend fun dailyTrend(days: Int): List<DailyPoint>
     suspend fun saleItems(saleId: String): List<SaleLine>
     suspend fun mostProfitableBetween(from: Long, to: Long, limit: Int): List<ProductProfit>
+    suspend fun lastCompletedSale(): Pair<Sale, List<SaleLine>>?
 }
 
 interface FinanceRepository {

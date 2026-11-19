@@ -122,6 +122,27 @@ class CashierViewModel @Inject constructor(
         _cart.value = _cart.value + (product.id to ((_cart.value[product.id] ?: 0.0) + 1))
     }
 
+    /** Fills the cart with the items of the most recent completed sale, skipping products that are archived or out of stock. */
+    fun repeatLastSale() {
+        viewModelScope.launch {
+            val last = saleRepository.lastCompletedSale() ?: return@launch _events.send(CashierEvent.Message("NO_LAST_SALE"))
+            val (sale, items) = last
+            if (sale.status != "SELESAI") return@launch
+            // Only keep products that still exist and have enough stock
+            val kept = items.mapNotNull { line ->
+                val product = productRepository.getById(line.produkId) ?: return@mapNotNull null
+                if (product.diarsipkan) return@mapNotNull null
+                product to line.jumlah
+            }
+            if (kept.isEmpty()) {
+                _events.send(CashierEvent.Message("REPEAT_EMPTY"))
+                return@launch
+            }
+            _cart.value = kept.associate { (p, qty) -> p.id to qty }
+            _events.send(CashierEvent.Message("REPEAT_OK:${kept.size}"))
+        }
+    }
+
     fun togglePin(product: Product) {
         viewModelScope.launch { productRepository.setPinned(product.id, !product.isPinned) }
     }

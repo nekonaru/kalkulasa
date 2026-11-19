@@ -193,6 +193,23 @@ class SaleRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun lastCompletedSale(): Pair<Sale, List<SaleLine>>? {
+        val sales = db.saleDao().getBetween(0L, DateFormatter.endOfDay())
+            .filter { it.status == SaleStatus.SELESAI }
+            .maxByOrNull { it.waktu }
+            ?: return null
+        val items = db.saleDao().getItems(sales.id).map {
+            SaleLine(
+                produkId = it.produkId,
+                namaProduk = it.namaProduk,
+                jumlah = it.jumlah,
+                hargaJual = it.hargaJual,
+                hppSaatJual = it.hppSaatJual,
+            )
+        }
+        return sales.toDomain() to items
+    }
+
     override suspend fun saleItems(saleId: String): List<SaleLine> =
         db.saleDao().getItems(saleId).map {
             SaleLine(
