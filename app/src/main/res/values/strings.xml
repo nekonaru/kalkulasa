@@ -171,6 +171,22 @@
     <string name="settings_display_mode">Mode tampilan</string>
     <string name="mode_warung">Mode Warung (sederhana)</string>
     <string name="mode_pro">Mode Pro (lengkap)</string>
+    <string name="sales_history_title">Riwayat penjualan</string>
+    <string name="sales_history_empty">Belum ada penjualan pada periode ini.</string>
+    <string name="sales_history_all">Lihat semua transaksi</string>
+    <string name="sales_history_period_7">7 hari terakhir</string>
+    <string name="sales_history_period_30">30 hari terakhir</string>
+    <string name="sales_history_period_90">90 hari terakhir</string>
+    <string name="import_products">Impor CSV</string>
+    <string name="import_title">Impor produk dari CSV</string>
+    <string name="import_explanation">Siapkan file CSV dengan kolom: nama, satuan, harga_beli, harga_jual, stok, stok_minimum, barcode (opsional), kategori (opsional). Baris pertama boleh jadi judul kolom.</string>
+    <string name="import_pick_file">Pilih file CSV</string>
+    <string name="import_share_template">Dapatkan contoh format</string>
+    <string name="import_preview">Pratinjau: %1$d produk siap diimpor</string>
+    <string name="import_errors">%1$d baris dilewati (format tidak valid)</string>
+    <string name="import_run">Impor sekarang</string>
+    <string name="import_done">%1$d produk diimpor</string>
+
     <string name="piutang_open">Piutang pelanggan</string>
     <string name="piutang_title">Piutang</string>
     <string name="piutang_outstanding">Belum ditagih</string>

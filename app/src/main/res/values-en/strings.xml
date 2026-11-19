@@ -171,6 +171,22 @@
     <string name="settings_display_mode">Display mode</string>
     <string name="mode_warung">Warung mode (simple)</string>
     <string name="mode_pro">Pro mode (full)</string>
+    <string name="sales_history_title">Sales history</string>
+    <string name="sales_history_empty">No sales in this period yet.</string>
+    <string name="sales_history_all">View all transactions</string>
+    <string name="sales_history_period_7">Last 7 days</string>
+    <string name="sales_history_period_30">Last 30 days</string>
+    <string name="sales_history_period_90">Last 90 days</string>
+    <string name="import_products">Import CSV</string>
+    <string name="import_title">Import products from CSV</string>
+    <string name="import_explanation">Prepare a CSV with columns: nama, satuan, harga_beli, harga_jual, stok, stok_minimum, barcode (optional), kategori (optional). The first row may be a header.</string>
+    <string name="import_pick_file">Pick a CSV file</string>
+    <string name="import_share_template">Get a format example</string>
+    <string name="import_preview">Preview: %1$d products ready to import</string>
+    <string name="import_errors">%1$d rows skipped (invalid format)</string>
+    <string name="import_run">Import now</string>
+    <string name="import_done">%1$d products imported</string>
+
     <string name="piutang_open">Customer receivables</string>
     <string name="piutang_title">Receivables</string>
     <string name="piutang_outstanding">Outstanding</string>

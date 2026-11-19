@@ -58,6 +58,7 @@ import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun CashierScreen(
+    onOpenSalesHistory: () -> Unit,
     viewModel: CashierViewModel = hiltViewModel(),
 ) {
     val query by viewModel.query.collectAsStateWithLifecycle()
@@ -124,6 +125,7 @@ fun CashierScreen(
                     todaySales = todaySales,
                     viewModel = viewModel,
                     onRequestCancel = { saleToCancel = it },
+                    onOpenSalesHistory = onOpenSalesHistory,
                     modifier = Modifier.weight(1f).padding(12.dp),
                 )
             }
@@ -152,6 +154,7 @@ fun CashierScreen(
                     todaySales = todaySales,
                     viewModel = viewModel,
                     onRequestCancel = { saleToCancel = it },
+                    onOpenSalesHistory = onOpenSalesHistory,
                     modifier = Modifier.fillMaxWidth().weight(1f).padding(horizontal = 12.dp, vertical = 8.dp),
                 )
             }
@@ -257,6 +260,7 @@ private fun CartSection(
     todaySales: List<id.kalkulasa.domain.model.Sale>,
     viewModel: CashierViewModel,
     onRequestCancel: (String) -> Unit,
+    onOpenSalesHistory: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -347,11 +351,18 @@ private fun CartSection(
 
         if (todaySales.isNotEmpty()) {
             HorizontalDivider()
-            Text(
-                context.getString(R.string.today_transactions),
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.primary,
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    context.getString(R.string.today_transactions),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+                TextButton(onClick = onOpenSalesHistory) { Text(context.getString(R.string.sales_history_all)) }
+            }
             todaySales.forEach { sale ->
                 Row(
                     modifier = Modifier.fillMaxWidth(),

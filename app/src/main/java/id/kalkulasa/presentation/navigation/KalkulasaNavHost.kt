@@ -33,6 +33,8 @@ import id.kalkulasa.presentation.customer.CustomersScreen
 import id.kalkulasa.presentation.finance.FinanceScreen
 import id.kalkulasa.presentation.home.HomeScreen
 import id.kalkulasa.presentation.piutang.PiutangScreen
+import id.kalkulasa.presentation.products.ImportProductsScreen
+import id.kalkulasa.presentation.sales.SalesHistoryScreen
 import id.kalkulasa.presentation.stock.RestockScreen
 import id.kalkulasa.presentation.onboarding.OnboardingScreen
 import id.kalkulasa.presentation.reports.ReportsScreen
@@ -111,15 +113,30 @@ fun KalkulasaNavHost(startDestination: String) {
                     onOpenPiutang = { navController.navigate(Routes.PIUTANG) },
                 )
             }
-            composable(Routes.CASHIER) { CashierScreen() }
+            composable(Routes.CASHIER) {
+                CashierScreen(
+                    onOpenSalesHistory = { navController.navigate(Routes.SALES_HISTORY) },
+                )
+            }
             composable(Routes.STOCK) {
                 StockScreen(
                     onOpenRestock = { navController.navigate(Routes.RESTOCK) },
                     onOpenCategories = { navController.navigate(Routes.CATEGORIES) },
+                    onOpenImport = { navController.navigate(Routes.IMPORT_PRODUCTS) },
                 )
             }
             composable(Routes.CATEGORIES) {
                 CategoriesScreen(
+                    onBack = { navController.popBackStack() },
+                )
+            }
+            composable(Routes.SALES_HISTORY) {
+                SalesHistoryScreen(
+                    onBack = { navController.popBackStack() },
+                )
+            }
+            composable(Routes.IMPORT_PRODUCTS) {
+                ImportProductsScreen(
                     onBack = { navController.popBackStack() },
                 )
             }

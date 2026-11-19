@@ -1,5 +1,7 @@
 package id.kalkulasa.data.repository
 
+import androidx.room.withTransaction
+import id.kalkulasa.data.local.KalkulasaDatabase
 import id.kalkulasa.data.local.dao.CategoryDao
 import id.kalkulasa.data.local.dao.ChangeLogDao
 import id.kalkulasa.data.local.dao.ProductDao
@@ -15,6 +17,7 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class ProductRepositoryImpl @Inject constructor(
+    private val db: KalkulasaDatabase,
     private val dao: ProductDao,
     private val changeLogDao: ChangeLogDao,
     private val deviceId: String,
@@ -63,6 +66,34 @@ class ProductRepositoryImpl @Inject constructor(
     override suspend fun setArchived(id: String, archived: Boolean) {
         dao.setArchived(id, archived, RepositorySupport.now())
         RepositorySupport.log(changeLogDao, "product", id, "UPDATE")
+    }
+
+    override suspend fun importProducts(products: List<id.kalkulasa.domain.usecase.ImportProdukUseCase.ImportedProduct>): Int {
+        val now = RepositorySupport.now()
+        db.withTransaction {
+            products.forEach { item ->
+                dao.upsert(
+                    ProductEntity(
+                        id = item.id,
+                        nama = item.nama,
+                        kategoriId = null,
+                        satuan = item.satuan,
+                        barcode = item.barcode,
+                        hargaBeliRata2 = item.hargaBeli,
+                        hargaJual = item.hargaJual,
+                        stok = item.stokAwal,
+                        stokMinimum = item.stokMinimum,
+                        fotoUri = null,
+                        diarsipkan = false,
+                        updatedAt = now,
+                        deletedAt = null,
+                        deviceId = deviceId,
+                    ),
+                )
+                RepositorySupport.log(changeLogDao, "product", item.id, "INSERT")
+            }
+        }
+        return products.size
     }
 }
 

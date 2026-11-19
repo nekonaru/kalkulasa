@@ -1,5 +1,20 @@
 # Changelog
 
+## v1.4.0
+
+Complete sales history and CSV product import, plus removal of deprecated code.
+
+### New features
+
+- **Sales history.** A new screen with all transactions per period (7, 30, 90 days), period revenue, share-receipt and cancel-with-restock actions. Reach it from Cashier > View all transactions.
+- **Import products from CSV.** Prepare a text file with columns nama, satuan, harga_beli, harga_jual, stok, stok_minimum, barcode (optional), kategori (optional). Import hundreds of rows in seconds. Get a format example directly from the app.
+- **Advanced CSV parser.** Supports comma or semicolon delimiters, quoted cells with embedded delimiters, optional header row, BOM handling, and Indonesian number format (dot thousands, comma decimals).
+
+### Improvements
+
+- **Deprecated Locale APIs replaced** with Locale.forLanguageTag("id-ID") across the codebase; no more deprecation warnings.
+- **Modern WhatsApp icon** on the Piutang and low-stock screens.
+
 ## v1.3.0
 
 Advanced cashier and reporting features, plus performance and UI/UX polish.
@@ -13,7 +28,7 @@ Advanced cashier and reporting features, plus performance and UI/UX polish.
 ### Improvements
 
 - **Branded splash screen** with the Kalkulasa logo.
-- **Compatibility and code hygiene**: replaced deprecated Locale calls and modernized the WhatsApp icon.
+- **Compatibility and code hygiene**: replaced deprecated Locale calls, modernized the WhatsApp icon.
 - **Piutang screen reminder icon** switched to the auto-mirrored variant.
 
 ## v1.2.0

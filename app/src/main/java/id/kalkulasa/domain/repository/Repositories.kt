@@ -15,6 +15,7 @@ import id.kalkulasa.domain.model.Receivable
 import id.kalkulasa.domain.model.Sale
 import id.kalkulasa.domain.model.SaleLine
 import id.kalkulasa.domain.model.StockMovement
+import id.kalkulasa.domain.usecase.ImportProdukUseCase
 import kotlinx.coroutines.flow.Flow
 
 interface ProfileRepository {
@@ -33,6 +34,8 @@ interface ProductRepository {
     suspend fun getAll(): List<Product>
     suspend fun save(product: Product)
     suspend fun setArchived(id: String, archived: Boolean)
+    /** Bulk-import products atomically. Returns count imported. */
+    suspend fun importProducts(products: List<ImportProdukUseCase.ImportedProduct>): Int
 }
 
 interface CategoryRepository {

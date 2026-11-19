@@ -57,6 +57,7 @@
 |---------|-------------|
 | **Kasir satu ketuk** | Ketuk produk untuk masukkan ke keranjang, atur jumlah, beri diskon dalam rupiah, pilih tunai / transfer / QRIS / Hutang sebagai label |
 | **Kembalian otomatis** | Saat bayar Tunai, isi uang diterima dan Kalkulasa hitung kembalian |
+| **Riwayat penjualan** | Semua transaksi per periode, omzet per periode, bagikan struk dan batal transaksi dari satu layar |
 | **Stok otomatis berkurang** | Menyimpan penjualan mengurangi stok dan mencatat modal per barang terjual |
 | **Hutang pelanggan** | Jualan dengan metode Hutang, isi nama pelanggan, utang otomatis masuk buku Piutang |
 | **Poin loyalti** | Isi nama pelanggan saat penjualan, dapat poin otomatis (1 poin tiap Rp 1.000) |
@@ -73,6 +74,7 @@
 | **Riwayat pergerakan** | Semua stok masuk, keluar, penyesuaian dan retur tercatat |
 | **Peringatan stok menipis** | Beranda dan Stok menandai produk yang stoknya di batas minimum atau kurang |
 | **Manajemen kategori** | Tambah, ubah, dan hapus kategori produk dari tab Stok |
+| **Impor produk dari CSV** | Impor ratusan produk dari file teks; mendukung pemisah koma/titik koma, angka Indonesia, dan judul kolom opsional |
 
 ### Keuangan
 
@@ -174,7 +176,7 @@
 ### Opsi A: Unduh APK (paling mudah)
 
 1. Buka halaman [Releases](https://github.com/nekonaru/kalkulasa/releases)
-2. Unduh `kalkulasa-v1.3.0.apk`
+2. Unduh `kalkulasa-v1.4.0.apk`
 3. Buka di ponsel kamu dan izinkan instalasi dari sumber tidak dikenal jika diminta
 4. Buka aplikasi dan isi profil usaha kamu
 

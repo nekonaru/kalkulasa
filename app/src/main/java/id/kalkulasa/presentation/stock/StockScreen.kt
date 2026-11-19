@@ -69,6 +69,7 @@ import kotlinx.coroutines.flow.collectLatest
 fun StockScreen(
     onOpenRestock: () -> Unit,
     onOpenCategories: () -> Unit,
+    onOpenImport: () -> Unit,
     viewModel: StockViewModel = hiltViewModel(),
 ) {
     val query by viewModel.query.collectAsStateWithLifecycle()
@@ -124,6 +125,7 @@ fun StockScreen(
                     onToggleArchive = { viewModel.setArchived(it.id, !it.diarsipkan) },
                     onOpenRestock = onOpenRestock,
                     onOpenCategories = onOpenCategories,
+                    onOpenImport = onOpenImport,
                 )
                 1 -> StockEntryTab(viewModel = viewModel, products = products)
                 2 -> HistoryTab(movements = movements)
@@ -166,19 +168,21 @@ private fun ProductsTab(
     onToggleArchive: (Product) -> Unit,
     onOpenRestock: () -> Unit,
     onOpenCategories: () -> Unit,
+    onOpenImport: () -> Unit,
 ) {
     val context = LocalContext.current
     Column(modifier = Modifier.fillMaxSize().padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Row(horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-            OutlinedTextField(
-                value = query,
-                onValueChange = onQueryChange,
-                label = { Text(context.getString(R.string.search)) },
-                singleLine = true,
-                modifier = Modifier.weight(1f),
-            )
+        OutlinedTextField(
+            value = query,
+            onValueChange = onQueryChange,
+            label = { Text(context.getString(R.string.search)) },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth(),
+        )
+        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             TextButton(onClick = onOpenRestock) { Text(context.getString(R.string.restock_title)) }
             TextButton(onClick = onOpenCategories) { Text(context.getString(R.string.categories_title)) }
+            TextButton(onClick = onOpenImport) { Text(context.getString(R.string.import_products)) }
         }
         if (products.isEmpty()) {
             KalkulasaEmptyState(
@@ -207,7 +211,7 @@ private fun ProductsTab(
                             Column(modifier = Modifier.weight(1f)) {
                                 Text(product.nama, style = MaterialTheme.typography.titleMedium)
                                 Text(
-                                    "${DateFormatter.formatQty(product.stok)} ${product.satuan} Â· ${RupiahFormatter.format(product.hargaJual)}",
+                                    "${DateFormatter.formatQty(product.stok)} ${product.satuan} · ${RupiahFormatter.format(product.hargaJual)}",
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = if (product.isLowStock && !product.diarsipkan) Rugi else MaterialTheme.colorScheme.onSurfaceVariant,
                                 )
@@ -362,7 +366,7 @@ private fun HistoryTab(movements: List<id.kalkulasa.domain.model.StockMovement>)
                 ) {
                     Column {
                         Text(movement.produkNama, style = MaterialTheme.typography.bodyLarge)
-                        Text("$label Â· ${DateFormatter.formatDateTime(movement.waktu)}", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text("$label · ${DateFormatter.formatDateTime(movement.waktu)}", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                     Text(
                         "${DateFormatter.formatQty(movement.jumlah)}",

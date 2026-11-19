@@ -1,5 +1,20 @@
 # Changelog
 
+## v1.4.0
+
+Riwayat penjualan lengkap dan impor produk dari CSV, plus penghapusan kode deprecated.
+
+### Fitur baru
+
+- **Riwayat penjualan.** Layar baru berisi seluruh transaksi per periode (7, 30, 90 hari), dengan omzet per periode, tombol bagikan struk, dan batal transaksi dengan pengembalian stok. Akses dari Kasir > Lihat semua transaksi.
+- **Impor produk dari CSV.** Siapkan file teks dengan kolom nama, satuan, harga beli, harga jual, stok, stok minimum, barcode (opsional) dan kategori (opsional). Impor massal seratus baris dalam hitungan detik. Dapatkan contoh format langsung dari aplikasi.
+- **Parser CSV canggih.** Mendukung pemisah koma atau titik koma, sel dengan tanda kutip yang berisi pembatas, baris judul kolom opsional, penanganan BOM, dan format angka Indonesia (titik seribu, koma desimal).
+
+### Peningkatan
+
+- **Locale deprecated diganti** dengan Locale.forLanguageTag("id-ID") di seluruh kode; tidak ada lagi warning deprecation.
+- **Ikon WhatsApp modern** di layar Piutang dan Peringatan stok.
+
 ## v1.3.0
 
 Fitur lanjutan kasir dan laporan, plus perbaikan performa dan polesan UI/UX.

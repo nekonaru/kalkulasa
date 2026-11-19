@@ -215,7 +215,7 @@ private fun FinanceRow(item: FinanceItem) {
                     DateFormatter.formatDateTime(item.waktu) + (when (item) {
                         is FinanceItem.Capital -> item.entry.catatan
                         is FinanceItem.ExpenseItem -> item.expense.catatan
-                    }?.let { " Â· $it" } ?: ""),
+                    }?.let { " · $it" } ?: ""),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )

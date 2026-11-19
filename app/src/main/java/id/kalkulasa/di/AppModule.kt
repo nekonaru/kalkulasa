@@ -63,7 +63,7 @@ object AppModule {
     @Provides
     @Singleton
     fun provideProductRepository(db: KalkulasaDatabase, deviceId: String): ProductRepository =
-        ProductRepositoryImpl(db.productDao(), db.changeLogDao(), deviceId)
+        ProductRepositoryImpl(db, db.productDao(), db.changeLogDao(), deviceId)
 
     @Provides
     @Singleton
