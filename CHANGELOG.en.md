@@ -1,5 +1,17 @@
 # Changelog
 
+## v1.9.0
+
+Follow-up audit of core features, focused on data consistency and clarity.
+
+### Improvements
+
+- **Safer sale cancellation.** Cancelling twice no longer returns stock twice; an already-cancelled sale is rejected.
+- **Loyalty points are reversed on cancellation.** Points, visit count and customer spend are rolled back with the cancelled transaction.
+- **Trend chart on Beranda** now shows a date label under each bar for easier reading.
+- **Net profit in Reports** is green when positive and red when negative.
+- **Sales history** refreshes when you return from the cashier.
+
 ## v1.8.0
 
 Follow-up audit, data-flow fixes, and per-supplier purchase details.

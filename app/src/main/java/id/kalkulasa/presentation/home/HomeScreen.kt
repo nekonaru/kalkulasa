@@ -33,9 +33,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.text.drawText
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import id.kalkulasa.R
@@ -292,25 +295,39 @@ private fun TrendChart(points: List<id.kalkulasa.domain.model.DailyPoint>, modif
     val maxValue = points.maxOf { maxOf(it.omzet, 1L) }.toFloat()
     val primary = MaterialTheme.colorScheme.primary
     val amber = AmberCuan
+    val muted = MaterialTheme.colorScheme.onSurfaceVariant
+    val textMeasurer = rememberTextMeasurer()
+    val labelStyle = androidx.compose.ui.text.TextStyle(
+        fontSize = 10.sp,
+        color = muted,
+    )
     Canvas(modifier = modifier) {
         val slot = size.width / points.size
         points.forEachIndexed { index, point ->
             val barWidth = slot * 0.6f
             val left = index * slot + (slot - barWidth) / 2
-            val barHeight = (point.omzet / maxValue) * (size.height * 0.75f)
+            val barHeight = (point.omzet / maxValue) * (size.height * 0.72f)
             drawRoundRect(
                 color = primary,
-                topLeft = Offset(left, size.height - barHeight - 24f),
+                topLeft = Offset(left, size.height - barHeight - 28f),
                 size = androidx.compose.ui.geometry.Size(barWidth, barHeight),
                 cornerRadius = androidx.compose.ui.geometry.CornerRadius(6f, 6f),
             )
-            val dotY = size.height - 24f - (point.laba.toFloat().coerceAtLeast(0f) / maxValue) * (size.height * 0.75f)
+            val dotY = size.height - 28f - (point.laba.toFloat().coerceAtLeast(0f) / maxValue) * (size.height * 0.72f)
             drawCircle(color = amber, radius = 4f, center = Offset(left + barWidth / 2, dotY))
+            val label = point.label
+            val measured = textMeasurer.measure(label, labelStyle)
+            drawText(
+                textMeasurer = textMeasurer,
+                text = label,
+                topLeft = Offset(left + (barWidth - measured.size.width) / 2, size.height - 16f),
+                style = labelStyle,
+            )
         }
         drawLine(
             color = primary.copy(alpha = 0.3f),
-            start = Offset(0f, size.height - 24f),
-            end = Offset(size.width, size.height - 24f),
+            start = Offset(0f, size.height - 28f),
+            end = Offset(size.width, size.height - 28f),
             strokeWidth = 2f,
         )
     }

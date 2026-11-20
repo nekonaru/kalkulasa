@@ -43,6 +43,7 @@ import id.kalkulasa.domain.model.PaymentMethod
 import id.kalkulasa.domain.model.Sale
 import id.kalkulasa.domain.model.SaleStatus
 import id.kalkulasa.presentation.component.KalkulasaEmptyState
+import id.kalkulasa.presentation.component.OnLifecycleResume
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
@@ -55,6 +56,7 @@ fun SalesHistoryScreen(
     val context = LocalContext.current
     val snackbar = remember { SnackbarHostState() }
     var saleToCancel by remember { mutableStateOf<String?>(null) }
+    OnLifecycleResume { viewModel.load() }
 
     LaunchedEffect(Unit) {
         viewModel.events.collectLatest { event ->

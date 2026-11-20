@@ -86,11 +86,18 @@ fun ReportsScreen(
                     LabeledValueRow(context.getString(R.string.cogs), "- ${RupiahFormatter.format(report.hpp)}")
                     LabeledValueRow(context.getString(R.string.gross_profit), RupiahFormatter.format(report.labaKotor))
                     LabeledValueRow(context.getString(R.string.operating_expense), "- ${RupiahFormatter.format(report.pengeluaran)}")
-                    LabeledValueRow(
-                        context.getString(R.string.net_profit_full),
-                        RupiahFormatter.format(report.labaBersih),
-                        emphasize = true,
-                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(context.getString(R.string.net_profit_full), style = MaterialTheme.typography.titleMedium)
+                        Text(
+                            RupiahFormatter.format(report.labaBersih),
+                            style = MaterialTheme.typography.titleLarge,
+                            color = if (report.labaBersih < 0) Rugi else Sukses,
+                        )
+                    }
                     LabeledValueRow(context.getString(R.string.margin), String.format(java.util.Locale.forLanguageTag("id-ID"), "%.1f%%", report.marginPersen))
                     LabeledValueRow(context.getString(R.string.inventory_value), RupiahFormatter.format(report.nilaiPersediaan))
                 }

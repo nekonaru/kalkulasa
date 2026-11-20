@@ -1,5 +1,17 @@
 # Changelog
 
+## v1.9.0
+
+Audit lanjutan pada fitur inti, fokus pada konsistensi data dan tampilan.
+
+### Peningkatan
+
+- **Pembatalan transaksi lebih aman.** Membatalkan dua kali tidak lagi mengembalikan stok dua kali; transaksi yang sudah dibatalkan ditolak.
+- **Poin loyalti ikut dikoreksi saat transaksi dibatalkan.** Poin, jumlah kunjungan, dan total belanja pelanggan dikurangi sesuai transaksi yang dibatalkan.
+- **Grafik tren di Beranda** kini menampilkan label tanggal di bawah setiap batang, supaya mudah dibaca.
+- **Laba bersih di Laporan** berwarna hijau saat untung dan merah saat rugi.
+- **Riwayat penjualan** ikut diperbarui saat kamu kembali dari Kasir.
+
 ## v1.8.0
 
 Audit lanjutan, perbaikan alur data, dan detail pembelian per pemasok.

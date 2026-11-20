@@ -163,9 +163,29 @@ class SaleRepositoryImpl @Inject constructor(
         db.withTransaction {
             val saleDao = db.saleDao()
             val productDao = db.productDao()
+            val sale = saleDao.getById(saleId)
+                ?: throw IllegalStateException("Transaksi tidak ditemukan")
+            if (sale.status == SaleStatus.BATAL) {
+                throw IllegalStateException("Transaksi sudah dibatalkan")
+            }
             val now0 = RepositorySupport.now()
             // Soft-delete any receivable linked to this sale so a cancelled credit sale does not stay as debt.
             db.receivableDao().softDeleteBySaleId(saleId, now0)
+            // Reverse loyalty points earned by the named customer on this sale.
+            sale.customerId?.let { customerId ->
+                db.customerDao().getById(customerId)?.let { customer ->
+                    val points = PoinLoyalitasUseCase.pointsFor(sale.total)
+                    db.customerDao().upsert(
+                        customer.copy(
+                            poin = (customer.poin - points).coerceAtLeast(0L),
+                            kunjungan = (customer.kunjungan - 1).coerceAtLeast(0),
+                            totalBelanja = (customer.totalBelanja - sale.total).coerceAtLeast(0L),
+                            updatedAt = now0,
+                        ),
+                    )
+                    RepositorySupport.log(changeLogDao, "customer", customerId, "UPDATE")
+                }
+            }
             val items = saleDao.getItems(saleId)
             val now = RepositorySupport.now()
             items.forEach { item ->
