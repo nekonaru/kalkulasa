@@ -34,6 +34,7 @@ import id.kalkulasa.presentation.finance.FinanceScreen
 import id.kalkulasa.presentation.home.HomeScreen
 import id.kalkulasa.presentation.piutang.PiutangScreen
 import id.kalkulasa.presentation.products.ImportProductsScreen
+import id.kalkulasa.presentation.supplier.SupplierPurchasesScreen
 import id.kalkulasa.presentation.supplier.SupplierScreen
 import id.kalkulasa.presentation.sales.SalesHistoryScreen
 import id.kalkulasa.presentation.stock.RestockScreen
@@ -150,6 +151,12 @@ fun KalkulasaNavHost(startDestination: String) {
             }
             composable(Routes.SUPPLIERS) {
                 SupplierScreen(
+                    onBack = { navController.popBackStack() },
+                    onOpenSupplier = { name -> navController.navigate("${Routes.SUPPLIER_DETAIL}/${java.net.URLEncoder.encode(name, "UTF-8")}") },
+                )
+            }
+            composable("${Routes.SUPPLIER_DETAIL}/{supplier}") {
+                SupplierPurchasesScreen(
                     onBack = { navController.popBackStack() },
                 )
             }

@@ -73,6 +73,7 @@
     <string name="payment_hutang">On credit</string>
     <string name="tendered_label">Amount received</string>
     <string name="change_label">Change</string>
+    <string name="cash_exact">Exact</string>
     <string name="customer_name">Customer name</string>
     <string name="customer_name_hint">Example: Bu Ratna</string>
     <string name="customer_name_required">Enter the customer name for credit sales</string>
@@ -156,6 +157,7 @@
     <string name="entry_expense">Expense</string>
     <string name="entry_purchase">Stock purchase</string>
     <string name="entry_sale">Sale</string>
+    <string name="supplier_period_year">12 months</string>
     <string name="supplier_unknown">No supplier</string>
 
     <string name="customer_name_optional">Customer name (optional)</string>

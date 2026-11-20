@@ -58,7 +58,7 @@
 | **Kasir satu ketuk** | Ketuk produk untuk masukkan ke keranjang, atur jumlah, beri diskon dalam rupiah, pilih tunai / transfer / QRIS / Hutang sebagai label |
 | **Produk pin di kasir** | Sematkan produk yang paling sering dibeli agar selalu muncul di atas |
 | **Ulangi transaksi terakhir** | Satu ketuk mengisi keranjang dengan isi transaksi terakhir yang selesai |
-| **Kembalian otomatis** | Saat bayar Tunai, isi uang diterima dan Kalkulasa hitung kembalian |
+| **Kembalian otomatis** | Saat bayar Tunai, isi uang diterima dan Kalkulasa hitung kembalian; tombol "Uang pas" mengisi nominal sepersis total |
 | **Riwayat penjualan** | Semua transaksi per periode, omzet per periode, bagikan struk dan batal transaksi dari satu layar |
 | **Stok otomatis berkurang** | Menyimpan penjualan mengurangi stok dan mencatat modal per barang terjual |
 | **Hutang pelanggan** | Jualan dengan metode Hutang, isi nama pelanggan, utang otomatis masuk buku Piutang |
@@ -87,7 +87,7 @@
 | **Prive** | Pengambilan uang pribadi pemilik dicatat terpisah agar laba usaha tetap bersih |
 | **Pengeluaran operasional** | Pengeluaran per kategori (Listrik, Sewa, Gaji, Transportasi, Lainnya); penjualan dan pembelian stok tercatat otomatis |
 | **Riwayat pembelian** | Setiap stok masuk tercatat di riwayat keuangan dengan label pemasoknya |
-| **Pemasok** | Total belanja, jumlah transaksi dan tanggal pembelian terakhir per pemasok |
+| **Pemasok** | Total belanja, jumlah transaksi dan tanggal pembelian terakhir per pemasok; ketuk untuk melihat detail belanja per periode |
 
 ### Pelanggan dan poin
 
@@ -180,7 +180,7 @@
 ### Opsi A: Unduh APK (paling mudah)
 
 1. Buka halaman [Releases](https://github.com/nekonaru/kalkulasa/releases)
-2. Unduh `kalkulasa-v1.7.0.apk`
+2. Unduh `kalkulasa-v1.8.0.apk`
 3. Buka di ponsel kamu dan izinkan instalasi dari sumber tidak dikenal jika diminta
 4. Buka aplikasi dan isi profil usaha kamu
 

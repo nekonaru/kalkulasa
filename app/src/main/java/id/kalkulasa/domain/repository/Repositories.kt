@@ -43,6 +43,7 @@ interface ProductRepository {
 
 interface SupplierRepository {
     suspend fun supplierSpend(): List<SupplierSpend>
+    suspend fun purchasesFromSupplier(name: String, from: Long, to: Long): List<PurchaseRecord>
 }
 
 interface CategoryRepository {

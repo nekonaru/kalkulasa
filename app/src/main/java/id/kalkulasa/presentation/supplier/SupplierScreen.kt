@@ -1,5 +1,6 @@
 package id.kalkulasa.presentation.supplier
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -34,6 +35,7 @@ import id.kalkulasa.presentation.component.OnLifecycleResume
 @Composable
 fun SupplierScreen(
     onBack: () -> Unit,
+    onOpenSupplier: (String) -> Unit,
     viewModel: SupplierViewModel = hiltViewModel(),
 ) {
     val rows by viewModel.spend.collectAsStateWithLifecycle()
@@ -62,7 +64,10 @@ fun SupplierScreen(
                 )
                 LazyColumn(modifier = Modifier.padding(top = 12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     items(rows, key = { it.pemasok }) { row ->
-                        Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
+                        Card(
+                            modifier = Modifier.fillMaxWidth().clickable { onOpenSupplier(row.pemasok) },
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                        ) {
                             Column(modifier = Modifier.fillMaxWidth().padding(14.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                                 Text(
                                     row.pemasok.ifBlank { context.getString(R.string.supplier_unknown) },

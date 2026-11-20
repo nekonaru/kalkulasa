@@ -73,6 +73,7 @@
     <string name="payment_hutang">Hutang</string>
     <string name="tendered_label">Uang diterima</string>
     <string name="change_label">Kembalian</string>
+    <string name="cash_exact">Uang pas</string>
     <string name="customer_name">Nama pelanggan</string>
     <string name="customer_name_hint">Contoh: Bu Ratna</string>
     <string name="customer_name_required">Isi nama pelanggan untuk jualan hutang</string>
@@ -156,6 +157,7 @@
     <string name="entry_expense">Pengeluaran</string>
     <string name="entry_purchase">Pembelian stok</string>
     <string name="entry_sale">Penjualan</string>
+    <string name="supplier_period_year">12 bulan</string>
     <string name="supplier_unknown">Tanpa pemasok</string>
 
     <string name="customer_name_optional">Nama pelanggan (opsional)</string>

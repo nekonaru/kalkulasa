@@ -58,7 +58,7 @@
 | **One-tap cashier** | Tap products to add them to the cart, adjust quantities, apply a discount in rupiah, pick cash / transfer / QRIS / Hutang as a label |
 | **Pinned products at the cashier** | Pin your most frequently bought products so they always appear on top |
 | **Repeat last sale** | One tap fills the cart with the contents of the last completed sale |
-| **Automatic change calculation** | When paying with cash, enter the amount received and Kalkulasa computes the change |
+| **Automatic change calculation** | When paying with cash, enter the amount received and Kalkulasa computes the change; the Exact button fills the amount precisely |
 | **Sales history** | All transactions per period, period revenue, share receipts and cancel transactions from one screen |
 | **Automatic stock deduction** | Saving a sale deducts stock and records average cost (HPP) per sold item |
 | **Customer debt at the cashier** | Sell with Hutang, enter the customer name, debt lands in the receivables book automatically |
@@ -87,7 +87,7 @@
 | **Private draws (Prive)** | Owner takes are recorded separately so profit stays clean |
 | **Operating expenses** | Expenses per category (Electricity, Rent, Salary, Transport, Other); sales and stock purchases are recorded automatically |
 | **Purchase history** | Every stock-in is recorded in the finance history labeled with the supplier |
-| **Suppliers** | Total spend, transaction count and last purchase date per supplier |
+| **Suppliers** | Total spend, transaction count and last purchase date per supplier; tap to see purchase details per period |
 
 ### Customers and points
 
@@ -180,7 +180,7 @@
 ### Option A: Download the APK (easiest)
 
 1. Open the [Releases](https://github.com/nekonaru/kalkulasa/releases) page
-2. Download `kalkulasa-v1.7.0.apk`
+2. Download `kalkulasa-v1.8.0.apk`
 3. Open it on your phone and allow installs from unknown sources if asked
 4. Open the app and fill in your business profile
 

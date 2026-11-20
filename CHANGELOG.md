@@ -1,5 +1,19 @@
 # Changelog
 
+## v1.8.0
+
+Audit lanjutan, perbaikan alur data, dan detail pembelian per pemasok.
+
+### Fitur baru
+
+- **Detail belanja per pemasok.** Ketuk pemasok di layar Pemasok untuk melihat seluruh transaksi pembelian dari pemasok itu dalam 30 hari, 90 hari atau 12 bulan terakhir, lengkap dengan total per periode.
+- **Tombol Uang pas** di kolom uang diterima saat pembayaran Tunai: satu ketuk mengisi nominal sesuai total.
+
+### Peningkatan
+
+- **Laporan selalu segar** saat kamu kembali dari Kasir, sehingga angka omzet dan laba langsung diperbarui.
+- **Ulangi transaksi terakhir kini memeriksa stok**: produk yang stoknya sudah tidak cukup dilewati, bukan masuk keranjang lalu gagal saat disimpan.
+
 ## v1.7.0
 
 Fitur ulangi transaksi untuk mempercepat kasir.

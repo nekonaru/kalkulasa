@@ -1,5 +1,19 @@
 # Changelog
 
+## v1.8.0
+
+Follow-up audit, data-flow fixes, and per-supplier purchase details.
+
+### New features
+
+- **Per-supplier purchase detail.** Tap a supplier on the Suppliers screen to see all purchases from that supplier over 30 days, 90 days or 12 months, with the period total.
+- **Exact-cash button** on the amount-received field for cash payments: one tap fills the amount equal to the total.
+
+### Improvements
+
+- **Reports are always fresh** when you return from the cashier, so revenue and profit update immediately.
+- **Repeat last sale now checks stock**: products with insufficient stock are skipped instead of being added and failing at save time.
+
 ## v1.7.0
 
 Repeat-sale shortcut to cut cashier time.

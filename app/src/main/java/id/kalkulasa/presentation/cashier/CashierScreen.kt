@@ -322,6 +322,11 @@ private fun CartSection(
                 label = { Text(context.getString(R.string.tendered_label)) },
                 prefix = { Text("Rp ") },
                 singleLine = true,
+                trailingIcon = {
+                    TextButton(onClick = { onTenderedChange(total.toString()) }) {
+                        Text(context.getString(R.string.cash_exact))
+                    }
+                },
                 modifier = Modifier.fillMaxWidth(),
             )
             if (change > 0) {

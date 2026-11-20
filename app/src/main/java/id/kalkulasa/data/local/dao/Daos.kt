@@ -157,6 +157,14 @@ interface PurchaseDao {
     )
     suspend fun supplierSpend(): List<SupplierSpendProjection>
 
+    @Query(
+        """SELECT * FROM purchase WHERE deletedAt IS NULL
+           AND LOWER(TRIM(COALESCE(pemasok, ''))) = LOWER(TRIM(:name))
+           AND waktu BETWEEN :from AND :to
+           ORDER BY waktu DESC"""
+    )
+    suspend fun purchasesFromSupplier(name: String, from: Long, to: Long): List<PurchaseEntity>
+
     @Query("SELECT * FROM purchase WHERE deletedAt IS NULL")
     suspend fun getAll(): List<PurchaseEntity>
 

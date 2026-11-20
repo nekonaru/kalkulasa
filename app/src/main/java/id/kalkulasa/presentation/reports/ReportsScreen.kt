@@ -31,6 +31,7 @@ import id.kalkulasa.R
 import id.kalkulasa.core.util.RupiahFormatter
 import id.kalkulasa.presentation.component.KalkulasaEmptyState
 import id.kalkulasa.presentation.component.LabeledValueRow
+import id.kalkulasa.presentation.component.OnLifecycleResume
 import id.kalkulasa.presentation.theme.Rugi
 import id.kalkulasa.presentation.theme.Sukses
 
@@ -41,6 +42,7 @@ fun ReportsScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val mostProfitable by viewModel.mostProfitable.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    OnLifecycleResume { viewModel.load() }
 
     Scaffold { padding ->
         Column(

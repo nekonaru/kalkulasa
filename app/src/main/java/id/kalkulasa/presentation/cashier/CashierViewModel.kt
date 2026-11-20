@@ -131,7 +131,7 @@ class CashierViewModel @Inject constructor(
             // Only keep products that still exist and have enough stock
             val kept = items.mapNotNull { line ->
                 val product = productRepository.getById(line.produkId) ?: return@mapNotNull null
-                if (product.diarsipkan) return@mapNotNull null
+                if (product.diarsipkan || product.stok < line.jumlah) return@mapNotNull null
                 product to line.jumlah
             }
             if (kept.isEmpty()) {
