@@ -1,5 +1,19 @@
 # Changelog
 
+## v2.0.0
+
+Management features hardened and the UI cleaned up.
+
+### New features
+
+- **Set product pins from Stok.** Adding or editing a product now has a "Pin at the cashier" option; pinned products appear first in Kasir without having to open Kasir.
+- **Pin state is preserved when a product is edited.**
+
+### Improvements
+
+- **Backup format v4** stores product pin state; older backups still restore.
+- **.kotlin** compiler metadata is no longer tracked in git.
+
 ## v1.9.0
 
 Follow-up audit of core features, focused on data consistency and clarity.

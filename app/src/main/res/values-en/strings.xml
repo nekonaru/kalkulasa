@@ -48,6 +48,7 @@
     <string name="home_greeting_night">Good night</string>
     <string name="home_greeting_line">Small business, everything sorted.</string>
     <string name="product_pin">Pin to top</string>
+    <string name="product_pin_dialog">Pin at the cashier (appears first)</string>
     <string name="omzet_today">Today\'s revenue</string>
     <string name="net_profit">Net profit</string>
     <string name="transactions_today">transactions</string>

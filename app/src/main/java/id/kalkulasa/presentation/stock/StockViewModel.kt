@@ -68,6 +68,7 @@ class StockViewModel @Inject constructor(
         hargaJual: Long,
         stokAwal: Double,
         stokMinimum: Double,
+        isPinned: Boolean = false,
     ) {
         viewModelScope.launch {
             val trimmed = nama.trim()
@@ -85,6 +86,7 @@ class StockViewModel @Inject constructor(
                 stokMinimum = stokMinimum,
                 fotoUri = base?.fotoUri,
                 diarsipkan = base?.diarsipkan ?: false,
+                isPinned = base?.isPinned ?: false,
             )
             productRepository.save(product)
             _events.send(StockEvent.Message("SAVED"))

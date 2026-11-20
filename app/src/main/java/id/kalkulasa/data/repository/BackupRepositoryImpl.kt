@@ -277,6 +277,6 @@ class BackupRepositoryImpl @Inject constructor(
     )
 
     private companion object {
-        const val BACKUP_VERSION = 3
+        const val BACKUP_VERSION = 4
     }
 }

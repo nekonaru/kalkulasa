@@ -48,6 +48,7 @@
     <string name="home_greeting_night">Selamat malam</string>
     <string name="home_greeting_line">Usaha kecil, semua urusan beres.</string>
     <string name="product_pin">Sematkan ke atas</string>
+    <string name="product_pin_dialog">Sematkan di kasir (muncul paling atas)</string>
     <string name="omzet_today">Omzet hari ini</string>
     <string name="net_profit">Untung bersih</string>
     <string name="transactions_today">transaksi</string>

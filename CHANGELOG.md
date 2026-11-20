@@ -1,5 +1,19 @@
 # Changelog
 
+## v2.0.0
+
+Fitur manajemen yang dimantapkan dan tampilan yang lebih rapi.
+
+### Fitur baru
+
+- **Atur pin produk dari Stok.** Tambah atau ubah produk kini punya opsi "Sematkan di kasir"; produk pin muncul paling atas di Kasir tanpa perlu membuka Kasir.
+- **Status pin tidak hilang saat produk diedit.**
+
+### Peningkatan
+
+- **Format backup v4** menyimpan status pin produk; backup versi lama tetap bisa dipulihkan.
+- **.kotlin** (metadata compiler) tidak lagi ikut tersimpan di git.
+
 ## v1.9.0
 
 Audit lanjutan pada fitur inti, fokus pada konsistensi data dan tampilan.

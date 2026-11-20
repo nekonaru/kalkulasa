@@ -24,6 +24,7 @@ import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -139,8 +140,8 @@ fun StockScreen(
             categories = categories,
             onAddCategory = viewModel::addCategory,
             onDismiss = { showAddProduct = false },
-            onSave = { nama, kategoriId, satuan, barcode, hargaBeli, hargaJual, stokAwal, stokMinimum ->
-                viewModel.saveProduct(null, nama, kategoriId, satuan, barcode, hargaBeli, hargaJual, stokAwal, stokMinimum)
+            onSave = { nama, kategoriId, satuan, barcode, hargaBeli, hargaJual, stokAwal, stokMinimum, pin ->
+                viewModel.saveProduct(null, nama, kategoriId, satuan, barcode, hargaBeli, hargaJual, stokAwal, stokMinimum, pin)
                 showAddProduct = false
             },
         )
@@ -151,8 +152,8 @@ fun StockScreen(
             categories = categories,
             onAddCategory = viewModel::addCategory,
             onDismiss = { editingProduct = null },
-            onSave = { nama, kategoriId, satuan, barcode, hargaBeli, hargaJual, _, stokMinimum ->
-                viewModel.saveProduct(product, nama, kategoriId, satuan, barcode, hargaBeli, hargaJual, product.stok, stokMinimum)
+            onSave = { nama, kategoriId, satuan, barcode, hargaBeli, hargaJual, _, stokMinimum, pin ->
+                viewModel.saveProduct(product, nama, kategoriId, satuan, barcode, hargaBeli, hargaJual, product.stok, stokMinimum, pin)
                 editingProduct = null
             },
         )
@@ -385,7 +386,7 @@ private fun ProductFormDialog(
     categories: List<id.kalkulasa.domain.model.Category>,
     onAddCategory: (String) -> Unit,
     onDismiss: () -> Unit,
-    onSave: (nama: String, kategoriId: String?, satuan: String, barcode: String, hargaBeli: Long, hargaJual: Long, stokAwal: Double, stokMinimum: Double) -> Unit,
+    onSave: (nama: String, kategoriId: String?, satuan: String, barcode: String, hargaBeli: Long, hargaJual: Long, stokAwal: Double, stokMinimum: Double, isPinned: Boolean) -> Unit,
 ) {
     val context = LocalContext.current
     var nama by remember(initial) { mutableStateOf(initial?.nama ?: "") }
@@ -399,6 +400,7 @@ private fun ProductFormDialog(
     var hargaJual by remember(initial) { mutableStateOf(initial?.hargaJual?.toString() ?: "") }
     var stokAwal by remember(initial) { mutableStateOf("0") }
     var stokMinimum by remember(initial) { mutableStateOf(initial?.stokMinimum?.let { DateFormatter.formatQty(it) } ?: "0") }
+    var isPinned by remember(initial) { mutableStateOf(initial?.isPinned ?: false) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -447,6 +449,12 @@ private fun ProductFormDialog(
                 item {
                     OutlinedTextField(stokMinimum, { stokMinimum = it.filter { c -> c.isDigit() || c == ',' || c == '.' } }, label = { Text(context.getString(R.string.product_min_stock)) }, singleLine = true, modifier = Modifier.fillMaxWidth())
                 }
+                item {
+                    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                        Checkbox(checked = isPinned, onCheckedChange = { isPinned = it })
+                        Text(context.getString(R.string.product_pin_dialog), style = MaterialTheme.typography.bodyLarge)
+                    }
+                }
             }
         },
         confirmButton = {
@@ -461,6 +469,7 @@ private fun ProductFormDialog(
                         hargaJual.toLongOrNull() ?: 0L,
                         stokAwal.replace(',', '.').toDoubleOrNull() ?: 0.0,
                         stokMinimum.replace(',', '.').toDoubleOrNull() ?: 0.0,
+                        isPinned,
                     )
                 },
             ) { Text(context.getString(R.string.button_save)) }
