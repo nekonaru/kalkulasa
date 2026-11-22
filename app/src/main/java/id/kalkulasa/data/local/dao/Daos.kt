@@ -175,6 +175,9 @@ interface PurchaseDao {
     suspend fun sumBetween(from: Long, to: Long): Long
 }
 
+data class DailyRevenueProjection(val day: String, val revenue: Long)
+data class DailyCogsProjection(val day: String, val cogs: Long)
+
 @Dao
 interface SaleDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -200,6 +203,25 @@ interface SaleDao {
 
     @Query("SELECT * FROM sale WHERE deletedAt IS NULL")
     suspend fun getAll(): List<SaleEntity>
+
+    @Query(
+        """SELECT substr(datetime(waktu / 1000, 'unixepoch', 'localtime'), 1, 10) AS day,
+                  COALESCE(SUM(total), 0) AS revenue
+           FROM sale
+           WHERE deletedAt IS NULL AND status = 'SELESAI' AND waktu BETWEEN :from AND :to
+           GROUP BY day"""
+    )
+    suspend fun dailyRevenue(from: Long, to: Long): List<DailyRevenueProjection>
+
+    @Query(
+        """SELECT substr(datetime(s.waktu / 1000, 'unixepoch', 'localtime'), 1, 10) AS day,
+                  COALESCE(SUM(si.jumlah * si.hppSaatJual), 0) AS cogs
+           FROM sale_item si JOIN sale s ON s.id = si.saleId
+           WHERE si.deletedAt IS NULL AND s.deletedAt IS NULL AND s.status = 'SELESAI'
+           AND s.waktu BETWEEN :from AND :to
+           GROUP BY day"""
+    )
+    suspend fun dailyCogs(from: Long, to: Long): List<DailyCogsProjection>
 
     @Query("SELECT COALESCE(SUM(total), 0) FROM sale WHERE deletedAt IS NULL AND status = 'SELESAI' AND waktu BETWEEN :from AND :to")
     suspend fun sumRevenueBetween(from: Long, to: Long): Long

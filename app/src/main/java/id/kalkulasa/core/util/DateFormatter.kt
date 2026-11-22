@@ -5,17 +5,20 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
-/** Date and quantity helpers shared across features. */
+/**
+ * Date and quantity helpers shared across features.
+ * SimpleDateFormat instances are created per call because they are not thread-safe.
+ */
 object DateFormatter {
-    private val dayMonth = SimpleDateFormat("d MMM", Locale.forLanguageTag("id-ID"))
-    private val dayMonthYear = SimpleDateFormat("d MMM yyyy", Locale.forLanguageTag("id-ID"))
-    private val dateTime = SimpleDateFormat("d MMM yyyy HH:mm", Locale.forLanguageTag("id-ID"))
-    private val fileStamp = SimpleDateFormat("yyyyMMdd-HHmmss", Locale.US)
+    private fun dayMonthFormat() = SimpleDateFormat("d MMM", Locale.forLanguageTag("id-ID"))
+    private fun dayMonthYearFormat() = SimpleDateFormat("d MMM yyyy", Locale.forLanguageTag("id-ID"))
+    private fun dateTimeFormat() = SimpleDateFormat("d MMM yyyy HH:mm", Locale.forLanguageTag("id-ID"))
+    private fun fileStampFormat() = SimpleDateFormat("yyyyMMdd-HHmmss", Locale.US)
 
-    fun formatDayMonth(millis: Long): String = dayMonth.format(Date(millis))
-    fun formatDayMonthYear(millis: Long): String = dayMonthYear.format(Date(millis))
-    fun formatDateTime(millis: Long): String = dateTime.format(Date(millis))
-    fun fileStamp(millis: Long): String = fileStamp.format(Date(millis))
+    fun formatDayMonth(millis: Long): String = dayMonthFormat().format(Date(millis))
+    fun formatDayMonthYear(millis: Long): String = dayMonthYearFormat().format(Date(millis))
+    fun formatDateTime(millis: Long): String = dateTimeFormat().format(Date(millis))
+    fun fileStamp(millis: Long): String = fileStampFormat().format(Date(millis))
 
     fun startOfDay(now: Long = System.currentTimeMillis()): Long =
         Calendar.getInstance().apply {
@@ -44,5 +47,6 @@ object DateFormatter {
 
     /** Quantity display: drops the decimal part when whole. */
     fun formatQty(qty: Double): String =
-        if (qty == qty.toLong().toDouble()) qty.toLong().toString() else String.format(Locale.forLanguageTag("id-ID"), "%.2f", qty)
+        if (qty == qty.toLong().toDouble()) qty.toLong().toString()
+        else String.format(Locale.forLanguageTag("id-ID"), "%.2f", qty)
 }

@@ -1,5 +1,16 @@
 # Changelog
 
+## v2.1.0
+
+Optimalisasi performa tanpa fitur baru.
+
+### Peningkatan
+
+- **Beranda lebih cepat.** Semua pembacaan data independen (omzet, laba, stok menipis, piutang, kesehatan usaha) kini berjalan paralel, bukan berurutan.
+- **Grafik tren jauh lebih ringan.** Dulu 14 query SQL per refresh, sekarang 2 query agregat; hari tanpa transaksi tetap ditampilkan dengan nilai nol.
+- **Ekspor laporan tidak lagi mem-blok UI.** Penulisan file PDF/CSV dipindah ke thread IO.
+- **Formatter tanggal dan rupiah thread-safe**, menghindari hasil acak saat dipanggil bersamaan.
+
 ## v2.0.0
 
 Fitur manajemen yang dimantapkan dan tampilan yang lebih rapi.

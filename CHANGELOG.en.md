@@ -1,5 +1,16 @@
 # Changelog
 
+## v2.1.0
+
+Performance optimizations, no new features.
+
+### Improvements
+
+- **Faster home screen.** All independent reads (revenue, profit, low stock, receivables, health score) now run concurrently instead of sequentially.
+- **Much lighter trend chart.** Previously 14 SQL queries per refresh, now 2 aggregate queries; days without sales still appear with zero.
+- **Report exports no longer block the UI.** PDF/CSV file writing moved to the IO thread.
+- **Date and currency formatters are thread-safe**, avoiding garbled values under concurrent calls.
+
 ## v2.0.0
 
 Management features hardened and the UI cleaned up.

@@ -262,14 +262,18 @@ class SaleRepositoryImpl @Inject constructor(
             .map { ProductSales(it.namaProduk, it.qty) }
 
     override suspend fun dailyTrend(days: Int): List<DailyPoint> {
-        val result = mutableListOf<DailyPoint>()
-        for (daysAgo in days - 1 downTo 0) {
-            val from = DateFormatter.startOfDayDaysAgo(daysAgo)
-            val to = from + 24L * 60 * 60 * 1000 - 1
-            val revenue = db.saleDao().sumRevenueBetween(from, to)
-            val cogs = db.saleDao().sumCogsBetween(from, to)
-            result += DailyPoint(DateFormatter.formatDayMonth(from), revenue, revenue - cogs)
+        val from = DateFormatter.startOfDayDaysAgo(days - 1)
+        val to = DateFormatter.endOfDay()
+        // Two aggregate queries instead of 2 per day
+        val revenueByDay = db.saleDao().dailyRevenue(from, to).associate { it.day to it.revenue }
+        val cogsByDay = db.saleDao().dailyCogs(from, to).associate { it.day to it.cogs }
+        val dayFormat = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US)
+        return (days - 1 downTo 0).map { daysAgo ->
+            val start = DateFormatter.startOfDayDaysAgo(daysAgo)
+            val key = dayFormat.format(java.util.Date(start))
+            val revenue = revenueByDay[key] ?: 0L
+            val cogs = cogsByDay[key] ?: 0L
+            DailyPoint(DateFormatter.formatDayMonth(start), revenue, revenue - cogs)
         }
-        return result
     }
 }

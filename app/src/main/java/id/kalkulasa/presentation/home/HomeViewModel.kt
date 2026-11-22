@@ -14,6 +14,7 @@ import id.kalkulasa.domain.repository.ReceivableRepository
 import id.kalkulasa.domain.repository.ReportRepository
 import id.kalkulasa.domain.repository.SaleRepository
 import id.kalkulasa.domain.usecase.KesehatanUsahaUseCase
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -57,41 +58,50 @@ class HomeViewModel @Inject constructor(
 
     fun refresh() {
         viewModelScope.launch {
-            val profile = profileRepository.getProfile()
             val from = DateFormatter.startOfDay()
             val to = DateFormatter.endOfDay()
-            val omzet = saleRepository.revenueBetween(from, to)
-            val cogs = saleRepository.cogsBetween(from, to)
-            val expenses = financeRepository.expensesBetween(from, to)
-            val count = saleRepository.countBetween(from, to)
-            val lowStock = productRepository.observeLowStockCount().first()
-            val trend = saleRepository.dailyTrend(7)
-            val weekAgo = DateFormatter.startOfDayDaysAgo(6)
-            val best = saleRepository.topProductsBetween(weekAgo, to, 3)
-            val piutang = receivableRepository.observeOutstanding().first()
-            // Business health for the last 30 days
             val monthAgo = DateFormatter.startOfDayDaysAgo(29, System.currentTimeMillis())
-            val monthReport = reportRepository.reportBetween(monthAgo, to)
-            val saldoKas = financeRepository.cashBalance()
+            val weekAgo = DateFormatter.startOfDayDaysAgo(6)
+
+            // Run independent reads concurrently to keep the home screen snappy
+            val profile = async { profileRepository.getProfile() }
+            val omzet = async { saleRepository.revenueBetween(from, to) }
+            val cogs = async { saleRepository.cogsBetween(from, to) }
+            val expenses = async { financeRepository.expensesBetween(from, to) }
+            val count = async { saleRepository.countBetween(from, to) }
+            val lowStock = async { productRepository.observeLowStockCount().first() }
+            val trend = async { saleRepository.dailyTrend(7) }
+            val best = async { saleRepository.topProductsBetween(weekAgo, to, 3) }
+            val piutang = async { receivableRepository.observeOutstanding().first() }
+            val monthReport = async { reportRepository.reportBetween(monthAgo, to) }
+            val saldoKas = async { financeRepository.cashBalance() }
+
+            val profileValue = profile.await()
+            val omzetValue = omzet.await()
+            val cogsValue = cogs.await()
+            val expensesValue = expenses.await()
+            val lowStockValue = lowStock.await()
+            val piutangValue = piutang.await()
+            val reportValue = monthReport.await()
             val health = KesehatanUsahaUseCase.evaluate(
                 KesehatanUsahaUseCase.Input(
-                    marginPersen = monthReport.marginPersen,
-                    labaBersih = monthReport.labaBersih,
-                    omzet = monthReport.omzet,
-                    nilaiPersediaan = monthReport.nilaiPersediaan,
-                    piutangOutstanding = piutang,
-                    saldoKas = saldoKas,
+                    marginPersen = reportValue.marginPersen,
+                    labaBersih = reportValue.labaBersih,
+                    omzet = reportValue.omzet,
+                    nilaiPersediaan = reportValue.nilaiPersediaan,
+                    piutangOutstanding = piutangValue,
+                    saldoKas = saldoKas.await(),
                 ),
             )
             _state.value = HomeUiState(
-                namaUsaha = profile?.namaUsaha ?: "",
-                omzetToday = omzet,
-                netProfitToday = omzet - cogs - expenses,
-                transactionCount = count,
-                lowStockCount = lowStock,
-                trend = trend,
-                bestSellers = best,
-                piutangOutstanding = piutang,
+                namaUsaha = profileValue?.namaUsaha ?: "",
+                omzetToday = omzetValue,
+                netProfitToday = omzetValue - cogsValue - expensesValue,
+                transactionCount = count.await(),
+                lowStockCount = lowStockValue,
+                trend = trend.await(),
+                bestSellers = best.await(),
+                piutangOutstanding = piutangValue,
                 health = health,
                 loading = false,
             )

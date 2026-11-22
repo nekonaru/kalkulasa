@@ -16,7 +16,9 @@ import id.kalkulasa.domain.repository.SaleRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
 
@@ -103,7 +105,7 @@ class ReportsViewModel @Inject constructor(
     private fun shareFile(name: String, mime: String, produce: suspend () -> ByteArray) {
         if (_state.value.exporting) return
         _state.value = _state.value.copy(exporting = true)
-        viewModelScope.launch {
+        viewModelScope.launch(kotlinx.coroutines.Dispatchers.IO) {
             try {
                 val bytes = produce()
                 val dir = File(context.cacheDir, "exports").apply { mkdirs() }
@@ -115,9 +117,13 @@ class ReportsViewModel @Inject constructor(
                     putExtra(Intent.EXTRA_STREAM, uri)
                     addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 }
-                context.startActivity(Intent.createChooser(intent, null).apply { addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) })
+                withContext(kotlinx.coroutines.Dispatchers.Main) {
+                    context.startActivity(Intent.createChooser(intent, null).apply { addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) })
+                }
             } finally {
-                _state.value = _state.value.copy(exporting = false)
+                withContext(kotlinx.coroutines.Dispatchers.Main) {
+                    _state.value = _state.value.copy(exporting = false)
+                }
             }
         }
     }
