@@ -291,4 +291,33 @@
     <!-- Pin lock screen -->
     <string name="lock_title">Kalkulasa terkunci</string>
     <string name="lock_subtitle">Masukkan PIN untuk membuka</string>
+    <!-- Karyawan dan penggajian -->
+    <string name="employees_title">Karyawan dan Gaji</string>
+    <string name="tab_employees">Karyawan</string>
+    <string name="tab_attendance">Absen</string>
+    <string name="tab_payroll">Gaji</string>
+    <string name="add_employee">Tambah karyawan</string>
+    <string name="edit_employee">Ubah karyawan</string>
+    <string name="employee_name">Nama karyawan</string>
+    <string name="employee_role">Jabatan</string>
+    <string name="employee_role_default">Karyawan</string>
+    <string name="employee_phone">Telepon (opsional)</string>
+    <string name="employee_daily_wage">Upah per hari</string>
+    <string name="employee_active">Aktif</string>
+    <string name="employee_inactive">Nonaktif</string>
+    <string name="employees_empty">Belum ada karyawan. Tambahkan karyawan pertamamu.</string>
+    <string name="employee_saved">Data karyawan tersimpan</string>
+    <string name="attendance_present">Hadir</string>
+    <string name="attendance_permit">Izin</string>
+    <string name="attendance_sick">Sakit</string>
+    <string name="attendance_absent">Alfa</string>
+    <string name="attendance_saved">Absensi tersimpan</string>
+    <string name="payroll_this_month">Bulan ini</string>
+    <string name="payroll_months_ago">%1$d bulan lalu</string>
+    <string name="payroll_kasbon">Kasbon</string>
+    <string name="payroll_pay">Bayar</string>
+    <string name="payroll_paid">Lunas</string>
+    <string name="payroll_pay_title">Bayar gaji</string>
+    <string name="payroll_empty">Belum ada data gaji. Tambah karyawan dan absen dulu.</string>
+    <string name="salary_paid">Gaji dibayar dan tercatat di pengeluaran</string>
 </resources>

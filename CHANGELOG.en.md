@@ -1,5 +1,22 @@
 # Changelog
 
+## v2.2.0
+
+Employees and Payroll module, the next offline-capable step of the phase 3 roadmap.
+
+### New features
+
+- **Employee records.** Add, edit and deactivate employees with name, role, phone and daily wage.
+- **Daily attendance.** Mark Present, Permit, Sick or Absent per employee per date; wages come from Present days and are snapshotted so later wage edits never rewrite history.
+- **Advances (kasbon).** Record money drawn early by an employee; automatically deducted at payout.
+- **Payroll.** Calculate each employee's wage for this or previous months and pay in one tap. Payment is recorded as an expense in the Gaji category.
+- **Payroll history** preserved with employee name and period.
+
+### Improvements
+
+- **Backup format v5** includes employees, attendance, advances and payroll history; older backups still restore.
+- **Automatic v4 to v5 database migration** with no data loss.
+
 ## v2.1.0
 
 Performance optimizations, no new features.

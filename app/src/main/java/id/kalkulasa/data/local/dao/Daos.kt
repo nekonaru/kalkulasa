@@ -5,11 +5,15 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import id.kalkulasa.data.local.entity.AttendanceEntity
 import id.kalkulasa.data.local.entity.BusinessProfileEntity
 import id.kalkulasa.data.local.entity.CapitalEntryEntity
 import id.kalkulasa.data.local.entity.CategoryEntity
 import id.kalkulasa.data.local.entity.ChangeLogEntity
 import id.kalkulasa.data.local.entity.CustomerEntity
+import id.kalkulasa.data.local.entity.EmployeeEntity
+import id.kalkulasa.data.local.entity.KasbonEntity
+import id.kalkulasa.data.local.entity.PayrollEntity
 import id.kalkulasa.data.local.entity.ExpenseEntity
 import id.kalkulasa.data.local.entity.ProductEntity
 import id.kalkulasa.data.local.entity.PurchaseEntity
@@ -293,6 +297,66 @@ interface CapitalEntryDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(entry: CapitalEntryEntity)
+}
+
+@Dao
+interface EmployeeDao {
+    @Query("SELECT * FROM employee WHERE deletedAt IS NULL ORDER BY aktif DESC, nama")
+    fun observeAll(): Flow<List<EmployeeEntity>>
+
+    @Query("SELECT * FROM employee WHERE deletedAt IS NULL ORDER BY nama")
+    suspend fun getAll(): List<EmployeeEntity>
+
+    @Query("SELECT * FROM employee WHERE id = :id AND deletedAt IS NULL")
+    suspend fun getById(id: String): EmployeeEntity?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsert(employee: EmployeeEntity)
+
+    @Query("UPDATE employee SET aktif = :aktif, updatedAt = :now WHERE id = :id")
+    suspend fun setActive(id: String, aktif: Boolean, now: Long)
+}
+
+@Dao
+interface AttendanceDao {
+    @Query("SELECT * FROM attendance WHERE deletedAt IS NULL AND tanggal BETWEEN :from AND :to ORDER BY waktu DESC")
+    fun observeBetween(from: Long, to: Long): Flow<List<AttendanceEntity>>
+
+    @Query("SELECT * FROM attendance WHERE deletedAt IS NULL AND tanggal BETWEEN :from AND :to")
+    suspend fun getBetween(from: Long, to: Long): List<AttendanceEntity>
+
+    @Query("SELECT * FROM attendance WHERE karyawanId = :employeeId AND tanggal = :tanggal AND deletedAt IS NULL LIMIT 1")
+    suspend fun getForEmployeeAndDate(employeeId: String, tanggal: Long): AttendanceEntity?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsert(attendance: AttendanceEntity)
+}
+
+@Dao
+interface KasbonDao {
+    @Query("SELECT * FROM kasbon WHERE deletedAt IS NULL AND karyawanId = :employeeId AND waktu BETWEEN :from AND :to ORDER BY waktu DESC")
+    suspend fun getForEmployee(employeeId: String, from: Long, to: Long): List<KasbonEntity>
+
+    @Query("SELECT * FROM kasbon WHERE deletedAt IS NULL ORDER BY waktu DESC LIMIT 100")
+    fun observeAll(): Flow<List<KasbonEntity>>
+
+    @Query("SELECT * FROM kasbon WHERE deletedAt IS NULL")
+    suspend fun getAll(): List<KasbonEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsert(kasbon: KasbonEntity)
+}
+
+@Dao
+interface PayrollDao {
+    @Query("SELECT * FROM payroll WHERE deletedAt IS NULL ORDER BY waktu DESC LIMIT 100")
+    fun observeAll(): Flow<List<PayrollEntity>>
+
+    @Query("SELECT * FROM payroll WHERE deletedAt IS NULL")
+    suspend fun getAll(): List<PayrollEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsert(payroll: PayrollEntity)
 }
 
 @Dao

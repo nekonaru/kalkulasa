@@ -16,6 +16,14 @@ import id.kalkulasa.data.repository.ReceivableRepositoryImpl
 import id.kalkulasa.data.repository.ReportRepositoryImpl
 import id.kalkulasa.data.repository.SaleRepositoryImpl
 import id.kalkulasa.data.repository.StockRepositoryImpl
+import id.kalkulasa.data.repository.EmployeeRepositoryImpl
+import id.kalkulasa.data.repository.AttendanceRepositoryImpl
+import id.kalkulasa.data.repository.KasbonRepositoryImpl
+import id.kalkulasa.data.repository.PayrollRepositoryImpl
+import id.kalkulasa.domain.repository.EmployeeRepository
+import id.kalkulasa.domain.repository.AttendanceRepository
+import id.kalkulasa.domain.repository.KasbonRepository
+import id.kalkulasa.domain.repository.PayrollRepository
 import id.kalkulasa.data.repository.SupplierRepositoryImpl
 import id.kalkulasa.data.repository.CategoryRepositoryImpl
 import id.kalkulasa.data.repository.CustomerRepositoryImpl
@@ -96,6 +104,26 @@ object AppModule {
     @Singleton
     fun provideSupplierRepository(db: KalkulasaDatabase): SupplierRepository =
         SupplierRepositoryImpl(db)
+
+    @Provides
+    @Singleton
+    fun provideEmployeeRepository(db: KalkulasaDatabase, deviceId: String): EmployeeRepository =
+        EmployeeRepositoryImpl(db, deviceId)
+
+    @Provides
+    @Singleton
+    fun provideAttendanceRepository(db: KalkulasaDatabase, deviceId: String): AttendanceRepository =
+        AttendanceRepositoryImpl(db, deviceId)
+
+    @Provides
+    @Singleton
+    fun provideKasbonRepository(db: KalkulasaDatabase, deviceId: String): KasbonRepository =
+        KasbonRepositoryImpl(db, deviceId)
+
+    @Provides
+    @Singleton
+    fun providePayrollRepository(db: KalkulasaDatabase, deviceId: String): PayrollRepository =
+        PayrollRepositoryImpl(db, deviceId)
 
     @Provides
     @Singleton

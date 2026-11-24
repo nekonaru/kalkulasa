@@ -21,6 +21,10 @@ import id.kalkulasa.data.local.entity.CategoryEntity
 import id.kalkulasa.domain.model.CategoryType
 import id.kalkulasa.data.local.entity.ChangeLogEntity
 import id.kalkulasa.data.local.entity.CustomerEntity
+import id.kalkulasa.data.local.entity.EmployeeEntity
+import id.kalkulasa.data.local.entity.AttendanceEntity
+import id.kalkulasa.data.local.entity.KasbonEntity
+import id.kalkulasa.data.local.entity.PayrollEntity
 import id.kalkulasa.data.local.entity.ExpenseEntity
 import id.kalkulasa.data.local.entity.ProductEntity
 import id.kalkulasa.data.local.entity.PurchaseEntity
@@ -46,8 +50,12 @@ import java.util.UUID
         ChangeLogEntity::class,
         ReceivableEntity::class,
         CustomerEntity::class,
+        EmployeeEntity::class,
+        AttendanceEntity::class,
+        KasbonEntity::class,
+        PayrollEntity::class,
     ],
-    version = 4,
+    version = 5,
     exportSchema = true,
 )
 abstract class KalkulasaDatabase : RoomDatabase() {
@@ -62,9 +70,84 @@ abstract class KalkulasaDatabase : RoomDatabase() {
     abstract fun changeLogDao(): ChangeLogDao
     abstract fun receivableDao(): id.kalkulasa.data.local.dao.ReceivableDao
     abstract fun customerDao(): id.kalkulasa.data.local.dao.CustomerDao
+    abstract fun employeeDao(): id.kalkulasa.data.local.dao.EmployeeDao
+    abstract fun attendanceDao(): id.kalkulasa.data.local.dao.AttendanceDao
+    abstract fun kasbonDao(): id.kalkulasa.data.local.dao.KasbonDao
+    abstract fun payrollDao(): id.kalkulasa.data.local.dao.PayrollDao
 
     companion object {
         const val NAME = "kalkulasa.db"
+
+        /** Migration 4 -> 5: employees, attendance, kasbon and payroll tables. */
+        val MIGRATION_4_5 = androidx.room.migration.Migration(4, 5) { db ->
+            db.execSQL(
+                """CREATE TABLE IF NOT EXISTS `employee` (
+                    `id` TEXT NOT NULL PRIMARY KEY,
+                    `nama` TEXT NOT NULL,
+                    `jabatan` TEXT,
+                    `telepon` TEXT,
+                    `upahHarian` INTEGER NOT NULL,
+                    `aktif` INTEGER NOT NULL,
+                    `dibuatPada` INTEGER NOT NULL,
+                    `updatedAt` INTEGER NOT NULL,
+                    `deletedAt` INTEGER,
+                    `deviceId` TEXT NOT NULL,
+                    `syncStatus` TEXT NOT NULL
+                )""".trimIndent(),
+            )
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_employee_nama` ON `employee` (`nama`)")
+            db.execSQL(
+                """CREATE TABLE IF NOT EXISTS `attendance` (
+                    `id` TEXT NOT NULL PRIMARY KEY,
+                    `karyawanId` TEXT NOT NULL,
+                    `tanggal` INTEGER NOT NULL,
+                    `status` TEXT NOT NULL,
+                    `upahDibayar` INTEGER NOT NULL,
+                    `catatan` TEXT,
+                    `waktu` INTEGER NOT NULL,
+                    `updatedAt` INTEGER NOT NULL,
+                    `deletedAt` INTEGER,
+                    `deviceId` TEXT NOT NULL,
+                    `syncStatus` TEXT NOT NULL
+                )""".trimIndent(),
+            )
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_attendance_karyawanId` ON `attendance` (`karyawanId`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_attendance_tanggal` ON `attendance` (`tanggal`)")
+            db.execSQL(
+                """CREATE TABLE IF NOT EXISTS `kasbon` (
+                    `id` TEXT NOT NULL PRIMARY KEY,
+                    `karyawanId` TEXT NOT NULL,
+                    `nominal` INTEGER NOT NULL,
+                    `catatan` TEXT,
+                    `waktu` INTEGER NOT NULL,
+                    `updatedAt` INTEGER NOT NULL,
+                    `deletedAt` INTEGER,
+                    `deviceId` TEXT NOT NULL,
+                    `syncStatus` TEXT NOT NULL
+                )""".trimIndent(),
+            )
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_kasbon_karyawanId` ON `kasbon` (`karyawanId`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_kasbon_waktu` ON `kasbon` (`waktu`)")
+            db.execSQL(
+                """CREATE TABLE IF NOT EXISTS `payroll` (
+                    `id` TEXT NOT NULL PRIMARY KEY,
+                    `karyawanId` TEXT NOT NULL,
+                    `namaKaryawan` TEXT NOT NULL,
+                    `periodeAwal` INTEGER NOT NULL,
+                    `periodeAkhir` INTEGER NOT NULL,
+                    `totalUpah` INTEGER NOT NULL,
+                    `totalKasbon` INTEGER NOT NULL,
+                    `dibayar` INTEGER NOT NULL,
+                    `waktu` INTEGER NOT NULL,
+                    `updatedAt` INTEGER NOT NULL,
+                    `deletedAt` INTEGER,
+                    `deviceId` TEXT NOT NULL,
+                    `syncStatus` TEXT NOT NULL
+                )""".trimIndent(),
+            )
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_payroll_karyawanId` ON `payroll` (`karyawanId`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_payroll_waktu` ON `payroll` (`waktu`)")
+        }
 
         /** Migration 3 -> 4: add product.isPinned for the cashier fast-lane. */
         val MIGRATION_3_4 = androidx.room.migration.Migration(3, 4) { db ->
@@ -117,7 +200,7 @@ abstract class KalkulasaDatabase : RoomDatabase() {
         fun build(context: Context, deviceId: String, passphrase: ByteArray): KalkulasaDatabase =
             Room.databaseBuilder(context, KalkulasaDatabase::class.java, NAME)
                 .openHelperFactory(SupportOpenHelperFactory(passphrase))
-                .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
+                .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
                 .addCallback(SeedCallback(deviceId))
                 .build()
     }

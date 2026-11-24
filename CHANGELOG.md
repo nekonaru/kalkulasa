@@ -1,5 +1,22 @@
 # Changelog
 
+## v2.2.0
+
+Modul Karyawan dan Gaji, lanjutan roadmap Fase 3 yang tetap jalan offline penuh.
+
+### Fitur baru
+
+- **Data karyawan.** Tambah, ubah, nonaktifkan karyawan dengan nama, jabatan, telepon, dan upah harian.
+- **Absensi harian.** Tandai Hadir, Izin, Sakit, atau Alfa per karyawan per tanggal; upah dihitung dari status Hadir dan disimpan sebagai snapshot agar perubahan upah tidak mengubah riwayat.
+- **Kasbon.** Catat uang muka yang diambil karyawan; otomatis dipotong saat penggajian.
+- **Penggajian.** Hitung upah per karyawan untuk bulan berjalan atau bulan sebelumnya, lalu bayar sekali ketuk. Pembayaran gaji otomatis tercatat sebagai pengeluaran kategori Gaji.
+- **Riwayat gaji** tersimpan lengkap dengan nama karyawan dan periode.
+
+### Peningkatan
+
+- **Format backup v5** mencakup karyawan, absensi, kasbon, dan riwayat gaji; backup lama tetap bisa dipulihkan.
+- **Migrasi database otomatis v4 ke v5** tanpa menghapus data lama.
+
 ## v2.1.0
 
 Optimalisasi performa tanpa fitur baru.

@@ -28,6 +28,7 @@ import androidx.compose.material.icons.rounded.Assessment
 import androidx.compose.material.icons.rounded.Settings
 import id.kalkulasa.R
 import id.kalkulasa.presentation.categories.CategoriesScreen
+import id.kalkulasa.presentation.employee.EmployeeScreen
 import id.kalkulasa.presentation.cashier.CashierScreen
 import id.kalkulasa.presentation.customer.CustomersScreen
 import id.kalkulasa.presentation.finance.FinanceScreen
@@ -147,6 +148,12 @@ fun KalkulasaNavHost(startDestination: String) {
                     onOpenPiutang = { navController.navigate(Routes.PIUTANG) },
                     onOpenCustomers = { navController.navigate(Routes.CUSTOMERS) },
                     onOpenSuppliers = { navController.navigate(Routes.SUPPLIERS) },
+                    onOpenEmployees = { navController.navigate(Routes.EMPLOYEES) },
+                )
+            }
+            composable(Routes.EMPLOYEES) {
+                EmployeeScreen(
+                    onBack = { navController.popBackStack() },
                 )
             }
             composable(Routes.SUPPLIERS) {

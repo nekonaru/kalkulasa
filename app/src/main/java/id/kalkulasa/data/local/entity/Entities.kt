@@ -162,6 +162,66 @@ data class CapitalEntryEntity(
     val syncStatus: String = SyncStatus.PENDING,
 )
 
+@Entity(tableName = "employee", indices = [Index("nama")])
+data class EmployeeEntity(
+    @PrimaryKey val id: String,
+    val nama: String,
+    val jabatan: String?,
+    val telepon: String?,
+    val upahHarian: Long,
+    val aktif: Boolean,
+    val dibuatPada: Long,
+    val updatedAt: Long,
+    val deletedAt: Long? = null,
+    val deviceId: String,
+    val syncStatus: String = SyncStatus.PENDING,
+)
+
+@Entity(tableName = "attendance", indices = [Index("karyawanId"), Index("tanggal")])
+data class AttendanceEntity(
+    @PrimaryKey val id: String,
+    val karyawanId: String,
+    val tanggal: Long,
+    val status: String, // HADIR, IZIN, SAKIT, ALPHA
+    val upahDibayar: Long,
+    val catatan: String?,
+    val waktu: Long,
+    val updatedAt: Long,
+    val deletedAt: Long? = null,
+    val deviceId: String,
+    val syncStatus: String = SyncStatus.PENDING,
+)
+
+@Entity(tableName = "kasbon", indices = [Index("karyawanId"), Index("waktu")])
+data class KasbonEntity(
+    @PrimaryKey val id: String,
+    val karyawanId: String,
+    val nominal: Long,
+    val catatan: String?,
+    val waktu: Long,
+    val updatedAt: Long,
+    val deletedAt: Long? = null,
+    val deviceId: String,
+    val syncStatus: String = SyncStatus.PENDING,
+)
+
+@Entity(tableName = "payroll", indices = [Index("karyawanId"), Index("waktu")])
+data class PayrollEntity(
+    @PrimaryKey val id: String,
+    val karyawanId: String,
+    val namaKaryawan: String,
+    val periodeAwal: Long,
+    val periodeAkhir: Long,
+    val totalUpah: Long,
+    val totalKasbon: Long,
+    val dibayar: Long,
+    val waktu: Long,
+    val updatedAt: Long,
+    val deletedAt: Long? = null,
+    val deviceId: String,
+    val syncStatus: String = SyncStatus.PENDING,
+)
+
 @Entity(tableName = "customer", indices = [Index("nama")])
 data class CustomerEntity(
     @PrimaryKey val id: String,

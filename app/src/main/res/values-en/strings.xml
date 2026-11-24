@@ -291,4 +291,33 @@
     <!-- PIN lock screen -->
     <string name="lock_title">Kalkulasa is locked</string>
     <string name="lock_subtitle">Enter your PIN to unlock</string>
+    <!-- Employees and payroll -->
+    <string name="employees_title">Employees and Payroll</string>
+    <string name="tab_employees">Employees</string>
+    <string name="tab_attendance">Attendance</string>
+    <string name="tab_payroll">Payroll</string>
+    <string name="add_employee">Add employee</string>
+    <string name="edit_employee">Edit employee</string>
+    <string name="employee_name">Employee name</string>
+    <string name="employee_role">Role</string>
+    <string name="employee_role_default">Staff</string>
+    <string name="employee_phone">Phone (optional)</string>
+    <string name="employee_daily_wage">Daily wage</string>
+    <string name="employee_active">Active</string>
+    <string name="employee_inactive">Inactive</string>
+    <string name="employees_empty">No employees yet. Add your first one.</string>
+    <string name="employee_saved">Employee saved</string>
+    <string name="attendance_present">Present</string>
+    <string name="attendance_permit">Permit</string>
+    <string name="attendance_sick">Sick</string>
+    <string name="attendance_absent">Absent</string>
+    <string name="attendance_saved">Attendance saved</string>
+    <string name="payroll_this_month">This month</string>
+    <string name="payroll_months_ago">%1$d months ago</string>
+    <string name="payroll_kasbon">Advance</string>
+    <string name="payroll_pay">Pay</string>
+    <string name="payroll_paid">Paid</string>
+    <string name="payroll_pay_title">Pay salary</string>
+    <string name="payroll_empty">No payroll data yet. Add employees and attendance first.</string>
+    <string name="salary_paid">Salary paid and recorded as an expense</string>
 </resources>

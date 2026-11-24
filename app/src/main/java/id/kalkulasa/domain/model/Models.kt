@@ -2,6 +2,57 @@ package id.kalkulasa.domain.model
 
 /** Pure Kotlin domain models. No Android or Room dependencies. */
 
+data class Employee(
+    val id: String,
+    val nama: String,
+    val jabatan: String?,
+    val telepon: String?,
+    val upahHarian: Long,
+    val aktif: Boolean,
+)
+
+data class Attendance(
+    val id: String,
+    val karyawanId: String,
+    val tanggal: Long,
+    val status: String, // HADIR, IZIN, SAKIT, ALPHA
+    val upahDibayar: Long,
+    val catatan: String?,
+)
+
+data class Kasbon(
+    val id: String,
+    val karyawanId: String,
+    val nominal: Long,
+    val catatan: String?,
+    val waktu: Long,
+)
+
+data class PayrollRecord(
+    val id: String,
+    val karyawanId: String,
+    val namaKaryawan: String,
+    val periodeAwal: Long,
+    val periodeAkhir: Long,
+    val totalUpah: Long,
+    val totalKasbon: Long,
+    val dibayar: Long,
+    val waktu: Long,
+)
+
+data class GajiKaryawan(
+    val karyawan: Employee,
+    val hadir: Int,
+    val izin: Int,
+    val sakit: Int,
+    val alpha: Int,
+    val totalUpah: Long,
+    val totalKasbon: Long,
+    val dibayar: Long,
+) {
+    val sudahDibayar: Boolean get() = dibayar > 0L
+}
+
 data class BusinessProfile(
     val id: String,
     val namaUsaha: String,

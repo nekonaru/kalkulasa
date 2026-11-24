@@ -1,5 +1,6 @@
 package id.kalkulasa.domain.repository
 
+import id.kalkulasa.domain.model.Attendance
 import id.kalkulasa.domain.model.BusinessProfile
 import id.kalkulasa.domain.model.PurchaseRecord
 import id.kalkulasa.domain.model.CapitalEntry
@@ -7,7 +8,10 @@ import id.kalkulasa.domain.model.Category
 import id.kalkulasa.domain.model.CategoryType
 import id.kalkulasa.domain.model.Customer
 import id.kalkulasa.domain.model.DailyPoint
+import id.kalkulasa.domain.model.Employee
 import id.kalkulasa.domain.model.Expense
+import id.kalkulasa.domain.model.Kasbon
+import id.kalkulasa.domain.model.PayrollRecord
 import id.kalkulasa.domain.model.PeriodReport
 import id.kalkulasa.domain.model.Product
 import id.kalkulasa.domain.model.ProductProfit
@@ -39,6 +43,29 @@ interface ProductRepository {
     /** Bulk-import products atomically. Returns count imported. */
     suspend fun importProducts(products: List<ImportProdukUseCase.ImportedProduct>): Int
     suspend fun setPinned(id: String, pinned: Boolean)
+}
+
+interface EmployeeRepository {
+    fun observeAll(): Flow<List<Employee>>
+    suspend fun save(employee: Employee)
+    suspend fun setActive(id: String, aktif: Boolean)
+    suspend fun getById(id: String): Employee?
+}
+
+interface AttendanceRepository {
+    fun observeBetween(from: Long, to: Long): Flow<List<Attendance>>
+    suspend fun mark(karyawanId: String, tanggal: Long, status: String, upahDibayar: Long, catatan: String?): Result<Unit>
+    suspend fun getBetween(from: Long, to: Long): List<Attendance>
+}
+
+interface KasbonRepository {
+    suspend fun add(karyawanId: String, nominal: Long, catatan: String?)
+    suspend fun getForEmployee(karyawanId: String, from: Long, to: Long): List<Kasbon>
+}
+
+interface PayrollRepository {
+    fun observeAll(): Flow<List<PayrollRecord>>
+    suspend fun pay(karyawan: Employee, from: Long, to: Long, upah: Long, kasbon: Long, dibayar: Long): Result<Unit>
 }
 
 interface SupplierRepository {

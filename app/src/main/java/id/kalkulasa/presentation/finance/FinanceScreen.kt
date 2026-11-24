@@ -62,6 +62,7 @@ fun FinanceScreen(
     onOpenPiutang: () -> Unit,
     onOpenCustomers: () -> Unit,
     onOpenSuppliers: () -> Unit,
+    onOpenEmployees: () -> Unit,
     viewModel: FinanceViewModel = hiltViewModel(),
 ) {
     val balance by viewModel.cashBalance.collectAsStateWithLifecycle()
@@ -116,6 +117,7 @@ fun FinanceScreen(
                     TextButton(onClick = onOpenPiutang) { Text(context.getString(R.string.piutang_open)) }
                     TextButton(onClick = onOpenCustomers) { Text(context.getString(R.string.customers_title)) }
                     TextButton(onClick = onOpenSuppliers) { Text(context.getString(R.string.suppliers_entry)) }
+                    TextButton(onClick = onOpenEmployees) { Text(context.getString(R.string.employees_title)) }
                 }
             }
 

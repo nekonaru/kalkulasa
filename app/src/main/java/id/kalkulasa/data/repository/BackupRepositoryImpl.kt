@@ -44,6 +44,9 @@ class BackupRepositoryImpl @Inject constructor(
         json.put("capital_entry", JSONArray().also { arr -> db.capitalEntryDao().getAll().forEach { arr.put(it.toJson()) } })
         json.put("receivable", JSONArray().also { arr -> db.receivableDao().getAll().forEach { arr.put(it.toJson()) } })
         json.put("customer", JSONArray().also { arr -> db.customerDao().getAll().forEach { arr.put(it.toJson()) } })
+        json.put("employee", JSONArray().also { arr -> db.employeeDao().getAll().forEach { arr.put(it.toJson()) } })
+        json.put("kasbon", JSONArray().also { arr -> db.kasbonDao().getAll().forEach { arr.put(it.toJson()) } })
+        json.put("payroll", JSONArray().also { arr -> db.payrollDao().getAll().forEach { arr.put(it.toJson()) } })
         return json.toString()
     }
 
@@ -65,6 +68,9 @@ class BackupRepositoryImpl @Inject constructor(
         val capitalEntries = root.optJSONArray("capital_entry")?.toList { it.toCapitalEntry() } ?: emptyList()
         val receivables = root.optJSONArray("receivable")?.toList { it.toReceivable() } ?: emptyList()
         val customers = root.optJSONArray("customer")?.toList { it.toCustomer() } ?: emptyList()
+        val employees = root.optJSONArray("employee")?.toList { it.toEmployee() } ?: emptyList()
+        val kasbons = root.optJSONArray("kasbon")?.toList { it.toKasbon() } ?: emptyList()
+        val payrolls = root.optJSONArray("payroll")?.toList { it.toPayroll() } ?: emptyList()
 
         db.withTransaction {
             db.clearAllTables()
@@ -80,6 +86,9 @@ class BackupRepositoryImpl @Inject constructor(
             capitalEntries.forEach { db.capitalEntryDao().insert(it) }
             receivables.forEach { db.receivableDao().upsert(it) }
             customers.forEach { db.customerDao().upsert(it) }
+            employees.forEach { db.employeeDao().upsert(it) }
+            kasbons.forEach { db.kasbonDao().upsert(it) }
+            payrolls.forEach { db.payrollDao().upsert(it) }
         }
     }
 
@@ -132,6 +141,28 @@ class BackupRepositoryImpl @Inject constructor(
     private fun PurchaseItemEntity.toJson() = JSONObject().apply {
         put("id", id); put("purchaseId", purchaseId); put("produkId", produkId)
         put("jumlah", jumlah); put("hargaBeli", hargaBeli); put("updatedAt", updatedAt)
+        jPut(this, "deletedAt", deletedAt); put("deviceId", deviceId); put("syncStatus", syncStatus)
+    }
+
+    private fun id.kalkulasa.data.local.entity.EmployeeEntity.toJson() = JSONObject().apply {
+        put("id", id); put("nama", nama)
+        jPut(this, "jabatan", jabatan); jPut(this, "telepon", telepon)
+        put("upahHarian", upahHarian); put("aktif", aktif); put("dibuatPada", dibuatPada)
+        put("updatedAt", updatedAt); jPut(this, "deletedAt", deletedAt)
+        put("deviceId", deviceId); put("syncStatus", syncStatus)
+    }
+
+    private fun id.kalkulasa.data.local.entity.KasbonEntity.toJson() = JSONObject().apply {
+        put("id", id); put("karyawanId", karyawanId); put("nominal", nominal)
+        jPut(this, "catatan", catatan); put("waktu", waktu); put("updatedAt", updatedAt)
+        jPut(this, "deletedAt", deletedAt); put("deviceId", deviceId); put("syncStatus", syncStatus)
+    }
+
+    private fun id.kalkulasa.data.local.entity.PayrollEntity.toJson() = JSONObject().apply {
+        put("id", id); put("karyawanId", karyawanId); put("namaKaryawan", namaKaryawan)
+        put("periodeAwal", periodeAwal); put("periodeAkhir", periodeAkhir)
+        put("totalUpah", totalUpah); put("totalKasbon", totalKasbon); put("dibayar", dibayar)
+        put("waktu", waktu); put("updatedAt", updatedAt)
         jPut(this, "deletedAt", deletedAt); put("deviceId", deviceId); put("syncStatus", syncStatus)
     }
 
@@ -237,6 +268,31 @@ class BackupRepositoryImpl @Inject constructor(
         deviceId = getString("deviceId"), syncStatus = optString("syncStatus", "PENDING"),
     )
 
+    private fun JSONObject.toEmployee() = id.kalkulasa.data.local.entity.EmployeeEntity(
+        id = getString("id"), nama = getString("nama"),
+        jabatan = str("jabatan"), telepon = str("telepon"),
+        upahHarian = getLong("upahHarian"), aktif = getBoolean("aktif"),
+        dibuatPada = getLong("dibuatPada"), updatedAt = getLong("updatedAt"),
+        deletedAt = optLongOrNull("deletedAt"), deviceId = getString("deviceId"),
+        syncStatus = optString("syncStatus", "PENDING"),
+    )
+
+    private fun JSONObject.toKasbon() = id.kalkulasa.data.local.entity.KasbonEntity(
+        id = getString("id"), karyawanId = getString("karyawanId"), nominal = getLong("nominal"),
+        catatan = str("catatan"), waktu = getLong("waktu"), updatedAt = getLong("updatedAt"),
+        deletedAt = optLongOrNull("deletedAt"), deviceId = getString("deviceId"),
+        syncStatus = optString("syncStatus", "PENDING"),
+    )
+
+    private fun JSONObject.toPayroll() = id.kalkulasa.data.local.entity.PayrollEntity(
+        id = getString("id"), karyawanId = getString("karyawanId"), namaKaryawan = getString("namaKaryawan"),
+        periodeAwal = getLong("periodeAwal"), periodeAkhir = getLong("periodeAkhir"),
+        totalUpah = getLong("totalUpah"), totalKasbon = getLong("totalKasbon"), dibayar = getLong("dibayar"),
+        waktu = getLong("waktu"), updatedAt = getLong("updatedAt"),
+        deletedAt = optLongOrNull("deletedAt"), deviceId = getString("deviceId"),
+        syncStatus = optString("syncStatus", "PENDING"),
+    )
+
     private fun JSONObject.toCustomer() = CustomerEntity(
         id = getString("id"), nama = getString("nama"), poin = getLong("poin"),
         kunjungan = getInt("kunjungan"), totalBelanja = getLong("totalBelanja"),
@@ -277,6 +333,6 @@ class BackupRepositoryImpl @Inject constructor(
     )
 
     private companion object {
-        const val BACKUP_VERSION = 4
+        const val BACKUP_VERSION = 5
     }
 }
