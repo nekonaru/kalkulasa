@@ -75,6 +75,7 @@ fun PiutangScreen(
                 is PiutangEvent.Message -> snackbar.showSnackbar(
                     when (event.text) {
                         "SAVED" -> context.getString(R.string.piutang_payment_saved)
+                        "ADDED" -> context.getString(R.string.piutang_added)
                         "ERROR" -> context.getString(R.string.error_generic)
                         else -> event.text
                     },

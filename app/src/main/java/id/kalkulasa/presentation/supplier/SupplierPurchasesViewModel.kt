@@ -18,7 +18,8 @@ class SupplierPurchasesViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-    val supplier: String = java.net.URLDecoder.decode(savedStateHandle.get<String>("supplier").orEmpty(), "UTF-8")
+    private val rawSupplier = java.net.URLDecoder.decode(savedStateHandle.get<String>("supplier").orEmpty(), "UTF-8")
+    val supplier: String = if (rawSupplier == id.kalkulasa.presentation.navigation.Routes.NO_SUPPLIER) "" else rawSupplier
 
     private val _purchases = MutableStateFlow<List<PurchaseRecord>>(emptyList())
     val purchases: StateFlow<List<PurchaseRecord>> = _purchases.asStateFlow()

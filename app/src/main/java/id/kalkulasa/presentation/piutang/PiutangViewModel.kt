@@ -52,7 +52,7 @@ class PiutangViewModel @Inject constructor(
         val due = dueDays?.takeIf { it > 0 }?.let { System.currentTimeMillis() + it * 24L * 60 * 60 * 1000 }
         viewModelScope.launch {
             receivableRepository.addManual(trimmed, nominal, due, catatan)
-                .onSuccess { _events.send(PiutangEvent.Message("SAVED")) }
+                .onSuccess { _events.send(PiutangEvent.Message("ADDED")) }
                 .onFailure { _events.send(PiutangEvent.Message(it.message ?: "ERROR")) }
         }
     }

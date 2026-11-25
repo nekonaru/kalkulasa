@@ -1,15 +1,17 @@
 package id.kalkulasa.presentation.employee
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import id.kalkulasa.R
 import id.kalkulasa.core.util.DateFormatter
 import id.kalkulasa.domain.model.Attendance
 import id.kalkulasa.domain.model.Employee
 import id.kalkulasa.domain.model.GajiKaryawan
 import id.kalkulasa.domain.repository.AttendanceRepository
 import id.kalkulasa.domain.repository.EmployeeRepository
-import id.kalkulasa.domain.repository.FinanceRepository
 import id.kalkulasa.domain.repository.KasbonRepository
 import id.kalkulasa.domain.repository.PayrollRepository
 import id.kalkulasa.domain.usecase.HitungGajiUseCase
@@ -36,7 +38,7 @@ class EmployeeViewModel @Inject constructor(
     private val attendanceRepository: AttendanceRepository,
     private val kasbonRepository: KasbonRepository,
     private val payrollRepository: PayrollRepository,
-    private val financeRepository: FinanceRepository,
+    @ApplicationContext private val context: Context,
 ) : ViewModel() {
 
     val employees: StateFlow<List<Employee>> = employeeRepository.observeAll()
@@ -119,12 +121,15 @@ class EmployeeViewModel @Inject constructor(
             val result = data.filter { it.aktif }.map { employee ->
                 val paidBefore = history.filter { it.karyawanId == employee.id && it.periodeAwal == from }
                     .sumOf { it.dibayar }
-                HitungGajiUseCase.hitung(
+                val gaji = HitungGajiUseCase.hitung(
                     karyawan = employee,
                     absensi = absen.filter { it.karyawanId == employee.id },
                     kasbon = kasbonRepository.getForEmployee(employee.id, from, to),
                     sudahDibayar = paidBefore,
-                ).copy(sudahDibayar = paidBefore > 0L)
+                )
+                // A partial payment still leaves a payable remainder, so the Pay
+                // button must stay enabled until the remainder reaches zero.
+                gaji.copy(sudahDibayar = gaji.dibayar <= 0L)
             }
             _payroll.value = result
         }
@@ -141,13 +146,13 @@ class EmployeeViewModel @Inject constructor(
         calendar.add(java.util.Calendar.DAY_OF_MONTH, -1)
         val to = DateFormatter.endOfDay(calendar.timeInMillis)
 
+        val kategori = context.getString(R.string.expense_gaji)
         viewModelScope.launch {
-            payrollRepository.pay(employee, from, to, item.totalUpah, item.totalKasbon, item.dibayar)
-                .onSuccess {
-                    financeRepository.addExpense(null, "Gaji", item.dibayar, "Gaji ${employee.nama}")
-                        .onSuccess { loadPayroll(); _events.send(EmployeeEvent.Message("SALARY_PAID")) }
-                        .onFailure { _events.send(EmployeeEvent.Message(it.message ?: "ERROR")) }
-                }
+            payrollRepository.pay(
+                employee, from, to, item.totalUpah, item.totalKasbon, item.dibayar,
+                kategori, "$kategori ${employee.nama}",
+            )
+                .onSuccess { loadPayroll(); _events.send(EmployeeEvent.Message("SALARY_PAID")) }
                 .onFailure { _events.send(EmployeeEvent.Message(it.message ?: "ERROR")) }
         }
     }

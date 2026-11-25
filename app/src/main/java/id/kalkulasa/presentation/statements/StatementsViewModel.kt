@@ -1,0 +1,96 @@
+package id.kalkulasa.presentation.statements
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
+import id.kalkulasa.core.util.DateFormatter
+import id.kalkulasa.domain.model.CashBreakdown
+import id.kalkulasa.domain.model.CategorySpend
+import id.kalkulasa.domain.model.Neraca
+import id.kalkulasa.domain.repository.FinanceRepository
+import id.kalkulasa.domain.repository.PayableRepository
+import id.kalkulasa.domain.repository.ProductRepository
+import id.kalkulasa.domain.repository.ReceivableRepository
+import id.kalkulasa.domain.repository.ReportRepository
+import id.kalkulasa.domain.usecase.LaporanKeuanganUseCase
+import id.kalkulasa.presentation.reports.ReportPeriod
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+data class StatementsUiState(
+    val period: ReportPeriod = ReportPeriod.THIS_MONTH,
+    val neraca: Neraca? = null,
+    val breakdown: CashBreakdown? = null,
+    val categories: List<CategorySpend> = emptyList(),
+    val modalInfo: Long = 0L,
+    val labaDitahanInfo: Long = 0L,
+    val loading: Boolean = true,
+)
+
+@HiltViewModel
+class StatementsViewModel @Inject constructor(
+    private val financeRepository: FinanceRepository,
+    private val productRepository: ProductRepository,
+    private val receivableRepository: ReceivableRepository,
+    private val payableRepository: PayableRepository,
+    private val reportRepository: ReportRepository,
+) : ViewModel() {
+
+    private val _state = MutableStateFlow(StatementsUiState())
+    val state: StateFlow<StatementsUiState> = _state.asStateFlow()
+
+    init { load() }
+
+    fun selectPeriod(period: ReportPeriod) {
+        _state.value = _state.value.copy(period = period, loading = true)
+        load()
+    }
+
+    fun load() {
+        val period = _state.value.period
+        val now = System.currentTimeMillis()
+        val (from, to) = when (period) {
+            ReportPeriod.TODAY -> DateFormatter.startOfDay(now) to DateFormatter.endOfDay(now)
+            ReportPeriod.DAYS_7 -> DateFormatter.startOfDayDaysAgo(6, now) to DateFormatter.endOfDay(now)
+            ReportPeriod.DAYS_30 -> DateFormatter.startOfDayDaysAgo(29, now) to DateFormatter.endOfDay(now)
+            ReportPeriod.THIS_MONTH -> DateFormatter.startOfMonth(now) to DateFormatter.endOfDay(now)
+        }
+        viewModelScope.launch {
+            val breakdown = financeRepository.cashBreakdown()
+            val piutang = receivableRepository.observeOutstanding().first()
+            val hutang = payableRepository.observeOutstanding().first()
+            val persediaan = productRepository.observeInventoryValue().first()
+            val kasbon = breakdown.kasbon
+            val cumulative = reportRepository.reportBetween(0L, Long.MAX_VALUE)
+            val modal = financeRepository.netCapital()
+            val retained = LaporanKeuanganUseCase.labaDitahan(
+                cumulative.omzet, cumulative.hpp, cumulative.pengeluaran,
+            )
+            val neraca = LaporanKeuanganUseCase.neraca(
+                kas = breakdown.saldo,
+                piutang = piutang,
+                persediaan = persediaan,
+                kasbon = kasbon,
+                hutangUsaha = hutang,
+                modalBersih = modal,
+                labaDitahan = retained,
+            )
+            val categories = financeRepository.expensesByCategoryBetween(from, to)
+            if (_state.value.period == period) {
+                _state.value = StatementsUiState(
+                    period = period,
+                    neraca = neraca,
+                    breakdown = breakdown,
+                    categories = categories,
+                    modalInfo = modal,
+                    labaDitahanInfo = retained,
+                    loading = false,
+                )
+            }
+        }
+    }
+}

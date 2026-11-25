@@ -105,7 +105,7 @@ fun ReportsScreen(
                             color = if (report.labaBersih < 0) Rugi else Sukses,
                         )
                     }
-                    LabeledValueRow(context.getString(R.string.margin), String.format(java.util.Locale.forLanguageTag("id-ID"), "%.1f%%", report.marginPersen))
+                    LabeledValueRow(context.getString(R.string.margin), String.format(java.util.Locale.getDefault(), "%.1f%%", report.marginPersen))
                     LabeledValueRow(context.getString(R.string.inventory_value), RupiahFormatter.format(report.nilaiPersediaan))
                 }
             }
@@ -127,7 +127,7 @@ fun ReportsScreen(
                                 Column(modifier = Modifier.weight(1f)) {
                                     Text(item.namaProduk, style = MaterialTheme.typography.bodyLarge, maxLines = 1)
                                     Text(
-                                        "${id.kalkulasa.core.util.DateFormatter.formatQty(item.qty)}x terjual",
+                                        context.getString(R.string.units_sold, id.kalkulasa.core.util.DateFormatter.formatQty(item.qty)),
                                         style = MaterialTheme.typography.bodyMedium,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                                     )

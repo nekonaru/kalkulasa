@@ -18,4 +18,6 @@ object Routes {
     const val SUPPLIER_DETAIL = "supplier-detail"
     const val EMPLOYEES = "employees"
     const val PAYABLE = "payable"
+    const val STATEMENTS = "statements"
+    const val NO_SUPPLIER = "__no_supplier__"
 }

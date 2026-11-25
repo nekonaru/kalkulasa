@@ -89,7 +89,7 @@ fun StockScreen(
             when (event) {
                 is StockEvent.Message -> snackbar.showSnackbar(
                     when (event.text) {
-                        "SAVED" -> "Tersimpan"
+                        "SAVED" -> context.getString(R.string.saved_generic)
                         "STOCK_IN_SAVED" -> context.getString(R.string.stock_in_saved)
                         "ADJUSTMENT_SAVED" -> context.getString(R.string.stock_adjustment_saved)
                         else -> event.text
@@ -301,7 +301,7 @@ private fun StockEntryTab(
                 modifier = Modifier.fillMaxWidth().height(52.dp),
             ) { Text(context.getString(R.string.stock_in_save)) }
         } else {
-            OutlinedTextField(value = newQty, onValueChange = { newQty = it.filter { c -> c.isDigit() || c == ',' || c == '.' } }, label = { Text("Stok baru (hasil opname)") }, singleLine = true, modifier = Modifier.fillMaxWidth())
+            OutlinedTextField(value = newQty, onValueChange = { newQty = it.filter { c -> c.isDigit() || c == ',' || c == '.' } }, label = { Text(context.getString(R.string.stock_opname_new)) }, singleLine = true, modifier = Modifier.fillMaxWidth())
             ExposedDropdownMenuBox(expanded = reasonExpanded, onExpandedChange = { reasonExpanded = !reasonExpanded }) {
                 OutlinedTextField(
                     value = reason,
@@ -319,7 +319,7 @@ private fun StockEntryTab(
             }
             if (selectedProduct != null) {
                 Text(
-                    "Stok tercatat: ${DateFormatter.formatQty(selectedProduct.stok)} ${selectedProduct.satuan}",
+                    context.getString(R.string.stock_recorded, DateFormatter.formatQty(selectedProduct.stok), selectedProduct.satuan),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )

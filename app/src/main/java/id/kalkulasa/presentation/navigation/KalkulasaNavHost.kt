@@ -30,6 +30,7 @@ import id.kalkulasa.R
 import id.kalkulasa.presentation.categories.CategoriesScreen
 import id.kalkulasa.presentation.employee.EmployeeScreen
 import id.kalkulasa.presentation.payable.PayableScreen
+import id.kalkulasa.presentation.statements.StatementsScreen
 import id.kalkulasa.presentation.cashier.CashierScreen
 import id.kalkulasa.presentation.customer.CustomersScreen
 import id.kalkulasa.presentation.finance.FinanceScreen
@@ -151,6 +152,12 @@ fun KalkulasaNavHost(startDestination: String) {
                     onOpenSuppliers = { navController.navigate(Routes.SUPPLIERS) },
                     onOpenEmployees = { navController.navigate(Routes.EMPLOYEES) },
                     onOpenPayable = { navController.navigate(Routes.PAYABLE) },
+                    onOpenStatements = { navController.navigate(Routes.STATEMENTS) },
+                )
+            }
+            composable(Routes.STATEMENTS) {
+                StatementsScreen(
+                    onBack = { navController.popBackStack() },
                 )
             }
             composable(Routes.PAYABLE) {
@@ -166,7 +173,10 @@ fun KalkulasaNavHost(startDestination: String) {
             composable(Routes.SUPPLIERS) {
                 SupplierScreen(
                     onBack = { navController.popBackStack() },
-                    onOpenSupplier = { name -> navController.navigate("${Routes.SUPPLIER_DETAIL}/${java.net.URLEncoder.encode(name, "UTF-8")}") },
+                    onOpenSupplier = { name ->
+                        val key = name.ifBlank { Routes.NO_SUPPLIER }
+                        navController.navigate("${Routes.SUPPLIER_DETAIL}/${java.net.URLEncoder.encode(key, "UTF-8")}")
+                    },
                 )
             }
             composable("${Routes.SUPPLIER_DETAIL}/{supplier}") {

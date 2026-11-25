@@ -4,6 +4,8 @@ import id.kalkulasa.data.local.KalkulasaDatabase
 import id.kalkulasa.data.local.dao.ChangeLogDao
 import id.kalkulasa.data.local.entity.CapitalEntryEntity
 import id.kalkulasa.domain.model.CapitalEntryType
+import id.kalkulasa.domain.model.CashBreakdown
+import id.kalkulasa.domain.model.CategorySpend
 import id.kalkulasa.data.local.entity.ExpenseEntity
 import id.kalkulasa.data.mapper.toDomain
 import id.kalkulasa.domain.model.CapitalEntry
@@ -67,18 +69,29 @@ class FinanceRepositoryImpl @Inject constructor(
         RepositorySupport.log(changeLogDao, "expense", id, "INSERT")
     }
 
-    override suspend fun cashBalance(): Long {
+    override suspend fun cashBreakdown(): CashBreakdown {
         val now = RepositorySupport.now()
-        val allTimeFrom = 0L
+        val from = 0L
         // Hutang (credit) sales are not cash yet; count only cash/transfer/QRIS sales plus debt payments received.
-        val salesCash = db.saleDao().sumRevenueBetweenExcludingMethod(allTimeFrom, now, id.kalkulasa.domain.model.PaymentMethod.HUTANG)
-        val debtReceived = db.receivableDao().sumPaid()
-        val purchases = db.purchaseDao().sumBetween(allTimeFrom, now)
-        val expenses = db.expenseDao().sumBetween(allTimeFrom, now)
-        val capital = db.capitalEntryDao().sumCapital()
-        val draws = db.capitalEntryDao().sumPrivateDraws()
-        return HitungHppUseCase.cashBalance(capital, draws, salesCash + debtReceived, purchases, expenses)
+        return CashBreakdown(
+            modal = db.capitalEntryDao().sumCapital(),
+            prive = db.capitalEntryDao().sumPrivateDraws(),
+            penjualanTunai = db.saleDao().sumRevenueBetweenExcludingMethod(from, now, id.kalkulasa.domain.model.PaymentMethod.HUTANG),
+            penerimaanPiutang = db.receivableDao().sumPaid(),
+            pembelianStok = db.purchaseDao().sumBetween(from, now),
+            pembayaranHutang = db.payableDao().sumPaid(),
+            kasbon = db.kasbonDao().sumAll(),
+            pengeluaran = db.expenseDao().sumBetween(from, now),
+        )
     }
+
+    override suspend fun cashBalance(): Long = cashBreakdown().saldo
+
+    override suspend fun netCapital(): Long =
+        db.capitalEntryDao().sumCapital() - db.capitalEntryDao().sumPrivateDraws()
+
+    override suspend fun expensesByCategoryBetween(from: Long, to: Long): List<CategorySpend> =
+        db.expenseDao().sumByCategoryBetween(from, to).map { CategorySpend(it.nama, it.total) }
 
     override suspend fun expensesBetween(from: Long, to: Long): Long =
         db.expenseDao().sumBetween(from, to)

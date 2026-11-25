@@ -4,6 +4,7 @@ import androidx.room.withTransaction
 import id.kalkulasa.data.local.KalkulasaDatabase
 import id.kalkulasa.data.local.entity.AttendanceEntity
 import id.kalkulasa.data.local.entity.EmployeeEntity
+import id.kalkulasa.data.local.entity.ExpenseEntity
 import id.kalkulasa.data.local.entity.KasbonEntity
 import id.kalkulasa.data.local.entity.PayrollEntity
 import id.kalkulasa.domain.model.Attendance
@@ -147,6 +148,8 @@ class PayrollRepositoryImpl @Inject constructor(
         upah: Long,
         kasbon: Long,
         dibayar: Long,
+        kategoriNama: String,
+        catatan: String,
     ): Result<Unit> = runCatching {
         db.withTransaction {
             val now = RepositorySupport.now()
@@ -159,7 +162,23 @@ class PayrollRepositoryImpl @Inject constructor(
                     waktu = now, updatedAt = now, deviceId = deviceId,
                 ),
             )
+            // Payroll and its expense must succeed together. A partial write would
+            // lock the Pay button forever while leaving cash untouched.
+            val expenseId = RepositorySupport.newId()
+            db.expenseDao().insert(
+                ExpenseEntity(
+                    id = expenseId,
+                    kategoriId = null,
+                    kategoriNama = kategoriNama,
+                    nominal = dibayar,
+                    catatan = catatan.ifBlank { null },
+                    waktu = now,
+                    updatedAt = now,
+                    deviceId = deviceId,
+                ),
+            )
             RepositorySupport.log(db.changeLogDao(), "payroll", id, "INSERT")
+            RepositorySupport.log(db.changeLogDao(), "expense", expenseId, "INSERT")
         }
     }
 

@@ -195,6 +195,38 @@ data class PeriodReport(
 
 data class DailyPoint(val label: String, val omzet: Long, val laba: Long)
 
+data class CategorySpend(val nama: String, val total: Long)
+
+data class CashBreakdown(
+    val modal: Long,
+    val prive: Long,
+    val penjualanTunai: Long,
+    val penerimaanPiutang: Long,
+    val pembelianStok: Long,
+    val pembayaranHutang: Long,
+    val kasbon: Long,
+    val pengeluaran: Long,
+) {
+    val totalMasuk: Long get() = modal + penjualanTunai + penerimaanPiutang
+    val totalKeluar: Long get() = prive + pembelianStok + pembayaranHutang + kasbon + pengeluaran
+    val saldo: Long get() = totalMasuk - totalKeluar
+}
+
+data class Neraca(
+    val kas: Long,
+    val piutang: Long,
+    val persediaan: Long,
+    val kasbon: Long,
+    val hutangUsaha: Long,
+    val modalBersih: Long,
+    val labaDitahan: Long,
+) {
+    val aset: Long get() = kas + piutang + persediaan + kasbon
+    val liabilitas: Long get() = hutangUsaha
+    /** Net worth is derived from observed assets and liabilities. */
+    val ekuitas: Long get() = aset - liabilitas
+}
+
 data class ProductSales(val namaProduk: String, val qty: Double)
 
 data class ProductProfit(val namaProduk: String, val qty: Double, val profit: Long)

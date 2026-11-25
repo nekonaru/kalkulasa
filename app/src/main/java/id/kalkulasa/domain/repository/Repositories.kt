@@ -2,6 +2,8 @@ package id.kalkulasa.domain.repository
 
 import id.kalkulasa.domain.model.Attendance
 import id.kalkulasa.domain.model.BusinessProfile
+import id.kalkulasa.domain.model.CashBreakdown
+import id.kalkulasa.domain.model.CategorySpend
 import id.kalkulasa.domain.model.PurchaseRecord
 import id.kalkulasa.domain.model.CapitalEntry
 import id.kalkulasa.domain.model.Category
@@ -66,7 +68,16 @@ interface KasbonRepository {
 
 interface PayrollRepository {
     fun observeAll(): Flow<List<PayrollRecord>>
-    suspend fun pay(karyawan: Employee, from: Long, to: Long, upah: Long, kasbon: Long, dibayar: Long): Result<Unit>
+    suspend fun pay(
+        karyawan: Employee,
+        from: Long,
+        to: Long,
+        upah: Long,
+        kasbon: Long,
+        dibayar: Long,
+        kategoriNama: String,
+        catatan: String,
+    ): Result<Unit>
 }
 
 interface SupplierRepository {
@@ -132,6 +143,9 @@ interface FinanceRepository {
     suspend fun addCapital(tipe: String, nominal: Long, catatan: String?)
     suspend fun addExpense(kategoriId: String?, kategoriNama: String, nominal: Long, catatan: String?): Result<Unit>
     suspend fun cashBalance(): Long
+    suspend fun cashBreakdown(): CashBreakdown
+    suspend fun netCapital(): Long
+    suspend fun expensesByCategoryBetween(from: Long, to: Long): List<CategorySpend>
     suspend fun expensesBetween(from: Long, to: Long): Long
     suspend fun purchasesBetween(from: Long, to: Long): Long
 }

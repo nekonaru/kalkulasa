@@ -346,4 +346,45 @@
     <string name="payable_saved">Hutang tercatat</string>
     <string name="payable_payment_saved">Pembayaran tercatat</string>
     <string name="saved_generic">Tersimpan</string>
+    <!-- Laporan keuangan mendalam -->
+    <string name="statements_title">Laporan Keuangan</string>
+    <string name="statements_open">Laporan Keuangan Lengkap</string>
+    <string name="tab_balance">Neraca</string>
+    <string name="tab_cash_detail">Rincian Kas</string>
+    <string name="tab_expense_categories">Kategori Biaya</string>
+    <string name="balance_assets">Aset Lancar</string>
+    <string name="balance_liabilities">Liabilitas</string>
+    <string name="balance_equity">Ekuitas</string>
+    <string name="balance_cash">Kas</string>
+    <string name="balance_receivables">Piutang pelanggan</string>
+    <string name="balance_inventory">Nilai persediaan</string>
+    <string name="balance_payables">Hutang usaha</string>
+    <string name="balance_capital">Modal bersih</string>
+    <string name="balance_retained">Laba ditahan</string>
+    <string name="balance_balanced">Neraca seimbang</string>
+    <string name="balance_unbalanced">Neraca tidak seimbang</string>
+    <string name="balance_difference">Selisih</string>
+    <string name="cash_modal">Modal masuk</string>
+    <string name="cash_prive">Prive pemilik</string>
+    <string name="cash_sales">Penjualan tunai</string>
+    <string name="cash_receivables">Penerimaan piutang</string>
+    <string name="cash_purchases">Pembelian stok</string>
+    <string name="cash_payables">Pembayaran hutang usaha</string>
+    <string name="cash_kasbon">Kasbon karyawan</string>
+    <string name="cash_expenses">Pengeluaran operasional</string>
+    <string name="cash_total_in">Total kas masuk</string>
+    <string name="cash_total_out">Total kas keluar</string>
+    <string name="cash_net">Saldo kas</string>
+    <string name="expense_categories_empty">Belum ada pengeluaran pada periode ini.</string>
+
+    <!-- Label lokal yang sebelumnya hardcode -->
+    <string name="stock_opname_new">Stok baru (hasil opname)</string>
+    <string name="stock_recorded">Stok tercatat: %1$s %2$s</string>
+    <string name="status_cancelled">BATAL</string>
+    <string name="units_sold">%1$sx terjual</string>
+    <string name="unpin_product">Lepaskan produk</string>
+    <string name="pin_product">Sematkan produk</string>
+    <string name="stock_label">Stok %1$s %2$s</string>
+    <string name="decrease">Kurangi</string>
+    <string name="increase">Tambah</string>
 </resources>

@@ -1,5 +1,30 @@
 # Changelog
 
+## v2.4.0
+
+Detailed financial statements and further fixes from the UI, navigation and cash consistency audit.
+
+### New features
+
+- **Full Financial Statements.** The Balance Sheet tab shows current assets (cash, receivables, inventory, employee advances), supplier liabilities and net equity.
+- **Cash Detail.** Every cash inflow and outflow component, including supplier debt payments and employee advances that were previously missing.
+- **Expense Categories.** Operating expenses grouped by category with percentages for today, 7 days, 30 days or this month.
+
+### Improvements
+
+- **Cash balance now reflects every money flow.** Supplier debt payments and employee advances reduce cash; salary and its expense are written in one database transaction.
+- **Finance screen refreshes on return** from other screens, so the balance is never stale.
+- **Labels and messages follow the app language**, including cancelled status, stock, units sold and snackbar messages.
+
+### Bug fixes
+
+- **Crash when opening the "no supplier" detail** is fixed with a dedicated route token.
+- **Pay salary button is no longer locked** after a partial payment; the remainder can still be paid.
+- **Receivable snackbar** now distinguishes a new debt from a recorded payment.
+- **Backup error messages** show readable text instead of technical codes.
+- **Financial statements no longer mix periods** when filters change quickly.
+- **Retained earnings and balance sheet rules** moved to a pure use case with unit tests.
+
 ## v2.3.0
 
 Deep audit and anomaly fixes, plus an offline-capable Accounts Payable module.

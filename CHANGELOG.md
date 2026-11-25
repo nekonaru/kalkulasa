@@ -1,5 +1,30 @@
 # Changelog
 
+## v2.4.0
+
+Laporan keuangan mendalam dan perbaikan lanjutan hasil audit UI, navigasi, dan konsistensi kas.
+
+### Fitur baru
+
+- **Laporan Keuangan Lengkap.** Tab Neraca menampilkan aset lancar (kas, piutang, persediaan, kasbon), liabilitas hutang usaha, dan ekuitas bersih.
+- **Rincian Saldo Kas.** Rincian semua komponen kas masuk dan kas keluar, termasuk pembayaran hutang usaha dan kasbon yang sebelumnya tidak tercatat.
+- **Kategori Biaya.** Pengeluaran operasional dikelompokkan per kategori dengan persentase untuk hari ini, 7 hari, 30 hari, atau bulan ini.
+
+### Peningkatan
+
+- **Saldo kas kini mencerminkan semua arus uang.** Pembayaran hutang usaha dan kasbon karyawan mengurangi kas; gaji dan pengeluarannya kini ditulis dalam satu transaksi database yang sama.
+- **Tampilan Keuangan segar saat kembali** dari layar lain, sehingga saldo tidak basi.
+- **Label dan pesan mengikuti bahasa aplikasi**, termasuk status batal, stok, kuantitas terjual, dan pesan snackbar.
+
+### Perbaikan
+
+- **Crash saat membuka detail pemasok "Tanpa pemasok"** sudah diatasi dengan penanda rute khusus.
+- **Tombol Bayar gaji tidak lagi terkunci** setelah pembayaran sebagian; sisa gaji tetap bisa dibayar.
+- **Pesan snackbar piutang** kini membedakan utang baru tercatat dari pembayaran tercatat.
+- **Pesan error backup** menampilkan teks yang bisa dipahami, bukan kode teknis.
+- **Laporan keuangan tidak tertukar periode** saat filter diganti cepat.
+- **Rumus laba ditahan dan neraca** dipindahkan ke use case murni dan diberi tes unit.
+
 ## v2.3.0
 
 Audit mendalam dan perbaikan anomali, ditambah modul Hutang Usaha yang tetap berjalan offline penuh.

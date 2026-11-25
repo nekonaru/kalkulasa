@@ -346,4 +346,45 @@
     <string name="payable_saved">Debt recorded</string>
     <string name="payable_payment_saved">Payment recorded</string>
     <string name="saved_generic">Saved</string>
+    <!-- Detailed financial statements -->
+    <string name="statements_title">Financial Statements</string>
+    <string name="statements_open">Full Financial Statements</string>
+    <string name="tab_balance">Balance Sheet</string>
+    <string name="tab_cash_detail">Cash Detail</string>
+    <string name="tab_expense_categories">Expense Categories</string>
+    <string name="balance_assets">Current Assets</string>
+    <string name="balance_liabilities">Liabilities</string>
+    <string name="balance_equity">Equity</string>
+    <string name="balance_cash">Cash</string>
+    <string name="balance_receivables">Customer receivables</string>
+    <string name="balance_inventory">Inventory value</string>
+    <string name="balance_payables">Supplier payables</string>
+    <string name="balance_capital">Net capital</string>
+    <string name="balance_retained">Retained earnings</string>
+    <string name="balance_balanced">Balance sheet is balanced</string>
+    <string name="balance_unbalanced">Balance sheet is not balanced</string>
+    <string name="balance_difference">Difference</string>
+    <string name="cash_modal">Capital in</string>
+    <string name="cash_prive">Owner drawings</string>
+    <string name="cash_sales">Cash sales</string>
+    <string name="cash_receivables">Receivables collected</string>
+    <string name="cash_purchases">Stock purchases</string>
+    <string name="cash_payables">Supplier debt payments</string>
+    <string name="cash_kasbon">Employee advances</string>
+    <string name="cash_expenses">Operating expenses</string>
+    <string name="cash_total_in">Total cash in</string>
+    <string name="cash_total_out">Total cash out</string>
+    <string name="cash_net">Cash balance</string>
+    <string name="expense_categories_empty">No expenses in this period.</string>
+
+    <!-- Previously hardcoded labels -->
+    <string name="stock_opname_new">New stock (physical count)</string>
+    <string name="stock_recorded">Recorded stock: %1$s %2$s</string>
+    <string name="status_cancelled">CANCELLED</string>
+    <string name="units_sold">%1$s sold</string>
+    <string name="unpin_product">Unpin product</string>
+    <string name="pin_product">Pin product</string>
+    <string name="stock_label">Stock %1$s %2$s</string>
+    <string name="decrease">Decrease</string>
+    <string name="increase">Increase</string>
 </resources>

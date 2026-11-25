@@ -53,6 +53,7 @@ import id.kalkulasa.core.util.RupiahFormatter
 import id.kalkulasa.domain.model.CapitalEntryType
 import id.kalkulasa.domain.model.Category
 import id.kalkulasa.presentation.component.KalkulasaEmptyState
+import id.kalkulasa.presentation.component.OnLifecycleResume
 import id.kalkulasa.presentation.theme.Rugi
 import id.kalkulasa.presentation.theme.Sukses
 import kotlinx.coroutines.flow.collectLatest
@@ -64,6 +65,7 @@ fun FinanceScreen(
     onOpenSuppliers: () -> Unit,
     onOpenEmployees: () -> Unit,
     onOpenPayable: () -> Unit,
+    onOpenStatements: () -> Unit,
     viewModel: FinanceViewModel = hiltViewModel(),
 ) {
     val balance by viewModel.cashBalance.collectAsStateWithLifecycle()
@@ -73,6 +75,8 @@ fun FinanceScreen(
     val snackbar = remember { SnackbarHostState() }
 
     var sheet by remember { mutableStateOf<SheetMode?>(null) }
+
+    OnLifecycleResume { viewModel.refreshBalance() }
 
     LaunchedEffect(Unit) {
         viewModel.events.collectLatest { event ->
@@ -120,6 +124,7 @@ fun FinanceScreen(
                     TextButton(onClick = onOpenSuppliers) { Text(context.getString(R.string.suppliers_entry)) }
                     TextButton(onClick = onOpenEmployees) { Text(context.getString(R.string.employees_title)) }
                     TextButton(onClick = onOpenPayable) { Text(context.getString(R.string.payable_open)) }
+                    TextButton(onClick = onOpenStatements) { Text(context.getString(R.string.statements_open)) }
                 }
             }
 

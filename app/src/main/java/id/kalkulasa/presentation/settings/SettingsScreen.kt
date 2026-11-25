@@ -73,10 +73,12 @@ fun SettingsScreen(
             when (event) {
                 is SettingsEvent.Message -> {
                     val message = when {
-                        event.text == "SAVED" -> "Tersimpan"
+                        event.text == "SAVED" -> context.getString(R.string.saved_generic)
                         event.text == "RESTORED" -> context.getString(R.string.restore_done)
                         event.text.startsWith("BACKUP:") -> context.getString(R.string.backup_done) + ": " + event.text.removePrefix("BACKUP:")
-                        else -> event.text
+                        event.text == "BACKUP_TOO_BIG" -> context.getString(R.string.backup_too_big)
+                        event.text == "ERROR" -> context.getString(R.string.error_backup_unreadable)
+                        else -> context.getString(R.string.error_generic)
                     }
                     snackbar.showSnackbar(message)
                 }

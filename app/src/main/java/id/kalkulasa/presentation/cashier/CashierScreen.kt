@@ -420,6 +420,7 @@ private fun CartSection(
 @OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 @Composable
 private fun ProductPickCard(product: Product, onClick: () -> Unit, onTogglePin: (Product) -> Unit) {
+    val context = LocalContext.current
     Card(
         onClick = onClick,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
@@ -437,7 +438,7 @@ private fun ProductPickCard(product: Product, onClick: () -> Unit, onTogglePin: 
                 ) {
                     Icon(
                         if (product.isPinned) Icons.Filled.PushPin else Icons.Outlined.PushPin,
-                        contentDescription = if (product.isPinned) "Lepaskan produk" else "Sematkan produk",
+                        contentDescription = if (product.isPinned) context.getString(R.string.unpin_product) else context.getString(R.string.pin_product),
                         modifier = Modifier.size(18.dp),
                         tint = if (product.isPinned) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
                     )
@@ -449,7 +450,7 @@ private fun ProductPickCard(product: Product, onClick: () -> Unit, onTogglePin: 
                 color = MaterialTheme.colorScheme.primary,
             )
             Text(
-                "Stok ${DateFormatter.formatQty(product.stok)} ${product.satuan}",
+                context.getString(R.string.stock_label, DateFormatter.formatQty(product.stok), product.satuan),
                 style = MaterialTheme.typography.bodyMedium,
                 color = if (product.isLowStock) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -466,6 +467,7 @@ private fun CartRow(
     onDecrement: () -> Unit,
     onRemove: () -> Unit,
 ) {
+    val context = LocalContext.current
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -479,9 +481,9 @@ private fun CartRow(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
-        IconButton(onClick = onDecrement) { Icon(Icons.Rounded.Remove, contentDescription = "Kurangi") }
+        IconButton(onClick = onDecrement) { Icon(Icons.Rounded.Remove, contentDescription = context.getString(R.string.decrease)) }
         Text(DateFormatter.formatQty(qty), style = MaterialTheme.typography.titleMedium)
-        IconButton(onClick = onIncrement) { Icon(Icons.Rounded.Add, contentDescription = "Tambah") }
+        IconButton(onClick = onIncrement) { Icon(Icons.Rounded.Add, contentDescription = context.getString(R.string.increase)) }
         IconButton(onClick = onRemove) { Icon(Icons.Rounded.Delete, contentDescription = null) }
     }
 }

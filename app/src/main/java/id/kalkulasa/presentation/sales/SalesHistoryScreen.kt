@@ -101,7 +101,7 @@ fun SalesHistoryScreen(
             } else {
                 val totalPeriod = state.sales.filter { it.status == SaleStatus.SELESAI }.sumOf { it.total }
                 Text(
-                    "Omzet ${RupiahFormatter.format(totalPeriod)}",
+                    "${context.getString(R.string.revenue)} ${RupiahFormatter.format(totalPeriod)}",
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.primary,
                 )
@@ -154,7 +154,7 @@ private fun SaleRow(
                 Text(
                     DateFormatter.formatDateTime(sale.waktu) +
                         (if (sale.metodeBayar == PaymentMethod.HUTANG) " · ${context.getString(R.string.payment_hutang)}" else "") +
-                        if (sale.status == SaleStatus.BATAL) " · BATAL" else "",
+                        if (sale.status == SaleStatus.BATAL) " · ${context.getString(R.string.status_cancelled)}" else "",
                     style = MaterialTheme.typography.bodyMedium,
                     color = if (sale.status == SaleStatus.BATAL) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
                 )

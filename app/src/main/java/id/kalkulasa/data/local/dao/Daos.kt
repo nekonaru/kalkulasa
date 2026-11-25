@@ -25,6 +25,9 @@ import id.kalkulasa.data.local.entity.SaleItemEntity
 import id.kalkulasa.data.local.entity.StockMovementEntity
 import kotlinx.coroutines.flow.Flow
 
+/** Projection for the expense-by-category aggregate query. */
+data class CategorySpendRow(val nama: String, val total: Long)
+
 @Dao
 interface BusinessProfileDao {
     @Query("SELECT * FROM business_profile WHERE deletedAt IS NULL LIMIT 1")
@@ -278,6 +281,9 @@ interface ExpenseDao {
     @Query("SELECT COALESCE(SUM(nominal), 0) FROM expense WHERE deletedAt IS NULL AND waktu BETWEEN :from AND :to")
     suspend fun sumBetween(from: Long, to: Long): Long
 
+    @Query("SELECT kategoriNama AS nama, COALESCE(SUM(nominal), 0) AS total FROM expense WHERE deletedAt IS NULL AND waktu BETWEEN :from AND :to GROUP BY kategoriNama ORDER BY total DESC")
+    suspend fun sumByCategoryBetween(from: Long, to: Long): List<CategorySpendRow>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(expense: ExpenseEntity)
 }
@@ -343,6 +349,9 @@ interface KasbonDao {
 
     @Query("SELECT * FROM kasbon WHERE deletedAt IS NULL")
     suspend fun getAll(): List<KasbonEntity>
+
+    @Query("SELECT COALESCE(SUM(nominal), 0) FROM kasbon WHERE deletedAt IS NULL")
+    suspend fun sumAll(): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(kasbon: KasbonEntity)
