@@ -32,7 +32,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class CartEntry(val product: Product, val qty: Double) {
-    val lineTotal: Long get() = (product.hargaJual * qty).toLong()
+    val lineTotal: Long get() = kotlin.math.round(product.hargaJual * qty).toLong()
 }
 
 sealed interface CashierEvent {
@@ -88,7 +88,7 @@ class CashierViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 0L)
 
     val discountAmount: StateFlow<Long> = _discount
-        .map { RupiahFormatter.parse(it) }
+        .map { RupiahFormatter.parseOrZero(it) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 0L)
 
     val total: StateFlow<Long> = combine(subtotal, discountAmount) { sub, diskon -> (sub - diskon).coerceAtLeast(0) }

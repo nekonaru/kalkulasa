@@ -35,20 +35,23 @@ object ImportProdukUseCase {
     /** Parse the raw CSV text. Never throws on bad data; collects RowError per row instead. */
     fun parse(rawCsv: String): ImportResult {
         val cleaned = rawCsv.trimStart('\uFEFF')
-        val lines = cleaned.split('\n').map { it.trimEnd('\r') }.filter { it.isNotBlank() }
+        // Keep the original line index so error numbers match a text editor even with blank lines.
+        val lines = cleaned.split('\n')
+            .mapIndexed { index, text -> index to text.trimEnd('\r') }
+            .filter { it.second.isNotBlank() }
         if (lines.isEmpty()) return ImportResult(emptyList(), listOf(RowError(0, "empty file")))
 
-        val delimiter = detectDelimiter(lines.first())
+        val delimiter = detectDelimiter(lines.first().second)
         val products = mutableListOf<ImportedProduct>()
         val errors = mutableListOf<RowError>()
 
         var startIndex = 0
-        val firstCells = splitLine(lines[0], delimiter).map { it.trim().lowercase() }
+        val firstCells = splitLine(lines[0].second, delimiter).map { it.trim().lowercase() }
         if (firstCells.any { it in HEADER_TOKENS }) startIndex = 1
 
         for (i in startIndex until lines.size) {
-            val rowNumber = i + 1 // 1-indexed, matching what the user sees in a text editor
-            val cells = splitLine(lines[i], delimiter).map { it.trim() }
+            val rowNumber = lines[i].first + 1 // 1-indexed, matching what the user sees in a text editor
+            val cells = splitLine(lines[i].second, delimiter).map { it.trim() }
             if (cells.all { it.isEmpty() }) continue // skip blank row silently
             val parsed = parseRow(cells, rowNumber)
             parsed.onSuccess { products.add(it) }.onFailure { errors.add(RowError(rowNumber, it.message ?: "invalid row")) }
@@ -133,7 +136,15 @@ object ImportProdukUseCase {
             ?: Result.failure(IllegalArgumentException("not a number: $raw"))
     }
 
-    fun parseQuantity(raw: String): Result<Double> = parseRupiah(raw).map { it.toDouble() }
+    /** Parse a quantity as a decimal, preserving fractions such as 2.5 kg. */
+    fun parseQuantity(raw: String): Result<Double> {
+        val trimmed = raw.trim()
+        if (trimmed.isEmpty()) return Result.failure(IllegalArgumentException("empty"))
+        val withoutSeparators = trimmed.replace(Regex("\\.(?=\\d{3})"), "")
+        val normalized = withoutSeparators.replace(',', '.')
+        return normalized.toDoubleOrNull()?.let { Result.success(it) }
+            ?: Result.failure(IllegalArgumentException("not a number: $raw"))
+    }
 
     /** Example CSV with header and two sample rows, ready to share with the user. */
     fun templateCsv(): String = """

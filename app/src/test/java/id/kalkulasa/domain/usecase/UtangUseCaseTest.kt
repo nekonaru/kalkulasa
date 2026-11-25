@@ -38,6 +38,12 @@ class UtangUseCaseTest {
     }
 
     @Test
+    fun validatePayment_extreme_value_never_overflows() {
+        val result = UtangUseCase.validatePayment(Long.MAX_VALUE, 1L, Long.MAX_VALUE)
+        assertThat(result.isFailure).isTrue()
+    }
+
+    @Test
     fun isLunas_true_at_exact_payment() {
         assertThat(UtangUseCase.isLunas(100_000L, 100_000L)).isTrue()
         assertThat(UtangUseCase.isLunas(100_000L, 99_999L)).isFalse()

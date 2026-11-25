@@ -24,6 +24,8 @@ import id.kalkulasa.domain.repository.EmployeeRepository
 import id.kalkulasa.domain.repository.AttendanceRepository
 import id.kalkulasa.domain.repository.KasbonRepository
 import id.kalkulasa.domain.repository.PayrollRepository
+import id.kalkulasa.data.repository.PayableRepositoryImpl
+import id.kalkulasa.domain.repository.PayableRepository
 import id.kalkulasa.data.repository.SupplierRepositoryImpl
 import id.kalkulasa.data.repository.CategoryRepositoryImpl
 import id.kalkulasa.data.repository.CustomerRepositoryImpl
@@ -124,6 +126,11 @@ object AppModule {
     @Singleton
     fun providePayrollRepository(db: KalkulasaDatabase, deviceId: String): PayrollRepository =
         PayrollRepositoryImpl(db, deviceId)
+
+    @Provides
+    @Singleton
+    fun providePayableRepository(db: KalkulasaDatabase, deviceId: String): PayableRepository =
+        PayableRepositoryImpl(db, deviceId)
 
     @Provides
     @Singleton

@@ -88,6 +88,7 @@
 | **Operating expenses** | Expenses per category (Electricity, Rent, Salary, Transport, Other); sales and stock purchases are recorded automatically |
 | **Purchase history** | Every stock-in is recorded in the finance history labeled with the supplier |
 | **Suppliers** | Total spend, transaction count and last purchase date per supplier; tap to see purchase details per period |
+| **Accounts payable** | Record supplier bills, pay partially or in full, filter overdue items and send a payment confirmation via WhatsApp |
 
 ### Customers and points
 
@@ -180,7 +181,7 @@
 ### Option A: Download the APK (easiest)
 
 1. Open the [Releases](https://github.com/nekonaru/kalkulasa/releases) page
-2. Download `kalkulasa-v2.2.0.apk`
+2. Download `kalkulasa-v2.3.0.apk`
 3. Open it on your phone and allow installs from unknown sources if asked
 4. Open the app and fill in your business profile
 

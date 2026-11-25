@@ -17,4 +17,5 @@ object Routes {
     const val SUPPLIERS = "suppliers"
     const val SUPPLIER_DETAIL = "supplier-detail"
     const val EMPLOYEES = "employees"
+    const val PAYABLE = "payable"
 }

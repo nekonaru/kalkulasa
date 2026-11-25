@@ -13,6 +13,7 @@ import id.kalkulasa.domain.model.Expense
 import id.kalkulasa.domain.model.Kasbon
 import id.kalkulasa.domain.model.PayrollRecord
 import id.kalkulasa.domain.model.PeriodReport
+import id.kalkulasa.domain.model.Payable
 import id.kalkulasa.domain.model.Product
 import id.kalkulasa.domain.model.ProductProfit
 import id.kalkulasa.domain.model.ProductSales
@@ -98,7 +99,14 @@ interface CustomerRepository {
 interface ReceivableRepository {
     fun observeAll(): Flow<List<Receivable>>
     fun observeOutstanding(): Flow<Long>
-    suspend fun addManual(namaPelanggan: String, nominal: Long, jatuhTempo: Long?, catatan: String?)
+    suspend fun addManual(namaPelanggan: String, nominal: Long, jatuhTempo: Long?, catatan: String?): Result<Unit>
+    suspend fun recordPayment(id: String, amount: Long): Result<Unit>
+}
+
+interface PayableRepository {
+    fun observeAll(): Flow<List<Payable>>
+    fun observeOutstanding(): Flow<Long>
+    suspend fun add(pemasok: String, nominal: Long, jatuhTempo: Long?, catatan: String?): Result<Unit>
     suspend fun recordPayment(id: String, amount: Long): Result<Unit>
 }
 
@@ -122,7 +130,7 @@ interface FinanceRepository {
     fun observeRecentCapitalEntries(limit: Int = 100): Flow<List<CapitalEntry>>
     fun observeRecentPurchases(limit: Int = 100): Flow<List<PurchaseRecord>>
     suspend fun addCapital(tipe: String, nominal: Long, catatan: String?)
-    suspend fun addExpense(kategoriId: String?, kategoriNama: String, nominal: Long, catatan: String?)
+    suspend fun addExpense(kategoriId: String?, kategoriNama: String, nominal: Long, catatan: String?): Result<Unit>
     suspend fun cashBalance(): Long
     suspend fun expensesBetween(from: Long, to: Long): Long
     suspend fun purchasesBetween(from: Long, to: Long): Long

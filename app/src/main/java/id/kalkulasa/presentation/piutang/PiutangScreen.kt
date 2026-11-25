@@ -191,7 +191,7 @@ private fun ReceivableRow(
             Text(
                 buildString {
                     append("${context.getString(R.string.piutang_remaining)} ${RupiahFormatter.format(item.sisa)}")
-                    append(" · Tercatat ${DateFormatter.formatDateTime(item.waktu)}")
+                    append(" · ${context.getString(R.string.label_recorded)} ${DateFormatter.formatDateTime(item.waktu)}")
                     item.jatuhTempo?.let { append(" · ${context.getString(R.string.piutang_due_date)}: ${DateFormatter.formatDayMonthYear(it)}") }
                 },
                 style = MaterialTheme.typography.bodyMedium,

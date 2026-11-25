@@ -14,6 +14,7 @@ import id.kalkulasa.data.local.entity.CustomerEntity
 import id.kalkulasa.data.local.entity.EmployeeEntity
 import id.kalkulasa.data.local.entity.KasbonEntity
 import id.kalkulasa.data.local.entity.PayrollEntity
+import id.kalkulasa.data.local.entity.PayableEntity
 import id.kalkulasa.data.local.entity.ExpenseEntity
 import id.kalkulasa.data.local.entity.ProductEntity
 import id.kalkulasa.data.local.entity.PurchaseEntity
@@ -404,8 +405,40 @@ interface ReceivableDao {
     @Query("UPDATE receivable SET deletedAt = :now, updatedAt = :now WHERE saleId = :saleId AND deletedAt IS NULL")
     suspend fun softDeleteBySaleId(saleId: String, now: Long)
 
+    @Query("UPDATE receivable SET deletedAt = :now, updatedAt = :now WHERE saleId = :saleId AND deletedAt IS NULL AND terbayar = 0")
+    suspend fun softDeleteUnpaidBySaleId(saleId: String, now: Long)
+
+    /**
+     * Keep money already received when a credit sale is cancelled. Collapsing
+     * nominal to terbayar leaves zero outstanding while sumPaid() still counts
+     * the cash, so cancelling never silently removes received money.
+     */
+    @Query("UPDATE receivable SET nominal = terbayar, jatuhTempo = NULL, updatedAt = :now WHERE saleId = :saleId AND deletedAt IS NULL AND terbayar > 0")
+    suspend fun settlePaidBySaleId(saleId: String, now: Long)
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(receivable: ReceivableEntity)
+}
+
+@Dao
+interface PayableDao {
+    @Query("SELECT * FROM payable WHERE deletedAt IS NULL ORDER BY (jatuhTempo IS NULL), jatuhTempo, waktu DESC")
+    fun observeAll(): Flow<List<PayableEntity>>
+
+    @Query("SELECT COALESCE(SUM(nominal - terbayar), 0) FROM payable WHERE deletedAt IS NULL AND nominal > terbayar")
+    fun observeOutstanding(): Flow<Long>
+
+    @Query("SELECT COALESCE(SUM(terbayar), 0) FROM payable WHERE deletedAt IS NULL")
+    suspend fun sumPaid(): Long
+
+    @Query("SELECT * FROM payable WHERE deletedAt IS NULL")
+    suspend fun getAll(): List<PayableEntity>
+
+    @Query("SELECT * FROM payable WHERE id = :id AND deletedAt IS NULL")
+    suspend fun getById(id: String): PayableEntity?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsert(payable: PayableEntity)
 }
 
 @Dao

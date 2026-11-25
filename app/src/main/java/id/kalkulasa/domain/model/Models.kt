@@ -49,9 +49,8 @@ data class GajiKaryawan(
     val totalUpah: Long,
     val totalKasbon: Long,
     val dibayar: Long,
-) {
-    val sudahDibayar: Boolean get() = dibayar > 0L
-}
+    val sudahDibayar: Boolean = false,
+)
 
 data class BusinessProfile(
     val id: String,
@@ -155,6 +154,20 @@ data class Receivable(
 ) {
     val sisa: Long get() = (nominal - terbayar).coerceAtLeast(0L)
     val isLunas: Boolean get() = terbayar >= nominal
+}
+
+data class Payable(
+    val id: String,
+    val pemasok: String,
+    val nominal: Long,
+    val terbayar: Long,
+    val jatuhTempo: Long?,
+    val catatan: String?,
+    val waktu: Long,
+) {
+    val sisa: Long get() = (nominal - terbayar).coerceAtLeast(0L)
+    val isLunas: Boolean get() = terbayar >= nominal
+    val isOverdue: Boolean get() = jatuhTempo != null && jatuhTempo < System.currentTimeMillis() && !isLunas
 }
 
 data class CapitalEntry(

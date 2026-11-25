@@ -46,12 +46,14 @@ class PiutangViewModel @Inject constructor(
 
     fun addManual(nama: String, nominalText: String, dueDaysText: String, catatan: String) {
         val nominal = nominalText.filter { it.isDigit() }.toLongOrNull() ?: return
-        if (nominal <= 0) return
+        val trimmed = nama.trim()
+        if (trimmed.isEmpty() || nominal <= 0) return
         val dueDays = dueDaysText.filter { it.isDigit() }.toIntOrNull()
         val due = dueDays?.takeIf { it > 0 }?.let { System.currentTimeMillis() + it * 24L * 60 * 60 * 1000 }
         viewModelScope.launch {
-            receivableRepository.addManual(nama.trim(), nominal, due, catatan)
-            _events.send(PiutangEvent.Message("SAVED"))
+            receivableRepository.addManual(trimmed, nominal, due, catatan)
+                .onSuccess { _events.send(PiutangEvent.Message("SAVED")) }
+                .onFailure { _events.send(PiutangEvent.Message(it.message ?: "ERROR")) }
         }
     }
 

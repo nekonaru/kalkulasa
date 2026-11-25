@@ -1,5 +1,35 @@
 # Changelog
 
+## v2.3.0
+
+Deep audit and anomaly fixes, plus an offline-capable Accounts Payable module.
+
+### New features
+
+- **Supplier debt ledger.** Record supplier bills with amount, due date and note. Total unpaid debt appears in the Finance summary.
+- **Debt payments.** Pay any portion; overpayment is rejected and a debt settles automatically when fully paid.
+- **Filter and search.** Separate unpaid and settled debts, search by supplier and flag overdue bills.
+- **Supplier confirmation.** Send a payment reminder through WhatsApp or any other available app.
+
+### Improvements
+
+- **Backup format v6** includes supplier debts and attendance records, which were previously left out. Older backups still restore.
+- **Automatic v5 to v6 database migration** with no data loss.
+
+### Bug fixes
+
+- **CSV import preserves fractional stock.** A quantity of 2.5 kg used to be silently imported as 2 kg.
+- **CSV error line numbers** now match a text editor even when the file contains blank lines.
+- **Cancelling a credit sale** no longer removes received cash from the balance.
+- **Zero purchase price is rejected** during stock-in, protecting the weighted average cost.
+- **Reports no longer mix periods** when switched quickly; exports use the range currently on screen.
+- **PDF and CSV export no longer crash** when writing fails or no receiving app is installed.
+- **Failed salary payments** are now reported instead of appearing successful, and the Paid label shows correctly.
+- **Stricter validation** for oversized numbers, negative quantities, negative discounts and empty customer names.
+- **Consistent rupiah rounding** across the cashier cart, sales, stock-in and inventory value.
+- **Business name still saves** when the profile row is missing after a restore.
+- **Saved message follows the app language** instead of always showing Indonesian.
+
 ## v2.2.0
 
 Employees and Payroll module, the next offline-capable step of the phase 3 roadmap.

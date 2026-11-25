@@ -6,6 +6,16 @@ import org.junit.Test
 class FinancialFormulasTest {
 
     @Test
+    fun inventoryValue_sums_before_conversion() {
+        // Three items of 0.5 kg at 3.333 each sum to 4999.5, truncated once to 4999.
+        assertThat(
+            HitungHppUseCase.inventoryValue(
+                listOf(0.5 to 3_333L, 0.5 to 3_333L, 0.5 to 3_333L),
+            ),
+        ).isEqualTo(4_999L)
+    }
+
+    @Test
     fun newAverageCost_firstEntry_usesBuyPrice() {
         assertThat(HitungHppUseCase.newAverageCost(0.0, 0L, 10.0, 5_000L)).isEqualTo(5_000L)
     }

@@ -13,7 +13,7 @@ object UtangUseCase {
      */
     fun validatePayment(nominal: Long, terbayar: Long, payment: Long): Result<Long> {
         if (payment <= 0) return Result.failure(IllegalArgumentException("Nominal bayar harus lebih dari 0"))
-        if (terbayar + payment > nominal) {
+        if (payment > sisa(nominal, terbayar)) {
             return Result.failure(IllegalArgumentException("Pembayaran melebihi tagihan (sisa ${sisa(nominal, terbayar)})"))
         }
         return Result.success(terbayar + payment)

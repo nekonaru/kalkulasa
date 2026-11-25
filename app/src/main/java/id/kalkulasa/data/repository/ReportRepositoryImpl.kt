@@ -22,8 +22,9 @@ class ReportRepositoryImpl @Inject constructor(
         val labaKotor = HitungHppUseCase.grossProfit(omzet, hpp)
         val labaBersih = HitungHppUseCase.netProfit(labaKotor, pengeluaran)
         val jumlahTransaksi = db.saleDao().countBetween(from, to)
-        val inventoryValue = db.productDao().getAllActive()
-            .sumOf { (it.stok * it.hargaBeliRata2).toLong() }
+        val inventoryValue = HitungHppUseCase.inventoryValue(
+            db.productDao().getAllActive().map { it.stok to it.hargaBeliRata2 },
+        )
         return PeriodReport(
             omzet = omzet,
             hpp = hpp,

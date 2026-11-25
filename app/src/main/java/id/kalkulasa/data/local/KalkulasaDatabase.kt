@@ -25,6 +25,7 @@ import id.kalkulasa.data.local.entity.EmployeeEntity
 import id.kalkulasa.data.local.entity.AttendanceEntity
 import id.kalkulasa.data.local.entity.KasbonEntity
 import id.kalkulasa.data.local.entity.PayrollEntity
+import id.kalkulasa.data.local.entity.PayableEntity
 import id.kalkulasa.data.local.entity.ExpenseEntity
 import id.kalkulasa.data.local.entity.ProductEntity
 import id.kalkulasa.data.local.entity.PurchaseEntity
@@ -54,8 +55,9 @@ import java.util.UUID
         AttendanceEntity::class,
         KasbonEntity::class,
         PayrollEntity::class,
+        PayableEntity::class,
     ],
-    version = 5,
+    version = 6,
     exportSchema = true,
 )
 abstract class KalkulasaDatabase : RoomDatabase() {
@@ -74,9 +76,32 @@ abstract class KalkulasaDatabase : RoomDatabase() {
     abstract fun attendanceDao(): id.kalkulasa.data.local.dao.AttendanceDao
     abstract fun kasbonDao(): id.kalkulasa.data.local.dao.KasbonDao
     abstract fun payrollDao(): id.kalkulasa.data.local.dao.PayrollDao
+    abstract fun payableDao(): id.kalkulasa.data.local.dao.PayableDao
 
     companion object {
         const val NAME = "kalkulasa.db"
+
+        /** Migration 5 -> 6: supplier payables (hutang usaha). */
+        val MIGRATION_5_6 = androidx.room.migration.Migration(5, 6) { db ->
+            db.execSQL(
+                """CREATE TABLE IF NOT EXISTS `payable` (
+                    `id` TEXT NOT NULL PRIMARY KEY,
+                    `pemasok` TEXT NOT NULL,
+                    `nominal` INTEGER NOT NULL,
+                    `terbayar` INTEGER NOT NULL,
+                    `jatuhTempo` INTEGER,
+                    `catatan` TEXT,
+                    `waktu` INTEGER NOT NULL,
+                    `updatedAt` INTEGER NOT NULL,
+                    `deletedAt` INTEGER,
+                    `deviceId` TEXT NOT NULL,
+                    `syncStatus` TEXT NOT NULL
+                )""".trimIndent(),
+            )
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_payable_pemasok` ON `payable` (`pemasok`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_payable_jatuhTempo` ON `payable` (`jatuhTempo`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_payable_waktu` ON `payable` (`waktu`)")
+        }
 
         /** Migration 4 -> 5: employees, attendance, kasbon and payroll tables. */
         val MIGRATION_4_5 = androidx.room.migration.Migration(4, 5) { db ->
@@ -200,7 +225,7 @@ abstract class KalkulasaDatabase : RoomDatabase() {
         fun build(context: Context, deviceId: String, passphrase: ByteArray): KalkulasaDatabase =
             Room.databaseBuilder(context, KalkulasaDatabase::class.java, NAME)
                 .openHelperFactory(SupportOpenHelperFactory(passphrase))
-                .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
+                .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6)
                 .addCallback(SeedCallback(deviceId))
                 .build()
     }

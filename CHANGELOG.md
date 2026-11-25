@@ -1,5 +1,35 @@
 # Changelog
 
+## v2.3.0
+
+Audit mendalam dan perbaikan anomali, ditambah modul Hutang Usaha yang tetap berjalan offline penuh.
+
+### Fitur baru
+
+- **Buku Hutang Usaha.** Catat tagihan pemasok dengan nominal, jatuh tempo, dan catatan. Total hutang belum lunas tampil di ringkasan Keuangan.
+- **Bayar hutang.** Cicilan berapa pun; pembayaran melebihi sisa tagihan ditolak dan lunas otomatis saat terbayar penuh.
+- **Filter dan pencarian.** Pisahkan hutang belum lunas dan lunas, cari pemasok, dan tandai tagihan yang jatuh temponya terlewat.
+- **Konfirmasi ke pemasok.** Kirim pengingat pembayaran lewat WhatsApp atau aplikasi lain yang tersedia.
+
+### Peningkatan
+
+- **Backup format v6** mencakup hutang usaha dan data absensi yang sebelumnya tidak ikut tercadangkan. Backup lama tetap bisa dipulihkan.
+- **Migrasi database otomatis v5 ke v6** tanpa menghapus data lama.
+
+### Perbaikan
+
+- **Impor CSV kini mempertahankan pecahan stok.** Sebelumnya stok 2,5 kg tercatat sebagai 2 kg tanpa pemberitahuan.
+- **Nomor baris error CSV** kini sesuai nomor baris di editor teks walau ada baris kosong.
+- **Batal penjualan hutang** tidak lagi mengurangi saldo kas dari uang yang sudah diterima pelanggan.
+- **Harga beli 0 ditolak** saat stok masuk, sehingga HPP rata-rata tidak rusak.
+- **Laporan tidak tertukar** lagi saat pengguna mengganti periode dengan cepat; ekspor memakai rentang yang sedang ditampilkan.
+- **Ekspor PDF dan CSV tidak crash** lagi saat gagal menulis file atau tidak ada aplikasi penerima.
+- **Pembayaran gaji yang gagal** kini dilaporkan, bukan dianggap berhasil. Status Lunas pada gaji juga tampil dengan benar.
+- **Validasi lebih ketat** pada angka terlalu besar, jumlah negatif, diskon negatif, dan nama pelanggan kosong.
+- **Pembulatan rupiah konsisten** antara keranjang kasir, penjualan, stok masuk, dan nilai persediaan.
+- **Nama usaha tetap tersimpan** walau entri profil hilang setelah pemulihan backup.
+- **Teks Tersimpan mengikuti bahasa** aplikasi, tidak lagi selalu Bahasa Indonesia.
+
 ## v2.2.0
 
 Modul Karyawan dan Gaji, lanjutan roadmap Fase 3 yang tetap jalan offline penuh.

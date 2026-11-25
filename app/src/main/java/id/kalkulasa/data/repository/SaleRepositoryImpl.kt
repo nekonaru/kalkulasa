@@ -41,6 +41,8 @@ class SaleRepositoryImpl @Inject constructor(
         namaPelanggan: String?,
     ): Result<Sale> {
         if (items.isEmpty()) return Result.failure(IllegalArgumentException("Keranjang kosong"))
+        if (diskon < 0) return Result.failure(IllegalArgumentException("Diskon tidak boleh negatif"))
+        if (items.any { it.second <= 0.0 }) return Result.failure(IllegalArgumentException("Jumlah harus lebih dari 0"))
         return runCatching {
             db.withTransaction {
                 val productDao = db.productDao()
@@ -51,7 +53,7 @@ class SaleRepositoryImpl @Inject constructor(
                     if (fresh.stok < qty) {
                         throw IllegalStateException("Stok ${fresh.nama} tidak cukup (sisa ${fresh.stok})")
                     }
-                    subtotal += (fresh.hargaJual * qty).toLong()
+                    subtotal += kotlin.math.round(fresh.hargaJual * qty).toLong()
                     fresh to qty
                 }
                 val total = (subtotal - diskon).coerceAtLeast(0)
@@ -169,8 +171,10 @@ class SaleRepositoryImpl @Inject constructor(
                 throw IllegalStateException("Transaksi sudah dibatalkan")
             }
             val now0 = RepositorySupport.now()
-            // Soft-delete any receivable linked to this sale so a cancelled credit sale does not stay as debt.
-            db.receivableDao().softDeleteBySaleId(saleId, now0)
+            // Preserve cash already received on a credit sale. Collapsing nominal
+            // to terbayar leaves zero debt while sumPaid() still counts the money.
+            db.receivableDao().softDeleteUnpaidBySaleId(saleId, now0)
+            db.receivableDao().settlePaidBySaleId(saleId, now0)
             // Reverse loyalty points earned by the named customer on this sale.
             sale.customerId?.let { customerId ->
                 db.customerDao().getById(customerId)?.let { customer ->

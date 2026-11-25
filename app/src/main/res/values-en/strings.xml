@@ -320,4 +320,30 @@
     <string name="payroll_pay_title">Pay salary</string>
     <string name="payroll_empty">No payroll data yet. Add employees and attendance first.</string>
     <string name="salary_paid">Salary paid and recorded as an expense</string>
+    <!-- Accounts payable -->
+    <string name="payable_title">Accounts Payable</string>
+    <string name="payable_open">Supplier Debts</string>
+    <string name="payable_add">Record debt</string>
+    <string name="payable_outstanding">Total outstanding debt</string>
+    <string name="payable_unpaid">Unpaid</string>
+    <string name="payable_paid">Settled</string>
+    <string name="payable_empty">No supplier debt yet. Record your first supplier bill.</string>
+    <string name="payable_search">Search supplier</string>
+    <string name="payable_supplier">Supplier name</string>
+    <string name="payable_supplier_hint">Example: Sumber Rejeki Store</string>
+    <string name="payable_due_days">Due in days (optional)</string>
+    <string name="payable_note_hint">Note (optional)</string>
+    <string name="payable_pay_title">Pay debt</string>
+    <string name="payable_pay">Pay</string>
+    <string name="payable_reminder">Payment confirmation</string>
+    <string name="payable_reminder_message">Hello %1$s, a confirmation from %2$s. The remaining %3$s has not been settled.%4$s Thank you for your cooperation.</string>
+    <string name="payable_reminder_due"> Due: %1$s.</string>
+    <string name="payable_overdue">Overdue</string>
+    <string name="payable_remaining">Remaining</string>
+    <string name="payable_recorded">Recorded</string>
+    <string name="label_recorded">Recorded</string>
+    <string name="payable_due_date">Due date</string>
+    <string name="payable_saved">Debt recorded</string>
+    <string name="payable_payment_saved">Payment recorded</string>
+    <string name="saved_generic">Saved</string>
 </resources>

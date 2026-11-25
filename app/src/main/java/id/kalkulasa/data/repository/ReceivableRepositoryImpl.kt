@@ -23,7 +23,9 @@ class ReceivableRepositoryImpl @Inject constructor(
     override fun observeOutstanding(): Flow<Long> =
         db.receivableDao().observeOutstanding()
 
-    override suspend fun addManual(namaPelanggan: String, nominal: Long, jatuhTempo: Long?, catatan: String?) {
+    override suspend fun addManual(namaPelanggan: String, nominal: Long, jatuhTempo: Long?, catatan: String?): Result<Unit> = runCatching {
+        require(namaPelanggan.isNotBlank()) { "Nama pelanggan wajib diisi" }
+        require(nominal > 0) { "Nominal harus lebih dari 0" }
         val now = RepositorySupport.now()
         val id = RepositorySupport.newId()
         db.receivableDao().upsert(

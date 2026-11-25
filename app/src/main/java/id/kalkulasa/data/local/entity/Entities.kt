@@ -251,6 +251,21 @@ data class ReceivableEntity(
     val syncStatus: String = SyncStatus.PENDING,
 )
 
+@Entity(tableName = "payable", indices = [Index("pemasok"), Index("jatuhTempo"), Index("waktu")])
+data class PayableEntity(
+    @PrimaryKey val id: String,
+    val pemasok: String,
+    val nominal: Long,
+    val terbayar: Long,
+    val jatuhTempo: Long? = null,
+    val catatan: String? = null,
+    val waktu: Long,
+    val updatedAt: Long,
+    val deletedAt: Long? = null,
+    val deviceId: String,
+    val syncStatus: String = SyncStatus.PENDING,
+)
+
 @Entity(tableName = "change_log", indices = [Index("createdAt"), Index("syncStatus")])
 data class ChangeLogEntity(
     @PrimaryKey val id: String,

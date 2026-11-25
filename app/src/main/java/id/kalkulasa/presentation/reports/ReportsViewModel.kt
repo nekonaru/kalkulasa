@@ -64,10 +64,22 @@ class ReportsViewModel @Inject constructor(
         val s = _state.value
         viewModelScope.launch {
             val report = reportRepository.reportBetween(s.from, s.to)
-            _mostProfitable.value = saleRepository.mostProfitableBetween(s.from, s.to, 5)
-            _state.value = _state.value.copy(report = report, loading = false)
+            val profitable = saleRepository.mostProfitableBetween(s.from, s.to, 5)
+            // A fast period switch can start two queries. Only the one that still
+            // matches the visible period is allowed to write state.
+            withContext(Dispatchers.Main) {
+                val current = _state.value
+                if (current.from == s.from && current.to == s.to && current.period == s.period) {
+                    _mostProfitable.value = profitable
+                    _state.value = current.copy(report = report, loading = false)
+                }
+            }
         }
     }
+
+    private val _error = MutableStateFlow<String?>(null)
+    val error: StateFlow<String?> = _error.asStateFlow()
+    fun clearError() { _error.value = null }
 
     fun exportCsv() {
         shareFile("kalkulasa-laporan.csv", "text/csv") {
@@ -119,6 +131,10 @@ class ReportsViewModel @Inject constructor(
                 }
                 withContext(kotlinx.coroutines.Dispatchers.Main) {
                     context.startActivity(Intent.createChooser(intent, null).apply { addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) })
+                }
+            } catch (e: Exception) {
+                withContext(kotlinx.coroutines.Dispatchers.Main) {
+                    _error.value = context.getString(id.kalkulasa.R.string.error_generic)
                 }
             } finally {
                 withContext(kotlinx.coroutines.Dispatchers.Main) {

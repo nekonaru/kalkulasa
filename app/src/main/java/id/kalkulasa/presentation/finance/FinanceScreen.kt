@@ -63,6 +63,7 @@ fun FinanceScreen(
     onOpenCustomers: () -> Unit,
     onOpenSuppliers: () -> Unit,
     onOpenEmployees: () -> Unit,
+    onOpenPayable: () -> Unit,
     viewModel: FinanceViewModel = hiltViewModel(),
 ) {
     val balance by viewModel.cashBalance.collectAsStateWithLifecycle()
@@ -77,7 +78,7 @@ fun FinanceScreen(
         viewModel.events.collectLatest { event ->
             when (event) {
                 is FinanceEvent.Message -> snackbar.showSnackbar(
-                    if (event.text == "SAVED") "Tersimpan" else event.text,
+                    if (event.text == "SAVED") context.getString(R.string.saved_generic) else event.text,
                 )
             }
         }
@@ -118,6 +119,7 @@ fun FinanceScreen(
                     TextButton(onClick = onOpenCustomers) { Text(context.getString(R.string.customers_title)) }
                     TextButton(onClick = onOpenSuppliers) { Text(context.getString(R.string.suppliers_entry)) }
                     TextButton(onClick = onOpenEmployees) { Text(context.getString(R.string.employees_title)) }
+                    TextButton(onClick = onOpenPayable) { Text(context.getString(R.string.payable_open)) }
                 }
             }
 

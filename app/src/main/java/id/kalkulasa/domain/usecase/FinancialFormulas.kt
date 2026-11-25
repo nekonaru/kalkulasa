@@ -25,8 +25,9 @@ object HitungHppUseCase {
     fun marginPercent(netProfit: Long, omzet: Long): Double =
         if (omzet <= 0L) 0.0 else netProfit.toDouble() / omzet.toDouble() * 100.0
 
+    /** Sum first, then convert once, matching the SQL aggregate used by the DAO. */
     fun inventoryValue(items: List<Pair<Double, Long>>): Long =
-        items.fold(0L) { acc, (stok, hpp) -> acc + (stok * hpp).toLong() }
+        items.fold(0.0) { acc, (stok, hpp) -> acc + stok * hpp }.toLong()
 
     /**
      * Cash balance = capital (initial + added) - private draws

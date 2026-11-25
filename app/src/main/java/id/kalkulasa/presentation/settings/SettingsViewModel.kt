@@ -91,17 +91,16 @@ class SettingsViewModel @Inject constructor(
     fun saveProfile() {
         viewModelScope.launch {
             val current = profileRepository.getProfile()
-            if (current != null) {
-                profileRepository.saveProfile(
-                    BusinessProfile(
-                        id = current.id,
-                        namaUsaha = _state.value.namaUsaha.trim().ifEmpty { current.namaUsaha },
-                        jenisUsaha = _state.value.jenisUsaha.trim().ifEmpty { current.jenisUsaha },
-                        modalAwal = current.modalAwal,
-                        dibuatPada = current.dibuatPada,
-                    ),
-                )
-            }
+            val state = _state.value
+            profileRepository.saveProfile(
+                BusinessProfile(
+                    id = current?.id ?: java.util.UUID.randomUUID().toString(),
+                    namaUsaha = state.namaUsaha.trim().ifEmpty { current?.namaUsaha ?: "Usaha Saya" },
+                    jenisUsaha = state.jenisUsaha.trim().ifEmpty { current?.jenisUsaha ?: "Warung" },
+                    modalAwal = current?.modalAwal ?: 0L,
+                    dibuatPada = current?.dibuatPada ?: System.currentTimeMillis(),
+                ),
+            )
             _events.send(SettingsEvent.Message("SAVED"))
         }
     }

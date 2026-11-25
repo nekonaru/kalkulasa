@@ -48,7 +48,7 @@ class EmployeeViewModel @Inject constructor(
     @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
     val attendance: StateFlow<List<Attendance>> = _selectedDate
         .flatMapLatest { date ->
-            attendanceRepository.observeBetween(date, date + 24L * 60 * 60 * 1000 - 1)
+            attendanceRepository.observeBetween(date, DateFormatter.endOfDay(date))
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
@@ -124,7 +124,7 @@ class EmployeeViewModel @Inject constructor(
                     absensi = absen.filter { it.karyawanId == employee.id },
                     kasbon = kasbonRepository.getForEmployee(employee.id, from, to),
                     sudahDibayar = paidBefore,
-                )
+                ).copy(sudahDibayar = paidBefore > 0L)
             }
             _payroll.value = result
         }
@@ -144,10 +144,9 @@ class EmployeeViewModel @Inject constructor(
         viewModelScope.launch {
             payrollRepository.pay(employee, from, to, item.totalUpah, item.totalKasbon, item.dibayar)
                 .onSuccess {
-                    // Record as an operating expense in the Gaji category
                     financeRepository.addExpense(null, "Gaji", item.dibayar, "Gaji ${employee.nama}")
-                    loadPayroll()
-                    _events.send(EmployeeEvent.Message("SALARY_PAID"))
+                        .onSuccess { loadPayroll(); _events.send(EmployeeEvent.Message("SALARY_PAID")) }
+                        .onFailure { _events.send(EmployeeEvent.Message(it.message ?: "ERROR")) }
                 }
                 .onFailure { _events.send(EmployeeEvent.Message(it.message ?: "ERROR")) }
         }

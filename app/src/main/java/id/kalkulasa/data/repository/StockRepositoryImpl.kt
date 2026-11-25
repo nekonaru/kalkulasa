@@ -34,6 +34,7 @@ class StockRepositoryImpl @Inject constructor(
         catatan: String?,
     ): Result<Unit> {
         if (qty <= 0.0) return Result.failure(IllegalArgumentException("qty"))
+        if (hargaBeli <= 0) return Result.failure(IllegalArgumentException("Harga beli harus lebih dari 0"))
         return runCatching {
             db.withTransaction {
                 val productDao = db.productDao()
@@ -43,7 +44,7 @@ class StockRepositoryImpl @Inject constructor(
                 val newHpp = HitungHppUseCase.newAverageCost(product.stok, product.hargaBeliRata2, qty, hargaBeli)
                 val purchaseId = RepositorySupport.newId()
                 val now = RepositorySupport.now()
-                val total = (qty * hargaBeli).toLong()
+                val total = kotlin.math.round(qty * hargaBeli).toLong()
                 db.purchaseDao().insert(
                     PurchaseEntity(
                         id = purchaseId,

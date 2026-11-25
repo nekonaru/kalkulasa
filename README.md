@@ -88,6 +88,7 @@
 | **Pengeluaran operasional** | Pengeluaran per kategori (Listrik, Sewa, Gaji, Transportasi, Lainnya); penjualan dan pembelian stok tercatat otomatis |
 | **Riwayat pembelian** | Setiap stok masuk tercatat di riwayat keuangan dengan label pemasoknya |
 | **Pemasok** | Total belanja, jumlah transaksi dan tanggal pembelian terakhir per pemasok; ketuk untuk melihat detail belanja per periode |
+| **Hutang usaha** | Catat tagihan pemasok, bayar sebagian atau lunas, filter jatuh tempo, dan kirim konfirmasi pembayaran via WhatsApp |
 
 ### Pelanggan dan poin
 
@@ -180,7 +181,7 @@
 ### Opsi A: Unduh APK (paling mudah)
 
 1. Buka halaman [Releases](https://github.com/nekonaru/kalkulasa/releases)
-2. Unduh `kalkulasa-v2.2.0.apk`
+2. Unduh `kalkulasa-v2.3.0.apk`
 3. Buka di ponsel kamu dan izinkan instalasi dari sumber tidak dikenal jika diminta
 4. Buka aplikasi dan isi profil usaha kamu
 

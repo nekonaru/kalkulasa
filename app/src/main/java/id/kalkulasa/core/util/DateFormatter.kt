@@ -29,11 +29,21 @@ object DateFormatter {
             set(Calendar.MILLISECOND, 0)
         }.timeInMillis
 
-    fun endOfDay(now: Long = System.currentTimeMillis()): Long = startOfDay(now) + 24L * 60 * 60 * 1000 - 1
+    fun endOfDay(now: Long = System.currentTimeMillis()): Long =
+        Calendar.getInstance().apply {
+            timeInMillis = now
+            set(Calendar.HOUR_OF_DAY, 23)
+            set(Calendar.MINUTE, 59)
+            set(Calendar.SECOND, 59)
+            set(Calendar.MILLISECOND, 999)
+        }.timeInMillis
 
-    /** Start of day N days ago (0 = today). */
+    /** Start of day N days ago (0 = today). Calendar.add keeps this correct across DST. */
     fun startOfDayDaysAgo(daysAgo: Int, now: Long = System.currentTimeMillis()): Long =
-        startOfDay(now) - daysAgo.toLong() * 24 * 60 * 60 * 1000
+        Calendar.getInstance().apply {
+            timeInMillis = startOfDay(now)
+            add(Calendar.DAY_OF_YEAR, -daysAgo)
+        }.timeInMillis
 
     fun startOfMonth(now: Long = System.currentTimeMillis()): Long =
         Calendar.getInstance().apply {

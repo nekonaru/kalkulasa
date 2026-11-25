@@ -49,7 +49,7 @@ class FinanceRepositoryImpl @Inject constructor(
         RepositorySupport.log(changeLogDao, "capital_entry", id, "INSERT")
     }
 
-    override suspend fun addExpense(kategoriId: String?, kategoriNama: String, nominal: Long, catatan: String?) {
+    override suspend fun addExpense(kategoriId: String?, kategoriNama: String, nominal: Long, catatan: String?): Result<Unit> = runCatching {
         val now = RepositorySupport.now()
         val id = RepositorySupport.newId()
         db.expenseDao().insert(

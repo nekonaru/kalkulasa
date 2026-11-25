@@ -42,7 +42,7 @@ class OnboardingViewModel @Inject constructor(
             _state.value = s.copy(error = "NAME_REQUIRED")
             return
         }
-        val modal = RupiahFormatter.parse(s.modalAwal.ifEmpty { "0" })
+        val modal = RupiahFormatter.parseOrZero(s.modalAwal.ifEmpty { "0" })
         _state.value = s.copy(saving = true, error = null)
         viewModelScope.launch {
             profileRepository.saveProfile(

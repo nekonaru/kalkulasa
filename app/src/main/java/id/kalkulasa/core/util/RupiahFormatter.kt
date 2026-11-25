@@ -16,8 +16,20 @@ object RupiahFormatter {
 
     fun format(amount: Long): String = formatter().format(amount)
 
-    /** Format a raw digit string typed by the user, keeping only digits. */
-    fun parse(input: String): Long = input.filter { it.isDigit() }.toLongOrNull() ?: 0L
+    /**
+     * Parse a raw digit string typed by the user, keeping only digits.
+     * Returns a failure instead of silently turning an oversized number into 0.
+     */
+    fun parse(input: String): Result<Long> {
+        val digits = input.filter { it.isDigit() }
+        if (digits.isEmpty()) return Result.success(0L)
+        val value = digits.toLongOrNull()
+            ?: return Result.failure(IllegalArgumentException("Angka terlalu besar"))
+        return Result.success(value)
+    }
+
+    /** Convenience for callers that must show a number even when input is invalid. */
+    fun parseOrZero(input: String): Long = parse(input).getOrDefault(0L)
 
     fun formatPlain(amount: Long): String = formatter().format(amount)
 }

@@ -320,4 +320,30 @@
     <string name="payroll_pay_title">Bayar gaji</string>
     <string name="payroll_empty">Belum ada data gaji. Tambah karyawan dan absen dulu.</string>
     <string name="salary_paid">Gaji dibayar dan tercatat di pengeluaran</string>
+    <!-- Hutang usaha (accounts payable) -->
+    <string name="payable_title">Hutang Usaha</string>
+    <string name="payable_open">Buku Hutang Usaha</string>
+    <string name="payable_add">Catat hutang</string>
+    <string name="payable_outstanding">Total hutang belum lunas</string>
+    <string name="payable_unpaid">Belum lunas</string>
+    <string name="payable_paid">Lunas</string>
+    <string name="payable_empty">Belum ada hutang usaha. Catat tagihan dari pemasok pertamamu.</string>
+    <string name="payable_search">Cari pemasok</string>
+    <string name="payable_supplier">Nama pemasok</string>
+    <string name="payable_supplier_hint">Contoh: Toko Sumber Rejeki</string>
+    <string name="payable_due_days">Jatuh tempo (hari, opsional)</string>
+    <string name="payable_note_hint">Catatan (opsional)</string>
+    <string name="payable_pay_title">Bayar hutang</string>
+    <string name="payable_pay">Bayar</string>
+    <string name="payable_reminder">Konfirmasi pembayaran</string>
+    <string name="payable_reminder_message">Halo %1$s, ini konfirmasi dari %2$s. Sisa tagihan %3$s belum kami lunasi.%4$s Terima kasih atas kerjasamanya.</string>
+    <string name="payable_reminder_due"> Jatuh tempo: %1$s.</string>
+    <string name="payable_overdue">Jatuh tempo terlewat</string>
+    <string name="payable_remaining">Sisa</string>
+    <string name="payable_recorded">Tercatat</string>
+    <string name="label_recorded">Tercatat</string>
+    <string name="payable_due_date">Jatuh tempo</string>
+    <string name="payable_saved">Hutang tercatat</string>
+    <string name="payable_payment_saved">Pembayaran tercatat</string>
+    <string name="saved_generic">Tersimpan</string>
 </resources>

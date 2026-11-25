@@ -81,8 +81,11 @@ class FinanceViewModel @Inject constructor(
         if (nominal <= 0) return
         viewModelScope.launch {
             financeRepository.addExpense(kategoriId, kategoriNama, nominal, catatan)
-            refreshBalance()
-            _events.send(FinanceEvent.Message("SAVED"))
+                .onSuccess {
+                    refreshBalance()
+                    _events.send(FinanceEvent.Message("SAVED"))
+                }
+                .onFailure { _events.send(FinanceEvent.Message(it.message ?: "ERROR")) }
         }
     }
 }

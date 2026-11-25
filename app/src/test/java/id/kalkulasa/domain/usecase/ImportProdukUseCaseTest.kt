@@ -45,6 +45,17 @@ class ImportProdukUseCaseTest {
     }
 
     @Test
+    fun fractional_quantity_is_preserved() {
+        assertThat(ImportProdukUseCase.parseQuantity("2,5").getOrThrow()).isEqualTo(2.5)
+        assertThat(ImportProdukUseCase.parseQuantity("0,5").getOrThrow()).isEqualTo(0.5)
+        assertThat(ImportProdukUseCase.parseQuantity("1.250").getOrThrow()).isEqualTo(1250.0)
+        val result = parse("Beras,kg,10000,12000,2.5,0.5,\n")
+        assertThat(result.errors).isEmpty()
+        assertThat(result.products[0].stokAwal).isEqualTo(2.5)
+        assertThat(result.products[0].stokMinimum).isEqualTo(0.5)
+    }
+
+    @Test
     fun row_with_zero_price_generates_error() {
         val result = parse("Telur,kg,22000,0,10,2\n")
         assertThat(result.products).isEmpty()
@@ -61,7 +72,7 @@ class ImportProdukUseCaseTest {
         )
         assertThat(result.products).hasSize(1)
         assertThat(result.errors).hasSize(1)
-        assertThat(result.errors[0].rowNumber).isEqualTo(3)
+        assertThat(result.errors[0].rowNumber).isEqualTo(4)
     }
 
     @Test

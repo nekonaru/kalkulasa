@@ -107,6 +107,10 @@ class StockViewModel @Inject constructor(
         val id = productId ?: return
         val qty = qtyText.replace(',', '.').toDoubleOrNull() ?: return
         val price = priceText.filter { it.isDigit() }.toLongOrNull() ?: return
+        if (qty <= 0.0 || price <= 0L) {
+            viewModelScope.launch { _events.send(StockEvent.Message("Harga dan jumlah harus lebih dari 0")) }
+            return
+        }
         viewModelScope.launch {
             stockRepository.recordStockIn(id, qty, price, pemasok, catatan)
                 .onSuccess { _events.send(StockEvent.Message("STOCK_IN_SAVED")) }
