@@ -18,6 +18,7 @@ import id.kalkulasa.domain.model.ProductSales
 import id.kalkulasa.domain.model.Sale
 import id.kalkulasa.domain.model.SaleLine
 import id.kalkulasa.domain.usecase.PoinLoyalitasUseCase
+import id.kalkulasa.domain.usecase.PromosiUseCase
 import id.kalkulasa.domain.repository.SaleRepository
 import id.kalkulasa.core.util.DateFormatter
 import kotlinx.coroutines.flow.Flow
@@ -39,9 +40,13 @@ class SaleRepositoryImpl @Inject constructor(
         metodeBayar: String,
         catatan: String?,
         namaPelanggan: String?,
+        poinDitukar: Int,
     ): Result<Sale> {
         if (items.isEmpty()) return Result.failure(IllegalArgumentException("Keranjang kosong"))
         if (diskon < 0) return Result.failure(IllegalArgumentException("Diskon tidak boleh negatif"))
+        if (diskon > items.sumOf { kotlin.math.round(it.first.hargaJual * it.second).toLong() }) {
+            return Result.failure(IllegalArgumentException("Diskon melebihi subtotal"))
+        }
         if (items.any { it.second <= 0.0 }) return Result.failure(IllegalArgumentException("Jumlah harus lebih dari 0"))
         return runCatching {
             db.withTransaction {
@@ -60,17 +65,23 @@ class SaleRepositoryImpl @Inject constructor(
                 val now = RepositorySupport.now()
                 val saleId = RepositorySupport.newId()
 
-                // Loyalty: named customer earns 1 point per Rp 1.000 spent
+                // Loyalty: named customer earns 1 point per Rp 1.000 spent and may redeem points.
                 val customerName = namaPelanggan?.trim().orEmpty()
+                if (poinDitukar > 0 && customerName.isEmpty()) {
+                    throw IllegalArgumentException("Nama pelanggan wajib untuk tukar poin")
+                }
                 var linkedCustomerId: String? = null
                 if (customerName.isNotEmpty()) {
                     val existing = db.customerDao().findByName(customerName)
-                    val points = PoinLoyalitasUseCase.pointsFor(total)
+                    if (poinDitukar > 0) {
+                        PromosiUseCase.validasiPenukaran(existing?.poin ?: 0L, poinDitukar).getOrThrow()
+                    }
+                    val pointsEarned = PoinLoyalitasUseCase.pointsFor(total)
                     if (existing != null) {
                         linkedCustomerId = existing.id
                         db.customerDao().upsert(
                             existing.copy(
-                                poin = existing.poin + points,
+                                poin = existing.poin - poinDitukar + pointsEarned,
                                 kunjungan = existing.kunjungan + 1,
                                 totalBelanja = existing.totalBelanja + total,
                                 updatedAt = now,
@@ -83,7 +94,7 @@ class SaleRepositoryImpl @Inject constructor(
                             id.kalkulasa.data.local.entity.CustomerEntity(
                                 id = newCustomerId,
                                 nama = customerName,
-                                poin = points,
+                                poin = pointsEarned,
                                 kunjungan = 1,
                                 totalBelanja = total,
                                 updatedAt = now,
@@ -218,11 +229,8 @@ class SaleRepositoryImpl @Inject constructor(
     }
 
     override suspend fun lastCompletedSale(): Pair<Sale, List<SaleLine>>? {
-        val sales = db.saleDao().getBetween(0L, DateFormatter.endOfDay())
-            .filter { it.status == SaleStatus.SELESAI }
-            .maxByOrNull { it.waktu }
-            ?: return null
-        val items = db.saleDao().getItems(sales.id).map {
+        val sale = db.saleDao().lastCompleted() ?: return null
+        val items = db.saleDao().getItems(sale.id).map {
             SaleLine(
                 produkId = it.produkId,
                 namaProduk = it.namaProduk,
@@ -231,7 +239,7 @@ class SaleRepositoryImpl @Inject constructor(
                 hppSaatJual = it.hppSaatJual,
             )
         }
-        return sales.toDomain() to items
+        return sale.toDomain() to items
     }
 
     override suspend fun saleItems(saleId: String): List<SaleLine> =

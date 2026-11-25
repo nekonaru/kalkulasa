@@ -18,6 +18,7 @@ class CustomerRepositoryImpl @Inject constructor(
         db.customerDao().observeAll(query).map { list -> list.map { it.toDomain() } }
 
     override suspend fun getById(id: String): Customer? = db.customerDao().getById(id)?.toDomain()
+    override suspend fun getByName(name: String): Customer? = db.customerDao().findByName(name.trim())?.toDomain()
 
     override suspend fun resetPoints(id: String) {
         val customer = db.customerDao().getById(id) ?: return

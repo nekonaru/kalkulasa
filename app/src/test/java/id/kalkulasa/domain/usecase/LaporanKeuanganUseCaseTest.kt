@@ -28,9 +28,10 @@ class LaporanKeuanganUseCaseTest {
     }
 
     @Test
-    fun negative_asset_inputs_are_clamped() {
+    fun negative_cash_is_visible_while_other_assets_are_clamped() {
         val neraca = LaporanKeuanganUseCase.neraca(-1L, -2L, -3L, -4L, -5L, 0L, 0L)
-        assertThat(neraca.aset).isEqualTo(0L)
+        assertThat(neraca.kas).isEqualTo(-1L)
+        assertThat(neraca.aset).isEqualTo(-1L)
         assertThat(neraca.liabilitas).isEqualTo(0L)
     }
 

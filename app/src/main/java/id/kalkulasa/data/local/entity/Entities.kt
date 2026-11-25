@@ -266,6 +266,15 @@ data class PayableEntity(
     val syncStatus: String = SyncStatus.PENDING,
 )
 
+@Entity(tableName = "sales_target")
+data class SalesTargetEntity(
+    @PrimaryKey val jenis: String, // HARIAN, BULANAN
+    val nominal: Long,
+    val updatedAt: Long,
+    val deviceId: String,
+    val syncStatus: String = SyncStatus.PENDING,
+)
+
 @Entity(tableName = "change_log", indices = [Index("createdAt"), Index("syncStatus")])
 data class ChangeLogEntity(
     @PrimaryKey val id: String,

@@ -25,7 +25,7 @@ object LaporanKeuanganUseCase {
         modalBersih: Long,
         labaDitahan: Long,
     ): Neraca = Neraca(
-        kas = kas.coerceAtLeast(0L),
+        kas = kas,
         piutang = piutang.coerceAtLeast(0L),
         persediaan = persediaan.coerceAtLeast(0L),
         kasbon = kasbon.coerceAtLeast(0L),

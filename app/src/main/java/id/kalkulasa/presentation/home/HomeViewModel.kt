@@ -13,6 +13,7 @@ import id.kalkulasa.domain.repository.ProfileRepository
 import id.kalkulasa.domain.repository.ReceivableRepository
 import id.kalkulasa.domain.repository.ReportRepository
 import id.kalkulasa.domain.repository.SaleRepository
+import id.kalkulasa.domain.repository.SalesTargetRepository
 import id.kalkulasa.domain.usecase.KesehatanUsahaUseCase
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.SharingStarted
@@ -33,6 +34,9 @@ data class HomeUiState(
     val trend: List<DailyPoint> = emptyList(),
     val bestSellers: List<ProductSales> = emptyList(),
     val piutangOutstanding: Long = 0L,
+    val targetHarian: Long = 0L,
+    val targetBulanan: Long = 0L,
+    val omzetMonth: Long = 0L,
     val health: KesehatanUsahaUseCase.Result? = null,
     val loading: Boolean = true,
 )
@@ -45,6 +49,7 @@ class HomeViewModel @Inject constructor(
     private val productRepository: ProductRepository,
     private val receivableRepository: ReceivableRepository,
     private val reportRepository: ReportRepository,
+    private val salesTargetRepository: SalesTargetRepository,
     private val settings: SettingsDataStore,
 ) : ViewModel() {
 
@@ -75,6 +80,8 @@ class HomeViewModel @Inject constructor(
             val piutang = async { receivableRepository.observeOutstanding().first() }
             val monthReport = async { reportRepository.reportBetween(monthAgo, to) }
             val saldoKas = async { financeRepository.cashBalance() }
+            val targets = async { salesTargetRepository.observeAll().first() }
+            val monthOmzet = async { reportRepository.reportBetween(DateFormatter.startOfMonth(), to).omzet }
 
             val profileValue = profile.await()
             val omzetValue = omzet.await()
@@ -93,6 +100,7 @@ class HomeViewModel @Inject constructor(
                     saldoKas = saldoKas.await(),
                 ),
             )
+            val targetList = targets.await()
             _state.value = HomeUiState(
                 namaUsaha = profileValue?.namaUsaha ?: "",
                 omzetToday = omzetValue,
@@ -102,6 +110,9 @@ class HomeViewModel @Inject constructor(
                 trend = trend.await(),
                 bestSellers = best.await(),
                 piutangOutstanding = piutangValue,
+                targetHarian = targetList.find { it.jenis == "HARIAN" }?.nominal ?: 0L,
+                targetBulanan = targetList.find { it.jenis == "BULANAN" }?.nominal ?: 0L,
+                omzetMonth = monthOmzet.await(),
                 health = health,
                 loading = false,
             )

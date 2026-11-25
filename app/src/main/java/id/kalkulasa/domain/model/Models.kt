@@ -197,6 +197,13 @@ data class DailyPoint(val label: String, val omzet: Long, val laba: Long)
 
 data class CategorySpend(val nama: String, val total: Long)
 
+data class SalesTarget(val jenis: String, val nominal: Long) {
+    companion object {
+        const val HARIAN = "HARIAN"
+        const val BULANAN = "BULANAN"
+    }
+}
+
 data class CashBreakdown(
     val modal: Long,
     val prive: Long,

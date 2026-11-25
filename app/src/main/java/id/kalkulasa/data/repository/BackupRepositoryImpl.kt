@@ -24,7 +24,7 @@ class BackupRepositoryImpl @Inject constructor(
     private val db: KalkulasaDatabase,
 ) : BackupRepository {
 
-    override suspend fun exportJson(): String {
+    override suspend fun exportJson(): String = db.withTransaction {
         val json = JSONObject()
         json.put("app", "kalkulasa")
         json.put("backupVersion", BACKUP_VERSION)
@@ -49,13 +49,22 @@ class BackupRepositoryImpl @Inject constructor(
         json.put("kasbon", JSONArray().also { arr -> db.kasbonDao().getAll().forEach { arr.put(it.toJson()) } })
         json.put("payroll", JSONArray().also { arr -> db.payrollDao().getAll().forEach { arr.put(it.toJson()) } })
         json.put("payable", JSONArray().also { arr -> db.payableDao().getAll().forEach { arr.put(it.toJson()) } })
-        return json.toString()
+        json.put("sales_target", JSONArray().also { arr -> db.salesTargetDao().getAll().forEach { arr.put(it.toJson()) } })
+        json.toString()
     }
 
     override suspend fun importJson(json: String): Result<Unit> = runCatching {
         val root = JSONObject(json)
         require(root.optString("app") == "kalkulasa") { "File backup bukan backup Kalkulasa" }
-        require(root.optInt("backupVersion") <= BACKUP_VERSION) { "Versi backup tidak didukung" }
+        val version = root.optInt("backupVersion", -1)
+        require(version in 1..BACKUP_VERSION) { "Versi backup tidak didukung" }
+        // A file that merely contains the app marker must never be allowed to wipe
+        // the database. Require the core tables that every version of our exporter writes.
+        val coreTables = listOf(
+            "business_profile", "category", "product", "stock_movement",
+            "purchase", "sale", "expense", "capital_entry", "receivable",
+        )
+        require(coreTables.all { root.optJSONArray(it) != null }) { "Isi backup tidak valid" }
 
         // Parse everything before touching the database so a corrupt file changes nothing.
         val profile = root.optJSONArray("business_profile")?.optJSONObject(0)?.toBusinessProfile()
@@ -75,6 +84,7 @@ class BackupRepositoryImpl @Inject constructor(
         val kasbons = root.optJSONArray("kasbon")?.toList { it.toKasbon() } ?: emptyList()
         val payrolls = root.optJSONArray("payroll")?.toList { it.toPayroll() } ?: emptyList()
         val payables = root.optJSONArray("payable")?.toList { it.toPayable() } ?: emptyList()
+        val targets = root.optJSONArray("sales_target")?.toList { it.toSalesTarget() } ?: emptyList()
 
         db.withTransaction {
             db.clearAllTables()
@@ -95,6 +105,7 @@ class BackupRepositoryImpl @Inject constructor(
             kasbons.forEach { db.kasbonDao().upsert(it) }
             payrolls.forEach { db.payrollDao().upsert(it) }
             payables.forEach { db.payableDao().upsert(it) }
+            targets.forEach { db.salesTargetDao().upsert(it) }
         }
     }
 
@@ -163,6 +174,11 @@ class BackupRepositoryImpl @Inject constructor(
         put("status", status); put("upahDibayar", upahDibayar)
         jPut(this, "catatan", catatan); put("waktu", waktu); put("updatedAt", updatedAt)
         jPut(this, "deletedAt", deletedAt); put("deviceId", deviceId); put("syncStatus", syncStatus)
+    }
+
+    private fun id.kalkulasa.data.local.entity.SalesTargetEntity.toJson() = JSONObject().apply {
+        put("jenis", jenis); put("nominal", nominal); put("updatedAt", updatedAt)
+        put("deviceId", deviceId); put("syncStatus", syncStatus)
     }
 
     private fun id.kalkulasa.data.local.entity.PayableEntity.toJson() = JSONObject().apply {
@@ -305,6 +321,11 @@ class BackupRepositoryImpl @Inject constructor(
         syncStatus = optString("syncStatus", "PENDING"),
     )
 
+    private fun JSONObject.toSalesTarget() = id.kalkulasa.data.local.entity.SalesTargetEntity(
+        jenis = getString("jenis"), nominal = getLong("nominal"), updatedAt = getLong("updatedAt"),
+        deviceId = getString("deviceId"), syncStatus = optString("syncStatus", "PENDING"),
+    )
+
     private fun JSONObject.toPayable() = id.kalkulasa.data.local.entity.PayableEntity(
         id = getString("id"), pemasok = getString("pemasok"), nominal = getLong("nominal"),
         terbayar = getLong("terbayar"), jatuhTempo = optLongOrNull("jatuhTempo"), catatan = str("catatan"),
@@ -369,6 +390,6 @@ class BackupRepositoryImpl @Inject constructor(
     )
 
     private companion object {
-        const val BACKUP_VERSION = 6
+        const val BACKUP_VERSION = 7
     }
 }

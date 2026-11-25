@@ -1,5 +1,30 @@
 # Changelog
 
+## v2.5.0
+
+Richer discounts and loyalty, sales targets, and backup hardening from the data layer audit.
+
+### New features
+
+- **Percentage discount at the cashier.** Choose Rupiah or Percent; the discount is calculated from the subtotal and never exceeds it.
+- **Loyalty point redemption.** Named customers can exchange points for a discount (1 point = Rp100). Point deduction and earning happen in one database transaction.
+- **Sales targets.** Set daily and monthly targets from Finance; the home screen shows revenue progress against them.
+
+### Improvements
+
+- **Safer backups.** Files with an invalid structure, unknown version or missing core tables are rejected before any data is erased. Export runs in one transaction for a consistent snapshot.
+- **Cash payments are validated.** The cashier rejects a Tunai sale when the tendered amount is below the total.
+- **Last sale lookup is faster** using a SQL query filtered to SELESAI with a one-row limit.
+- **Full kasbon and payroll history** is shown instead of a 100-row cap.
+- **Balance sheet shows negative cash** as-is, so overdrafts are not hidden.
+
+### Bug fixes
+
+- **Discounts above the subtotal are rejected** in the repository, not just hidden on screen.
+- **Backup format v7** includes sales targets; older backups still restore.
+- **Automatic v6 to v7 database migration** with no data loss.
+- **Promotion and redemption rules** live in a pure use case with unit tests.
+
 ## v2.4.0
 
 Detailed financial statements and further fixes from the UI, navigation and cash consistency audit.

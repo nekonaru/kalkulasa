@@ -1,5 +1,30 @@
 # Changelog
 
+## v2.5.0
+
+Diskon dan loyalti yang lebih lengkap, target penjualan, serta pengamanan backup hasil audit lapisan data.
+
+### Fitur baru
+
+- **Diskon persen di kasir.** Pilih diskon dalam Rupiah atau Persen; potongan dihitung dari subtotal dan tidak pernah melebihi total belanja.
+- **Tukar poin loyalti.** Pelanggan bernama bisa menukar poin menjadi potongan harga (1 poin = Rp100). Poin dipotong dan poin baru dari transaksi dicatat dalam satu transaksi database.
+- **Target penjualan.** Atur target harian dan bulanan dari Keuangan; Beranda menampilkan progres omzet terhadap target tersebut.
+
+### Peningkatan
+
+- **Backup lebih aman.** File dengan struktur salah, versi tidak dikenal, atau tanpa tabel inti kini ditolak sebelum database dihapus. Ekspor backup dijalankan dalam satu transaksi agar isinya konsisten.
+- **Pembayaran tunai divalidasi.** Kasir menolak transaksi Tunai ketika uang diterima kurang dari total.
+- **Pencarian transaksi terakhir lebih cepat** memakai query SQL berstatus SELESAI dengan batas satu baris.
+- **Seluruh riwayat kasbon dan gaji tampil**, tidak dibatasi 100 baris.
+- **Neraca menunjukkan kas negatif** apa adanya, sehingga overdraft tidak tersembunyi.
+
+### Perbaikan
+
+- **Diskon melebihi subtotal ditolak** di repository, bukan hanya disembunyikan di tampilan.
+- **Backup format v7** mencakup target penjualan; backup versi lama tetap dapat dipulihkan.
+- **Migrasi database otomatis v6 ke v7** tanpa menghapus data lama.
+- **Aturan promosi dan penukaran poin** berada di use case murni dengan tes unit.
+
 ## v2.4.0
 
 Laporan keuangan mendalam dan perbaikan lanjutan hasil audit UI, navigasi, dan konsistensi kas.

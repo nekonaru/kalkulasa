@@ -22,6 +22,7 @@ import id.kalkulasa.domain.model.ProductSales
 import id.kalkulasa.domain.model.Receivable
 import id.kalkulasa.domain.model.Sale
 import id.kalkulasa.domain.model.SaleLine
+import id.kalkulasa.domain.model.SalesTarget
 import id.kalkulasa.domain.model.StockMovement
 import id.kalkulasa.domain.model.SupplierSpend
 import id.kalkulasa.domain.usecase.ImportProdukUseCase
@@ -104,6 +105,7 @@ interface CustomerRepository {
     fun observeAll(): Flow<List<Customer>>
     fun observeAll(query: String): Flow<List<Customer>>
     suspend fun getById(id: String): Customer?
+    suspend fun getByName(name: String): Customer?
     suspend fun resetPoints(id: String)
 }
 
@@ -112,6 +114,11 @@ interface ReceivableRepository {
     fun observeOutstanding(): Flow<Long>
     suspend fun addManual(namaPelanggan: String, nominal: Long, jatuhTempo: Long?, catatan: String?): Result<Unit>
     suspend fun recordPayment(id: String, amount: Long): Result<Unit>
+}
+
+interface SalesTargetRepository {
+    fun observeAll(): Flow<List<SalesTarget>>
+    suspend fun save(jenis: String, nominal: Long): Result<Unit>
 }
 
 interface PayableRepository {
@@ -123,7 +130,14 @@ interface PayableRepository {
 
 interface SaleRepository {
     fun observeRecentSales(limit: Int = 50): Flow<List<Sale>>
-    suspend fun recordSale(items: List<Pair<Product, Double>>, diskon: Long, metodeBayar: String, catatan: String?, namaPelanggan: String? = null): Result<Sale>
+    suspend fun recordSale(
+        items: List<Pair<Product, Double>>,
+        diskon: Long,
+        metodeBayar: String,
+        catatan: String?,
+        namaPelanggan: String? = null,
+        poinDitukar: Int = 0,
+    ): Result<Sale>
     suspend fun cancelSale(saleId: String): Result<Unit>
     suspend fun salesBetween(from: Long, to: Long): List<Sale>
     suspend fun revenueBetween(from: Long, to: Long): Long

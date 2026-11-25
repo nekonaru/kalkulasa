@@ -31,6 +31,7 @@ import id.kalkulasa.presentation.categories.CategoriesScreen
 import id.kalkulasa.presentation.employee.EmployeeScreen
 import id.kalkulasa.presentation.payable.PayableScreen
 import id.kalkulasa.presentation.statements.StatementsScreen
+import id.kalkulasa.presentation.target.TargetScreen
 import id.kalkulasa.presentation.cashier.CashierScreen
 import id.kalkulasa.presentation.customer.CustomersScreen
 import id.kalkulasa.presentation.finance.FinanceScreen
@@ -153,7 +154,11 @@ fun KalkulasaNavHost(startDestination: String) {
                     onOpenEmployees = { navController.navigate(Routes.EMPLOYEES) },
                     onOpenPayable = { navController.navigate(Routes.PAYABLE) },
                     onOpenStatements = { navController.navigate(Routes.STATEMENTS) },
+                    onOpenTarget = { navController.navigate(Routes.TARGET) },
                 )
+            }
+            composable(Routes.TARGET) {
+                TargetScreen(onBack = { navController.popBackStack() })
             }
             composable(Routes.STATEMENTS) {
                 StatementsScreen(

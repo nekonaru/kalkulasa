@@ -387,4 +387,20 @@
     <string name="stock_label">Stok %1$s %2$s</string>
     <string name="decrease">Kurangi</string>
     <string name="increase">Tambah</string>
+    <!-- Diskon persen, penukaran poin dan target penjualan -->
+    <string name="discount_mode_rupiah">Rupiah</string>
+    <string name="discount_mode_percent">Persen</string>
+    <string name="loyalty_points">Poin pelanggan</string>
+    <string name="loyalty_points_available">Poin tersedia: %1$d</string>
+    <string name="redeem_points">Tukar poin</string>
+    <string name="redeem_points_hint">Jumlah poin yang ditukar</string>
+    <string name="points_discount">Potongan poin</string>
+    <string name="points_insufficient">Poin pelanggan tidak cukup</string>
+    <string name="target_title">Target Penjualan</string>
+    <string name="target_daily">Target harian</string>
+    <string name="target_monthly">Target bulanan</string>
+    <string name="target_daily_progress">Harian: %1$s dari %2$s</string>
+    <string name="target_monthly_progress">Bulanan: %1$s dari %2$s</string>
+    <string name="target_none">Belum ada target</string>
+    <string name="insufficient_payment">Uang bayar kurang dari total</string>
 </resources>

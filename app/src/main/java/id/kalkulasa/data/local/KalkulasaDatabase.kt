@@ -26,6 +26,7 @@ import id.kalkulasa.data.local.entity.AttendanceEntity
 import id.kalkulasa.data.local.entity.KasbonEntity
 import id.kalkulasa.data.local.entity.PayrollEntity
 import id.kalkulasa.data.local.entity.PayableEntity
+import id.kalkulasa.data.local.entity.SalesTargetEntity
 import id.kalkulasa.data.local.entity.ExpenseEntity
 import id.kalkulasa.data.local.entity.ProductEntity
 import id.kalkulasa.data.local.entity.PurchaseEntity
@@ -56,8 +57,9 @@ import java.util.UUID
         KasbonEntity::class,
         PayrollEntity::class,
         PayableEntity::class,
+        SalesTargetEntity::class,
     ],
-    version = 6,
+    version = 7,
     exportSchema = true,
 )
 abstract class KalkulasaDatabase : RoomDatabase() {
@@ -77,9 +79,23 @@ abstract class KalkulasaDatabase : RoomDatabase() {
     abstract fun kasbonDao(): id.kalkulasa.data.local.dao.KasbonDao
     abstract fun payrollDao(): id.kalkulasa.data.local.dao.PayrollDao
     abstract fun payableDao(): id.kalkulasa.data.local.dao.PayableDao
+    abstract fun salesTargetDao(): id.kalkulasa.data.local.dao.SalesTargetDao
 
     companion object {
         const val NAME = "kalkulasa.db"
+
+        /** Migration 6 -> 7: daily and monthly sales targets. */
+        val MIGRATION_6_7 = androidx.room.migration.Migration(6, 7) { db ->
+            db.execSQL(
+                """CREATE TABLE IF NOT EXISTS `sales_target` (
+                    `jenis` TEXT NOT NULL PRIMARY KEY,
+                    `nominal` INTEGER NOT NULL,
+                    `updatedAt` INTEGER NOT NULL,
+                    `deviceId` TEXT NOT NULL,
+                    `syncStatus` TEXT NOT NULL
+                )""".trimIndent(),
+            )
+        }
 
         /** Migration 5 -> 6: supplier payables (hutang usaha). */
         val MIGRATION_5_6 = androidx.room.migration.Migration(5, 6) { db ->
@@ -225,7 +241,7 @@ abstract class KalkulasaDatabase : RoomDatabase() {
         fun build(context: Context, deviceId: String, passphrase: ByteArray): KalkulasaDatabase =
             Room.databaseBuilder(context, KalkulasaDatabase::class.java, NAME)
                 .openHelperFactory(SupportOpenHelperFactory(passphrase))
-                .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6)
+                .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7)
                 .addCallback(SeedCallback(deviceId))
                 .build()
     }

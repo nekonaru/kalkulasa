@@ -91,6 +91,8 @@ fun CashierScreen(
                         event.text == "SALE_SAVED" -> context.getString(R.string.sale_saved)
                         event.text == "SALE_CANCELLED" -> context.getString(R.string.sale_cancelled)
                         event.text == "CUSTOMER_NAME_REQUIRED" -> context.getString(R.string.customer_name_required)
+                        event.text == "INSUFFICIENT_PAYMENT" -> context.getString(R.string.insufficient_payment)
+                        event.text == "POINTS_INSUFFICIENT" -> context.getString(R.string.points_insufficient)
                         event.text == "NO_LAST_SALE" -> context.getString(R.string.repeat_none)
                         event.text == "REPEAT_EMPTY" -> context.getString(R.string.repeat_empty)
                         event.text.startsWith("REPEAT_OK:") -> String.format(context.getString(R.string.repeat_ok), event.text.removePrefix("REPEAT_OK:").toIntOrNull() ?: 0)
@@ -284,6 +286,10 @@ private fun CartSection(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
+    val discountMode by viewModel.discountMode.collectAsStateWithLifecycle()
+    val availablePoints by viewModel.availablePoints.collectAsStateWithLifecycle()
+    val poinDitukar by viewModel.poinDitukar.collectAsStateWithLifecycle()
+    val combinedDiscount by viewModel.totalDiscount.collectAsStateWithLifecycle()
     Column(
         modifier = modifier.verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -304,16 +310,40 @@ private fun CartSection(
             }
         }
         HorizontalDivider()
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            id.kalkulasa.presentation.cashier.DiscountMode.entries.forEach { mode ->
+                FilterChip(
+                    selected = discountMode == mode,
+                    onClick = { viewModel.onDiscountModeChange(mode) },
+                    label = {
+                        Text(
+                            context.getString(
+                                if (mode == id.kalkulasa.presentation.cashier.DiscountMode.RUPIAH) R.string.discount_mode_rupiah
+                                else R.string.discount_mode_percent,
+                            ),
+                        )
+                    },
+                )
+            }
+        }
         OutlinedTextField(
             value = discount,
             onValueChange = viewModel::onDiscountChange,
-            label = { Text(context.getString(R.string.discount_amount)) },
+            label = {
+                Text(
+                    context.getString(
+                        if (discountMode == id.kalkulasa.presentation.cashier.DiscountMode.RUPIAH) R.string.discount_amount
+                        else R.string.discount_mode_percent,
+                    ),
+                )
+            },
             singleLine = true,
-            prefix = { Text("Rp ") },
+            prefix = if (discountMode == id.kalkulasa.presentation.cashier.DiscountMode.RUPIAH) ({ Text("Rp ") }) else null,
+            suffix = if (discountMode == id.kalkulasa.presentation.cashier.DiscountMode.PERCENT) ({ Text("%") }) else null,
             modifier = Modifier.fillMaxWidth(),
         )
         TotalRow(context.getString(R.string.subtotal), RupiahFormatter.format(subtotal))
-        TotalRow(context.getString(R.string.discount), "- ${RupiahFormatter.format(discountAmount)}")
+        TotalRow(context.getString(R.string.discount), "- ${RupiahFormatter.format(combinedDiscount)}")
         TotalRow(context.getString(R.string.total), RupiahFormatter.format(total), emphasize = true)
         if (paymentMethod == PaymentMethod.TUNAI) {
             OutlinedTextField(
@@ -365,10 +395,20 @@ private fun CartSection(
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
         )
+        if (availablePoints > 0) {
+            OutlinedTextField(
+                value = poinDitukar,
+                onValueChange = viewModel::onPoinDitukarChange,
+                label = { Text(context.getString(R.string.redeem_points)) },
+                placeholder = { Text(context.getString(R.string.redeem_points_hint)) },
+                supportingText = { Text(context.getString(R.string.loyalty_points_available, availablePoints)) },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
         Button(
             onClick = viewModel::saveSale,
-            enabled = cart.isNotEmpty() && !saving &&
-                (paymentMethod != PaymentMethod.HUTANG || namaPelanggan.isNotBlank()),
+            enabled = viewModel.canSaveSale(),
             modifier = Modifier.fillMaxWidth().height(52.dp),
         ) {
             Text(context.getString(R.string.button_pay), fontSize = 16.sp)

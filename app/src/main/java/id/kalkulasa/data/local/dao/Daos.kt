@@ -15,6 +15,7 @@ import id.kalkulasa.data.local.entity.EmployeeEntity
 import id.kalkulasa.data.local.entity.KasbonEntity
 import id.kalkulasa.data.local.entity.PayrollEntity
 import id.kalkulasa.data.local.entity.PayableEntity
+import id.kalkulasa.data.local.entity.SalesTargetEntity
 import id.kalkulasa.data.local.entity.ExpenseEntity
 import id.kalkulasa.data.local.entity.ProductEntity
 import id.kalkulasa.data.local.entity.PurchaseEntity
@@ -203,6 +204,9 @@ interface SaleDao {
     @Query("SELECT * FROM sale WHERE deletedAt IS NULL AND waktu BETWEEN :from AND :to ORDER BY waktu DESC")
     suspend fun getBetween(from: Long, to: Long): List<SaleEntity>
 
+    @Query("SELECT * FROM sale WHERE deletedAt IS NULL AND status = 'SELESAI' ORDER BY waktu DESC LIMIT 1")
+    suspend fun lastCompleted(): SaleEntity?
+
     @Query("SELECT * FROM sale_item WHERE saleId = :saleId AND deletedAt IS NULL")
     suspend fun getItems(saleId: String): List<SaleItemEntity>
 
@@ -344,7 +348,7 @@ interface KasbonDao {
     @Query("SELECT * FROM kasbon WHERE deletedAt IS NULL AND karyawanId = :employeeId AND waktu BETWEEN :from AND :to ORDER BY waktu DESC")
     suspend fun getForEmployee(employeeId: String, from: Long, to: Long): List<KasbonEntity>
 
-    @Query("SELECT * FROM kasbon WHERE deletedAt IS NULL ORDER BY waktu DESC LIMIT 100")
+    @Query("SELECT * FROM kasbon WHERE deletedAt IS NULL ORDER BY waktu DESC")
     fun observeAll(): Flow<List<KasbonEntity>>
 
     @Query("SELECT * FROM kasbon WHERE deletedAt IS NULL")
@@ -359,7 +363,7 @@ interface KasbonDao {
 
 @Dao
 interface PayrollDao {
-    @Query("SELECT * FROM payroll WHERE deletedAt IS NULL ORDER BY waktu DESC LIMIT 100")
+    @Query("SELECT * FROM payroll WHERE deletedAt IS NULL ORDER BY waktu DESC")
     fun observeAll(): Flow<List<PayrollEntity>>
 
     @Query("SELECT * FROM payroll WHERE deletedAt IS NULL")
@@ -448,6 +452,21 @@ interface PayableDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(payable: PayableEntity)
+}
+
+@Dao
+interface SalesTargetDao {
+    @Query("SELECT * FROM sales_target")
+    fun observeAll(): Flow<List<SalesTargetEntity>>
+
+    @Query("SELECT * FROM sales_target")
+    suspend fun getAll(): List<SalesTargetEntity>
+
+    @Query("SELECT * FROM sales_target WHERE jenis = :jenis")
+    suspend fun get(jenis: String): SalesTargetEntity?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsert(target: SalesTargetEntity)
 }
 
 @Dao

@@ -12,9 +12,11 @@ import id.kalkulasa.core.util.RupiahFormatter
 import id.kalkulasa.domain.model.Product
 import id.kalkulasa.domain.model.Sale
 import id.kalkulasa.domain.model.PaymentMethod
+import id.kalkulasa.domain.repository.CustomerRepository
 import id.kalkulasa.domain.repository.ProductRepository
 import id.kalkulasa.domain.repository.ProfileRepository
 import id.kalkulasa.domain.repository.SaleRepository
+import id.kalkulasa.domain.usecase.PromosiUseCase
 import id.kalkulasa.domain.usecase.StrukUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
@@ -30,6 +32,8 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+enum class DiscountMode { RUPIAH, PERCENT }
 
 data class CartEntry(val product: Product, val qty: Double) {
     val lineTotal: Long get() = kotlin.math.round(product.hargaJual * qty).toLong()
@@ -50,6 +54,7 @@ class CashierViewModel @Inject constructor(
     private val productRepository: ProductRepository,
     private val saleRepository: SaleRepository,
     private val profileRepository: ProfileRepository,
+    private val customerRepository: CustomerRepository,
 ) : ViewModel() {
 
     private val _query = MutableStateFlow("")
@@ -58,6 +63,12 @@ class CashierViewModel @Inject constructor(
     private val _cart = MutableStateFlow<Map<String, Double>>(emptyMap())
     private val _discount = MutableStateFlow("")
     val discount: StateFlow<String> = _discount.asStateFlow()
+
+    private val _discountMode = MutableStateFlow(DiscountMode.RUPIAH)
+    val discountMode: StateFlow<DiscountMode> = _discountMode.asStateFlow()
+
+    private val _poinDitukar = MutableStateFlow("")
+    val poinDitukar: StateFlow<String> = _poinDitukar.asStateFlow()
 
     private val _paymentMethod = MutableStateFlow(PaymentMethod.TUNAI)
     val paymentMethod: StateFlow<String> = _paymentMethod.asStateFlow()
@@ -69,6 +80,11 @@ class CashierViewModel @Inject constructor(
 
     private val _namaPelanggan = MutableStateFlow("")
     val namaPelanggan: StateFlow<String> = _namaPelanggan.asStateFlow()
+
+    /** Points of the customer whose name is currently typed in the form. */
+    val availablePoints: StateFlow<Long> = combine(customerRepository.observeAll(), _namaPelanggan) { customers, name ->
+        customers.find { it.nama.equals(name.trim(), ignoreCase = true) }?.poin ?: 0L
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 0L)
 
     /** Products currently visible in the picker (filtered by query). */
     val products: StateFlow<List<Product>> = _query
@@ -87,11 +103,23 @@ class CashierViewModel @Inject constructor(
         .map { entries -> entries.sumOf { it.lineTotal } }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 0L)
 
-    val discountAmount: StateFlow<Long> = _discount
-        .map { RupiahFormatter.parseOrZero(it) }
+    val discountAmount: StateFlow<Long> = combine(subtotal, _discount, _discountMode) { sub, text, mode ->
+        when (mode) {
+            DiscountMode.RUPIAH -> RupiahFormatter.parseOrZero(text)
+            DiscountMode.PERCENT -> PromosiUseCase.diskonPersen(sub, text.filter { it.isDigit() }.toIntOrNull() ?: 0)
+        }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 0L)
+
+    private val pointsDiscount: StateFlow<Long> = _poinDitukar
+        .map { PromosiUseCase.nilaiPenukaranPoin(it.filter(Char::isDigit).toIntOrNull() ?: 0) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 0L)
 
-    val total: StateFlow<Long> = combine(subtotal, discountAmount) { sub, diskon -> (sub - diskon).coerceAtLeast(0) }
+    /** Discount shown on the receipt and saved with the sale. Never above subtotal. */
+    val totalDiscount: StateFlow<Long> = combine(subtotal, discountAmount, pointsDiscount) { sub, d, p ->
+        PromosiUseCase.gabungkanDiskon(sub, d, p)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 0L)
+
+    val total: StateFlow<Long> = combine(subtotal, totalDiscount) { sub, diskon -> (sub - diskon).coerceAtLeast(0) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 0L)
 
     /** Change to give back for Tunai payments. 0 when tendered is insufficient or not filled. */
@@ -114,7 +142,15 @@ class CashierViewModel @Inject constructor(
     }
 
     fun onQueryChange(q: String) { _query.value = q }
-    fun onDiscountChange(value: String) { _discount.value = value.filter { it.isDigit() }.take(12) }
+    fun onDiscountChange(value: String) {
+        _discount.value = if (_discountMode.value == DiscountMode.PERCENT) {
+            value.filter { it.isDigit() }.take(3)
+        } else {
+            value.filter { it.isDigit() }.take(12)
+        }
+    }
+    fun onDiscountModeChange(mode: DiscountMode) { _discountMode.value = mode; _discount.value = "" }
+    fun onPoinDitukarChange(value: String) { _poinDitukar.value = value.filter { it.isDigit() }.take(6) }
     fun onPaymentMethodChange(method: String) { _paymentMethod.value = method.also { if (it != PaymentMethod.TUNAI) _tendered.value = "" } }
     fun onNamaPelangganChange(value: String) { _namaPelanggan.value = value }
 
@@ -164,11 +200,14 @@ class CashierViewModel @Inject constructor(
         _cart.value = emptyMap()
         _discount.value = ""
         _tendered.value = ""
+        _poinDitukar.value = ""
     }
 
     fun canSaveSale(): Boolean =
         cartEntries.value.isNotEmpty() && !_saving.value &&
-            (_paymentMethod.value != PaymentMethod.HUTANG || _namaPelanggan.value.trim().isNotEmpty())
+            (_paymentMethod.value != PaymentMethod.HUTANG || _namaPelanggan.value.trim().isNotEmpty()) &&
+            (_paymentMethod.value != PaymentMethod.TUNAI ||
+                RupiahFormatter.parseOrZero(_tendered.value) >= total.value)
 
     fun saveSale() {
         val entries = cartEntries.value
@@ -177,16 +216,28 @@ class CashierViewModel @Inject constructor(
             viewModelScope.launch { _events.send(CashierEvent.Message("CUSTOMER_NAME_REQUIRED")) }
             return
         }
+        if (_paymentMethod.value == PaymentMethod.TUNAI && RupiahFormatter.parseOrZero(_tendered.value) < total.value) {
+            viewModelScope.launch { _events.send(CashierEvent.Message("INSUFFICIENT_PAYMENT")) }
+            return
+        }
+        val poin = _poinDitukar.value.filter(Char::isDigit).toIntOrNull() ?: 0
+        if (poin > 0) {
+            if (_namaPelanggan.value.isBlank() || availablePoints.value < poin) {
+                viewModelScope.launch { _events.send(CashierEvent.Message("POINTS_INSUFFICIENT")) }
+                return
+            }
+        }
         _saving.value = true
         viewModelScope.launch {
             val metode = _paymentMethod.value
             val namaPelanggan = _namaPelanggan.value.trim().ifEmpty { null }
             val result = saleRepository.recordSale(
                 items = entries.map { it.product to it.qty },
-                diskon = discountAmount.value,
+                diskon = totalDiscount.value,
                 metodeBayar = metode,
                 catatan = null,
                 namaPelanggan = namaPelanggan,
+                poinDitukar = poin,
             )
             _saving.value = false
             result.onSuccess { sale ->

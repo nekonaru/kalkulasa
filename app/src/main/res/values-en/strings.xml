@@ -387,4 +387,20 @@
     <string name="stock_label">Stock %1$s %2$s</string>
     <string name="decrease">Decrease</string>
     <string name="increase">Increase</string>
+    <!-- Percentage discount, point redemption and sales targets -->
+    <string name="discount_mode_rupiah">Rupiah</string>
+    <string name="discount_mode_percent">Percent</string>
+    <string name="loyalty_points">Customer points</string>
+    <string name="loyalty_points_available">Available points: %1$d</string>
+    <string name="redeem_points">Redeem points</string>
+    <string name="redeem_points_hint">Number of points to redeem</string>
+    <string name="points_discount">Points discount</string>
+    <string name="points_insufficient">Customer has not enough points</string>
+    <string name="target_title">Sales Targets</string>
+    <string name="target_daily">Daily target</string>
+    <string name="target_monthly">Monthly target</string>
+    <string name="target_daily_progress">Daily: %1$s of %2$s</string>
+    <string name="target_monthly_progress">Monthly: %1$s of %2$s</string>
+    <string name="target_none">No target set</string>
+    <string name="insufficient_payment">Tendered amount is less than the total</string>
 </resources>

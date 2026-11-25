@@ -22,6 +22,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -115,6 +116,9 @@ fun HomeScreen(
                 )
             }
         }
+        if (state.targetHarian > 0 || state.targetBulanan > 0) {
+            item { TargetCard(state) }
+        }
         if (warungMode) {
             item {
                 Button(
@@ -183,6 +187,26 @@ private fun greetingForTimeOfDay(context: android.content.Context): String {
         in 11..14 -> context.getString(R.string.home_greeting_afternoon)
         in 15..18 -> context.getString(R.string.home_greeting_evening)
         else -> context.getString(R.string.home_greeting_night)
+    }
+}
+
+@Composable
+private fun TargetCard(state: HomeUiState) {
+    val context = LocalContext.current
+    Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
+        Column(modifier = Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(context.getString(R.string.target_title), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
+            if (state.targetHarian > 0) {
+                val progress = (state.omzetToday.toFloat() / state.targetHarian.toFloat()).coerceIn(0f, 1f)
+                Text(context.getString(R.string.target_daily_progress, RupiahFormatter.format(state.omzetToday), RupiahFormatter.format(state.targetHarian)), style = MaterialTheme.typography.bodyMedium)
+                LinearProgressIndicator(progress = { progress }, modifier = Modifier.fillMaxWidth())
+            }
+            if (state.targetBulanan > 0) {
+                val progress = (state.omzetMonth.toFloat() / state.targetBulanan.toFloat()).coerceIn(0f, 1f)
+                Text(context.getString(R.string.target_monthly_progress, RupiahFormatter.format(state.omzetMonth), RupiahFormatter.format(state.targetBulanan)), style = MaterialTheme.typography.bodyMedium)
+                LinearProgressIndicator(progress = { progress }, modifier = Modifier.fillMaxWidth())
+            }
+        }
     }
 }
 
