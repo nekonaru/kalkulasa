@@ -30,6 +30,18 @@ class CustomerRepositoryImpl @Inject constructor(
         )
         RepositorySupport.log(db.changeLogDao(), "customer", id, "UPDATE")
     }
+
+    override suspend fun updateNotes(id: String, catatan: String?, tag: String?) {
+        val customer = db.customerDao().getById(id) ?: return
+        db.customerDao().upsert(
+            customer.copy(
+                catatan = catatan?.ifBlank { null },
+                tag = tag?.ifBlank { null },
+                updatedAt = RepositorySupport.now(),
+            ),
+        )
+        RepositorySupport.log(db.changeLogDao(), "customer", id, "UPDATE")
+    }
 }
 
 fun id.kalkulasa.data.local.entity.CustomerEntity.toDomain() = Customer(
@@ -38,4 +50,6 @@ fun id.kalkulasa.data.local.entity.CustomerEntity.toDomain() = Customer(
     poin = poin,
     kunjungan = kunjungan,
     totalBelanja = totalBelanja,
+    catatan = catatan,
+    tag = tag,
 )

@@ -515,4 +515,10 @@
     <string name="cash_audit_system">System cash</string>
     <string name="cash_audit_save">Record reconciliation</string>
     <string name="cash_audit_empty">No cash reconciliation yet.</string>
+    <string name="crm_title">Customer Notes</string>
+    <string name="crm_open">Notes and Member Card</string>
+    <string name="crm_empty">No customers yet.</string>
+    <string name="crm_tag">Customer tag</string>
+    <string name="crm_note">Customer note</string>
+    <string name="crm_share_card">Share card</string>
 </resources>

@@ -515,4 +515,10 @@
     <string name="cash_audit_system">Kas sistem</string>
     <string name="cash_audit_save">Catat rekonsiliasi</string>
     <string name="cash_audit_empty">Belum ada rekonsiliasi kas.</string>
+    <string name="crm_title">Catatan Pelanggan</string>
+    <string name="crm_open">Catatan dan Kartu Member</string>
+    <string name="crm_empty">Belum ada pelanggan.</string>
+    <string name="crm_tag">Tag pelanggan</string>
+    <string name="crm_note">Catatan pelanggan</string>
+    <string name="crm_share_card">Bagikan kartu</string>
 </resources>

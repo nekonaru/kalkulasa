@@ -125,6 +125,7 @@ interface CustomerRepository {
     suspend fun getById(id: String): Customer?
     suspend fun getByName(name: String): Customer?
     suspend fun resetPoints(id: String)
+    suspend fun updateNotes(id: String, catatan: String?, tag: String?)
 }
 
 interface ReceivableRepository {

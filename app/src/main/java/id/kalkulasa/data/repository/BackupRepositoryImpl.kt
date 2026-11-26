@@ -451,6 +451,7 @@ class BackupRepositoryImpl @Inject constructor(
     private fun JSONObject.toCustomer() = CustomerEntity(
         id = getString("id"), nama = getString("nama"), poin = getLong("poin"),
         kunjungan = getInt("kunjungan"), totalBelanja = getLong("totalBelanja"),
+        catatan = str("catatan"), tag = str("tag"),
         updatedAt = getLong("updatedAt"), deletedAt = optLongOrNull("deletedAt"),
         deviceId = getString("deviceId"), syncStatus = optString("syncStatus", "PENDING"),
     )

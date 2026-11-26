@@ -149,6 +149,8 @@ data class Customer(
     val poin: Long,
     val kunjungan: Int,
     val totalBelanja: Long,
+    val catatan: String? = null,
+    val tag: String? = null,
 )
 
 data class Receivable(

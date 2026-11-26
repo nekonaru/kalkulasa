@@ -241,6 +241,8 @@ data class CustomerEntity(
     val poin: Long,
     val kunjungan: Int,
     val totalBelanja: Long,
+    val catatan: String? = null,
+    val tag: String? = null,
     val updatedAt: Long,
     val deletedAt: Long? = null,
     val deviceId: String,

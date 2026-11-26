@@ -1,5 +1,19 @@
 # Changelog
 
+## v3.3.0
+
+Phase 4 of the Kalkulasa UMKM Suite: customer notes, tags and a digital member card.
+
+### New features
+
+- **Customer notes and tags.** Save a tag and free-form note per customer from a dedicated CRM screen.
+- **Digital member card.** Share a customer's name, points and visit count through WhatsApp or another app.
+
+### Improvements
+
+- **Backup format v13** includes customer notes and tags. Older backups still restore.
+- **Automatic v12 to v13 database migration** with no data loss.
+
 ## v3.2.0
 
 Phase 3 of the Kalkulasa UMKM Suite: monthly budgets and daily cash reconciliation.

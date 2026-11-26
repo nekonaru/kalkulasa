@@ -1,5 +1,19 @@
 # Changelog
 
+## v3.3.0
+
+Fase 4 dari Kalkulasa Suite UMKM: catatan pelanggan, tag, dan kartu member digital.
+
+### Fitur baru
+
+- **Catatan dan tag pelanggan.** Simpan tag dan catatan bebas per pelanggan dari halaman khusus CRM.
+- **Kartu member digital.** Bagikan ringkasan nama, poin, dan jumlah kunjungan pelanggan lewat WhatsApp atau aplikasi lain.
+
+### Peningkatan
+
+- **Backup format v13** mencakup catatan dan tag pelanggan. Backup lama tetap bisa dipulihkan.
+- **Migrasi database otomatis v12 ke v13** tanpa menghapus data lama.
+
 ## v3.2.0
 
 Fase 3 dari Kalkulasa Suite UMKM: budget bulanan dan rekonsiliasi kas harian.
