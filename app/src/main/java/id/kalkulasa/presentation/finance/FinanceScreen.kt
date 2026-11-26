@@ -71,6 +71,7 @@ fun FinanceScreen(
     onOpenAging: () -> Unit,
     onOpenInsights: () -> Unit,
     onOpenPromotion: () -> Unit,
+    onOpenFinanceMore: () -> Unit,
     viewModel: FinanceViewModel = hiltViewModel(),
 ) {
     val balance by viewModel.cashBalance.collectAsStateWithLifecycle()
@@ -135,6 +136,7 @@ fun FinanceScreen(
                     TextButton(onClick = onOpenActivity) { Text(context.getString(R.string.activity_open)) }
                     TextButton(onClick = onOpenAging) { Text(context.getString(R.string.aging_open)) }
                     TextButton(onClick = onOpenPromotion) { Text(context.getString(R.string.promotion_open)) }
+                    TextButton(onClick = onOpenFinanceMore) { Text(context.getString(R.string.finance_more_open)) }
                 }
             }
 

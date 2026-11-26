@@ -23,7 +23,9 @@ import id.kalkulasa.domain.model.ProductProfit
 import id.kalkulasa.domain.model.ProductSales
 import id.kalkulasa.domain.model.Receivable
 import id.kalkulasa.domain.model.Sale
+import id.kalkulasa.domain.model.Budget
 import id.kalkulasa.domain.model.Deposit
+import id.kalkulasa.domain.model.CashAudit
 import id.kalkulasa.domain.model.Voucher
 import id.kalkulasa.domain.model.SaleLine
 import id.kalkulasa.domain.model.SalesTarget
@@ -157,6 +159,16 @@ interface DepositRepository {
     fun observeAll(): Flow<List<Deposit>>
     suspend fun add(nama: String, nominal: Long, catatan: String?): Result<Unit>
     suspend fun use(nama: String, jumlah: Long): Result<Unit>
+}
+
+interface BudgetRepository {
+    fun observeForMonth(bulan: String): Flow<List<Budget>>
+    suspend fun save(kategori: String, nominal: Long, bulan: String): Result<Unit>
+}
+
+interface CashAuditRepository {
+    fun observeRecent(limit: Int = 100): Flow<List<CashAudit>>
+    suspend fun record(sistem: Long, fisik: Long, catatan: String?): Result<Unit>
 }
 
 interface PayableRepository {

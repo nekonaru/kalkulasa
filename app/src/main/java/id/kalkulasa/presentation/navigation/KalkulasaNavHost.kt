@@ -39,6 +39,7 @@ import id.kalkulasa.presentation.insights.InsightsScreen
 import id.kalkulasa.presentation.paymenthistory.PaymentHistoryScreen
 import id.kalkulasa.presentation.attendancereport.AttendanceReportScreen
 import id.kalkulasa.presentation.promotion.PromotionScreen
+import id.kalkulasa.presentation.financemore.FinanceMoreScreen
 import id.kalkulasa.presentation.cashier.CashierScreen
 import id.kalkulasa.presentation.customer.CustomersScreen
 import id.kalkulasa.presentation.finance.FinanceScreen
@@ -170,6 +171,7 @@ fun KalkulasaNavHost(startDestination: String) {
                     onOpenAging = { navController.navigate(Routes.AGING) },
                     onOpenInsights = { navController.navigate(Routes.INSIGHTS) },
                     onOpenPromotion = { navController.navigate(Routes.PROMOTION) },
+                    onOpenFinanceMore = { navController.navigate(Routes.FINANCE_MORE) },
                 )
             }
             composable(Routes.ACTIVITY) { ActivityScreen(onBack = { navController.popBackStack() }) }
@@ -178,6 +180,7 @@ fun KalkulasaNavHost(startDestination: String) {
             composable(Routes.PAYMENT_HISTORY) { PaymentHistoryScreen(onBack = { navController.popBackStack() }) }
             composable(Routes.ATTENDANCE_REPORT) { AttendanceReportScreen(onBack = { navController.popBackStack() }) }
             composable(Routes.PROMOTION) { PromotionScreen(onBack = { navController.popBackStack() }) }
+            composable(Routes.FINANCE_MORE) { FinanceMoreScreen(onBack = { navController.popBackStack() }) }
             composable(Routes.TARGET) {
                 TargetScreen(onBack = { navController.popBackStack() })
             }

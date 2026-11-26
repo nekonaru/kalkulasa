@@ -27,5 +27,6 @@ object Routes {
     const val PAYMENT_HISTORY = "payment-history"
     const val ATTENDANCE_REPORT = "attendance-report"
     const val PROMOTION = "promotion"
+    const val FINANCE_MORE = "finance-more"
     const val NO_SUPPLIER = "__no_supplier__"
 }

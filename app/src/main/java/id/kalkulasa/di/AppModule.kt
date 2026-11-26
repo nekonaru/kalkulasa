@@ -36,6 +36,10 @@ import id.kalkulasa.data.repository.VoucherRepositoryImpl
 import id.kalkulasa.domain.repository.VoucherRepository
 import id.kalkulasa.data.repository.DepositRepositoryImpl
 import id.kalkulasa.domain.repository.DepositRepository
+import id.kalkulasa.data.repository.BudgetRepositoryImpl
+import id.kalkulasa.domain.repository.BudgetRepository
+import id.kalkulasa.data.repository.CashAuditRepositoryImpl
+import id.kalkulasa.domain.repository.CashAuditRepository
 import id.kalkulasa.data.repository.SupplierRepositoryImpl
 import id.kalkulasa.data.repository.CategoryRepositoryImpl
 import id.kalkulasa.data.repository.CustomerRepositoryImpl
@@ -166,6 +170,19 @@ object AppModule {
     @Singleton
     fun provideDepositRepository(db: KalkulasaDatabase, deviceId: String): DepositRepository =
         DepositRepositoryImpl(db, deviceId)
+
+    @Provides
+    @Singleton
+    fun provideBudgetRepository(db: KalkulasaDatabase, deviceId: String): BudgetRepository =
+        BudgetRepositoryImpl(db, deviceId)
+
+    @Provides
+    @Singleton
+    fun provideCashAuditRepository(
+        db: KalkulasaDatabase,
+        deviceId: String,
+        financeRepository: id.kalkulasa.domain.repository.FinanceRepository,
+    ): CashAuditRepository = CashAuditRepositoryImpl(db, deviceId, financeRepository)
 
     @Provides
     @Singleton

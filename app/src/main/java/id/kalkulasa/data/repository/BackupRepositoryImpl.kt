@@ -53,6 +53,8 @@ class BackupRepositoryImpl @Inject constructor(
         json.put("payable_payment", JSONArray().also { arr -> db.payablePaymentDao().getAll().forEach { arr.put(it.toJson()) } })
         json.put("voucher", JSONArray().also { arr -> db.voucherDao().getAll().forEach { arr.put(it.toJson()) } })
         json.put("deposit", JSONArray().also { arr -> db.depositDao().getAll().forEach { arr.put(it.toJson()) } })
+        json.put("budget", JSONArray().also { arr -> db.budgetDao().getAll().forEach { arr.put(it.toJson()) } })
+        json.put("cash_audit", JSONArray().also { arr -> db.cashAuditDao().getAll().forEach { arr.put(it.toJson()) } })
         json.toString()
     }
 
@@ -91,6 +93,8 @@ class BackupRepositoryImpl @Inject constructor(
         val payments = root.optJSONArray("payable_payment")?.toList { it.toPayablePayment() } ?: emptyList()
         val vouchers = root.optJSONArray("voucher")?.toList { it.toVoucher() } ?: emptyList()
         val deposits = root.optJSONArray("deposit")?.toList { it.toDeposit() } ?: emptyList()
+        val budgets = root.optJSONArray("budget")?.toList { it.toBudget() } ?: emptyList()
+        val audits = root.optJSONArray("cash_audit")?.toList { it.toCashAudit() } ?: emptyList()
 
         db.withTransaction {
             db.clearAllTables()
@@ -115,6 +119,8 @@ class BackupRepositoryImpl @Inject constructor(
             payments.forEach { db.payablePaymentDao().insert(it) }
             vouchers.forEach { db.voucherDao().upsert(it) }
             deposits.forEach { db.depositDao().upsert(it) }
+            budgets.forEach { db.budgetDao().upsert(it) }
+            audits.forEach { db.cashAuditDao().insert(it) }
         }
     }
 
@@ -196,6 +202,17 @@ class BackupRepositoryImpl @Inject constructor(
         put("nominal", nominal); jPut(this, "catatan", catatan)
         put("waktu", waktu); put("updatedAt", updatedAt)
         jPut(this, "deletedAt", deletedAt); put("deviceId", deviceId); put("syncStatus", syncStatus)
+    }
+
+    private fun id.kalkulasa.data.local.entity.BudgetEntity.toJson() = JSONObject().apply {
+        put("id", id); put("kategoriNama", kategoriNama); put("nominal", nominal); put("bulan", bulan)
+        put("updatedAt", updatedAt); put("deviceId", deviceId); put("syncStatus", syncStatus)
+    }
+
+    private fun id.kalkulasa.data.local.entity.CashAuditEntity.toJson() = JSONObject().apply {
+        put("id", id); put("tanggal", tanggal); put("sistem", sistem); put("fisik", fisik)
+        put("selisih", selisih); jPut(this, "catatan", catatan); put("waktu", waktu)
+        put("updatedAt", updatedAt); put("deviceId", deviceId); put("syncStatus", syncStatus)
     }
 
     private fun id.kalkulasa.data.local.entity.VoucherEntity.toJson() = JSONObject().apply {
@@ -370,6 +387,20 @@ class BackupRepositoryImpl @Inject constructor(
         deviceId = getString("deviceId"), syncStatus = optString("syncStatus", "PENDING"),
     )
 
+    private fun JSONObject.toBudget() = id.kalkulasa.data.local.entity.BudgetEntity(
+        id = getString("id"), kategoriNama = getString("kategoriNama"),
+        nominal = getLong("nominal"), bulan = getString("bulan"),
+        updatedAt = getLong("updatedAt"), deviceId = getString("deviceId"),
+        syncStatus = optString("syncStatus", "PENDING"),
+    )
+
+    private fun JSONObject.toCashAudit() = id.kalkulasa.data.local.entity.CashAuditEntity(
+        id = getString("id"), tanggal = getLong("tanggal"), sistem = getLong("sistem"),
+        fisik = getLong("fisik"), selisih = getLong("selisih"), catatan = str("catatan"),
+        waktu = getLong("waktu"), updatedAt = getLong("updatedAt"),
+        deviceId = getString("deviceId"), syncStatus = optString("syncStatus", "PENDING"),
+    )
+
     private fun JSONObject.toVoucher() = id.kalkulasa.data.local.entity.VoucherEntity(
         id = getString("id"), kode = getString("kode"), tipe = getString("tipe"),
         nilai = getLong("nilai"), minimalBelanja = getLong("minimalBelanja"),
@@ -457,6 +488,6 @@ class BackupRepositoryImpl @Inject constructor(
     )
 
     private companion object {
-        const val BACKUP_VERSION = 11
+        const val BACKUP_VERSION = 12
     }
 }

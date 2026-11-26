@@ -1,5 +1,20 @@
 # Changelog
 
+## v3.2.0
+
+Phase 3 of the Kalkulasa UMKM Suite: monthly budgets and daily cash reconciliation.
+
+### New features
+
+- **Monthly budgets per category.** Set a budget for each expense category and see usage progress against the current month's budget.
+- **Daily cash reconciliation.** Record the physical cash count, compare it with the system balance and save the difference as an audit history.
+
+### Improvements
+
+- **Tested advanced finance rules.** `KeuanganLanjutanUseCase` holds budget percentage and cash difference logic without Android dependencies.
+- **Backup format v12** includes budgets and reconciliation history. Older backups still restore.
+- **Automatic v11 to v12 database migration** with no data loss.
+
 ## v3.1.0
 
 Phase 2 of the Kalkulasa UMKM Suite: storage locations, unit conversion, batches and expiry dates.

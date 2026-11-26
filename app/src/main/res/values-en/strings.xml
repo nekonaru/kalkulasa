@@ -505,4 +505,14 @@
     <string name="product_location">Location/shelf</string>
     <string name="product_conversion_unit">Conversion unit</string>
     <string name="product_conversion_qty">Quantity per conversion</string>
+    <string name="finance_more_title">Advanced Finance</string>
+    <string name="finance_more_open">Budget and Reconciliation</string>
+    <string name="budget_title">Budget for This Month</string>
+    <string name="budget_nominal">Budget amount</string>
+    <string name="budget_save">Save budget</string>
+    <string name="cash_audit_title">Cash Reconciliation</string>
+    <string name="cash_audit_physical">Physical cash count</string>
+    <string name="cash_audit_system">System cash</string>
+    <string name="cash_audit_save">Record reconciliation</string>
+    <string name="cash_audit_empty">No cash reconciliation yet.</string>
 </resources>

@@ -505,4 +505,14 @@
     <string name="product_location">Lokasi/rak</string>
     <string name="product_conversion_unit">Satuan konversi</string>
     <string name="product_conversion_qty">Jumlah per konversi</string>
+    <string name="finance_more_title">Keuangan Lanjutan</string>
+    <string name="finance_more_open">Budget dan Rekonsiliasi</string>
+    <string name="budget_title">Budget Bulan Ini</string>
+    <string name="budget_nominal">Nominal budget</string>
+    <string name="budget_save">Simpan budget</string>
+    <string name="cash_audit_title">Rekonsiliasi Kas</string>
+    <string name="cash_audit_physical">Jumlah kas fisik</string>
+    <string name="cash_audit_system">Kas sistem</string>
+    <string name="cash_audit_save">Catat rekonsiliasi</string>
+    <string name="cash_audit_empty">Belum ada rekonsiliasi kas.</string>
 </resources>

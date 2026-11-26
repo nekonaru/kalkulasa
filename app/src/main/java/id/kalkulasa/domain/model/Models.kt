@@ -249,6 +249,18 @@ data class Deposit(
     val catatan: String?,
 )
 
+data class Budget(val kategoriNama: String, val nominal: Long, val bulan: String)
+
+data class CashAudit(
+    val id: String,
+    val tanggal: Long,
+    val sistem: Long,
+    val fisik: Long,
+    val selisih: Long,
+    val catatan: String?,
+    val waktu: Long,
+)
+
 data class CashBreakdown(
     val modal: Long,
     val prive: Long,

@@ -18,6 +18,8 @@ import id.kalkulasa.data.local.entity.PayableEntity
 import id.kalkulasa.data.local.entity.PayablePaymentEntity
 import id.kalkulasa.data.local.entity.VoucherEntity
 import id.kalkulasa.data.local.entity.DepositEntity
+import id.kalkulasa.data.local.entity.BudgetEntity
+import id.kalkulasa.data.local.entity.CashAuditEntity
 import id.kalkulasa.data.local.entity.SalesTargetEntity
 import id.kalkulasa.data.local.entity.ExpenseEntity
 import id.kalkulasa.data.local.entity.ProductEntity
@@ -534,6 +536,30 @@ interface DepositDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(deposit: DepositEntity)
+}
+
+@Dao
+interface BudgetDao {
+    @Query("SELECT * FROM budget WHERE bulan = :bulan")
+    fun observeForMonth(bulan: String): Flow<List<BudgetEntity>>
+
+    @Query("SELECT * FROM budget")
+    suspend fun getAll(): List<BudgetEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsert(budget: BudgetEntity)
+}
+
+@Dao
+interface CashAuditDao {
+    @Query("SELECT * FROM cash_audit ORDER BY tanggal DESC LIMIT :limit")
+    fun observeRecent(limit: Int): Flow<List<CashAuditEntity>>
+
+    @Query("SELECT * FROM cash_audit")
+    suspend fun getAll(): List<CashAuditEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(audit: CashAuditEntity)
 }
 
 @Dao

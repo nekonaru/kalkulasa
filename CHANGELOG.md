@@ -1,5 +1,20 @@
 # Changelog
 
+## v3.2.0
+
+Fase 3 dari Kalkulasa Suite UMKM: budget bulanan dan rekonsiliasi kas harian.
+
+### Fitur baru
+
+- **Budget bulanan per kategori.** Atur anggaran untuk setiap kategori pengeluaran dan lihat progres pemakaiannya terhadap anggaran bulan berjalan.
+- **Rekonsiliasi kas harian.** Catat jumlah kas fisik, bandingkan dengan saldo sistem, dan simpan selisihnya sebagai riwayat audit.
+
+### Peningkatan
+
+- **Aturan keuangan lanjutan teruji.** `KeuanganLanjutanUseCase` berisi logika persentase budget dan status selisih kas tanpa dependency Android.
+- **Backup format v12** mencakup budget dan riwayat rekonsiliasi. Backup lama tetap bisa dipulihkan.
+- **Migrasi database otomatis v11 ke v12** tanpa menghapus data lama.
+
 ## v3.1.0
 
 Fase 2 dari Kalkulasa Suite UMKM: lokasi penyimpanan, konversi satuan, batch, dan tanggal kedaluwarsa.

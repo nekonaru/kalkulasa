@@ -29,6 +29,8 @@ import id.kalkulasa.data.local.entity.PayableEntity
 import id.kalkulasa.data.local.entity.PayablePaymentEntity
 import id.kalkulasa.data.local.entity.VoucherEntity
 import id.kalkulasa.data.local.entity.DepositEntity
+import id.kalkulasa.data.local.entity.BudgetEntity
+import id.kalkulasa.data.local.entity.CashAuditEntity
 import id.kalkulasa.data.local.entity.SalesTargetEntity
 import id.kalkulasa.data.local.entity.ExpenseEntity
 import id.kalkulasa.data.local.entity.ProductEntity
@@ -63,9 +65,11 @@ import java.util.UUID
         PayablePaymentEntity::class,
         VoucherEntity::class,
         DepositEntity::class,
+        BudgetEntity::class,
+        CashAuditEntity::class,
         SalesTargetEntity::class,
     ],
-    version = 11,
+    version = 12,
     exportSchema = true,
 )
 abstract class KalkulasaDatabase : RoomDatabase() {
@@ -89,9 +93,32 @@ abstract class KalkulasaDatabase : RoomDatabase() {
     abstract fun payablePaymentDao(): id.kalkulasa.data.local.dao.PayablePaymentDao
     abstract fun voucherDao(): id.kalkulasa.data.local.dao.VoucherDao
     abstract fun depositDao(): id.kalkulasa.data.local.dao.DepositDao
+    abstract fun budgetDao(): id.kalkulasa.data.local.dao.BudgetDao
+    abstract fun cashAuditDao(): id.kalkulasa.data.local.dao.CashAuditDao
 
     companion object {
         const val NAME = "kalkulasa.db"
+
+        /** Migration 11 -> 12: monthly budgets and daily cash reconciliation. */
+        val MIGRATION_11_12 = androidx.room.migration.Migration(11, 12) { db ->
+            db.execSQL(
+                """CREATE TABLE IF NOT EXISTS `budget` (
+                    `id` TEXT NOT NULL PRIMARY KEY, `kategoriNama` TEXT NOT NULL,
+                    `nominal` INTEGER NOT NULL, `bulan` TEXT NOT NULL,
+                    `updatedAt` INTEGER NOT NULL, `deviceId` TEXT NOT NULL, `syncStatus` TEXT NOT NULL
+                )""".trimIndent(),
+            )
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_budget_bulan` ON `budget` (`bulan`)")
+            db.execSQL(
+                """CREATE TABLE IF NOT EXISTS `cash_audit` (
+                    `id` TEXT NOT NULL PRIMARY KEY, `tanggal` INTEGER NOT NULL,
+                    `sistem` INTEGER NOT NULL, `fisik` INTEGER NOT NULL, `selisih` INTEGER NOT NULL,
+                    `catatan` TEXT, `waktu` INTEGER NOT NULL, `updatedAt` INTEGER NOT NULL,
+                    `deviceId` TEXT NOT NULL, `syncStatus` TEXT NOT NULL
+                )""".trimIndent(),
+            )
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_cash_audit_tanggal` ON `cash_audit` (`tanggal`)")
+        }
 
         /** Migration 10 -> 11: locations, unit conversion, batch and expiry. */
         val MIGRATION_10_11 = androidx.room.migration.Migration(10, 11) { db ->
@@ -314,7 +341,7 @@ abstract class KalkulasaDatabase : RoomDatabase() {
         fun build(context: Context, deviceId: String, passphrase: ByteArray): KalkulasaDatabase =
             Room.databaseBuilder(context, KalkulasaDatabase::class.java, NAME)
                 .openHelperFactory(SupportOpenHelperFactory(passphrase))
-                .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, MIGRATION_7_8, MIGRATION_8_9, MIGRATION_9_10, MIGRATION_10_11)
+                .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, MIGRATION_7_8, MIGRATION_8_9, MIGRATION_9_10, MIGRATION_10_11, MIGRATION_11_12)
                 .addCallback(SeedCallback(deviceId))
                 .build()
     }

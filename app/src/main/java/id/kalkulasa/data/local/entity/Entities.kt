@@ -278,6 +278,31 @@ data class PayableEntity(
     val syncStatus: String = SyncStatus.PENDING,
 )
 
+@Entity(tableName = "budget", indices = [Index("bulan")])
+data class BudgetEntity(
+    @PrimaryKey val id: String,
+    val kategoriNama: String,
+    val nominal: Long,
+    val bulan: String,
+    val updatedAt: Long,
+    val deviceId: String,
+    val syncStatus: String = SyncStatus.PENDING,
+)
+
+@Entity(tableName = "cash_audit", indices = [Index("tanggal")])
+data class CashAuditEntity(
+    @PrimaryKey val id: String,
+    val tanggal: Long,
+    val sistem: Long,
+    val fisik: Long,
+    val selisih: Long,
+    val catatan: String?,
+    val waktu: Long,
+    val updatedAt: Long,
+    val deviceId: String,
+    val syncStatus: String = SyncStatus.PENDING,
+)
+
 @Entity(tableName = "voucher", indices = [Index("kode")])
 data class VoucherEntity(
     @PrimaryKey val id: String,
