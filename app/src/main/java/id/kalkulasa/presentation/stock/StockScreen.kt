@@ -71,6 +71,7 @@ fun StockScreen(
     onOpenRestock: () -> Unit,
     onOpenCategories: () -> Unit,
     onOpenImport: () -> Unit,
+    onOpenOpname: () -> Unit,
     viewModel: StockViewModel = hiltViewModel(),
 ) {
     val query by viewModel.query.collectAsStateWithLifecycle()
@@ -127,6 +128,7 @@ fun StockScreen(
                     onOpenRestock = onOpenRestock,
                     onOpenCategories = onOpenCategories,
                     onOpenImport = onOpenImport,
+                    onOpenOpname = onOpenOpname,
                 )
                 1 -> StockEntryTab(viewModel = viewModel, products = products)
                 2 -> HistoryTab(movements = movements)
@@ -170,6 +172,7 @@ private fun ProductsTab(
     onOpenRestock: () -> Unit,
     onOpenCategories: () -> Unit,
     onOpenImport: () -> Unit,
+    onOpenOpname: () -> Unit,
 ) {
     val context = LocalContext.current
     Column(modifier = Modifier.fillMaxSize().padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -184,6 +187,7 @@ private fun ProductsTab(
             TextButton(onClick = onOpenRestock) { Text(context.getString(R.string.restock_title)) }
             TextButton(onClick = onOpenCategories) { Text(context.getString(R.string.categories_title)) }
             TextButton(onClick = onOpenImport) { Text(context.getString(R.string.import_products)) }
+            TextButton(onClick = onOpenOpname) { Text(context.getString(R.string.opname_open)) }
         }
         if (products.isEmpty()) {
             KalkulasaEmptyState(

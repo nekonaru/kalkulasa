@@ -36,7 +36,10 @@ import javax.inject.Inject
 enum class DiscountMode { RUPIAH, PERCENT }
 
 data class CartEntry(val product: Product, val qty: Double) {
-    val lineTotal: Long get() = kotlin.math.round(product.hargaJual * qty).toLong()
+    val lineTotal: Long get() {
+        val raw = product.hargaJual.toDouble() * qty.coerceAtLeast(0.0)
+        return if (raw >= Long.MAX_VALUE.toDouble()) Long.MAX_VALUE else kotlin.math.round(raw).toLong()
+    }
 }
 
 sealed interface CashierEvent {
@@ -69,6 +72,9 @@ class CashierViewModel @Inject constructor(
 
     private val _poinDitukar = MutableStateFlow("")
     val poinDitukar: StateFlow<String> = _poinDitukar.asStateFlow()
+
+    private val _scanCode = MutableStateFlow("")
+    val scanCode: StateFlow<String> = _scanCode.asStateFlow()
 
     private val _paymentMethod = MutableStateFlow(PaymentMethod.TUNAI)
     val paymentMethod: StateFlow<String> = _paymentMethod.asStateFlow()
@@ -151,6 +157,23 @@ class CashierViewModel @Inject constructor(
     }
     fun onDiscountModeChange(mode: DiscountMode) { _discountMode.value = mode; _discount.value = "" }
     fun onPoinDitukarChange(value: String) { _poinDitukar.value = value.filter { it.isDigit() }.take(6) }
+    fun onScanCodeChange(value: String) { _scanCode.value = value }
+
+    /** Add a product from a keyboard-wedge barcode scanner (Enter triggers Done). */
+    fun scanBarcode() {
+        val code = _scanCode.value.trim()
+        if (code.isEmpty()) return
+        viewModelScope.launch {
+            val product = productRepository.getByBarcode(code)
+            if (product == null) {
+                _events.send(CashierEvent.Message("SCAN_NOT_FOUND"))
+            } else {
+                addToCart(product)
+                _scanCode.value = ""
+                _events.send(CashierEvent.Message("SCAN_ADDED"))
+            }
+        }
+    }
     fun onPaymentMethodChange(method: String) { _paymentMethod.value = method.also { if (it != PaymentMethod.TUNAI) _tendered.value = "" } }
     fun onNamaPelangganChange(value: String) { _namaPelanggan.value = value }
 

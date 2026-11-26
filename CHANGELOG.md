@@ -1,5 +1,31 @@
 # Changelog
 
+## v2.6.0
+
+Perbaikan ekspor dan keamanan hasil audit, ditambah scan barcode dan opname massal.
+
+### Fitur baru
+
+- **Scan barcode di kasir.** Ketik atau scan kode produk dari scanner keyboard, lalu tekan Enter untuk langsung menambahkan produk ke keranjang. Tidak memerlukan izin kamera.
+- **Opname massal.** Hitung fisik semua stok sekaligus dalam satu layar, lalu simpan semua penyesuaian dalam satu transaksi.
+
+### Peningkatan
+
+- **Ekspor CSV dan PDF sekarang berhasil.** Path FileProvider diperbaiki sehingga file laporan benar-benar bisa dibagikan.
+- **PIN dilindungi PBKDF2 dengan salt acak** dan iterasi 120.000. PIN lama otomatis di-upgrade saat berhasil diverifikasi.
+- **Hapus PIN wajib memasukkan PIN saat ini**, sehingga kunci tidak bisa dimatikan dari layar yang sudah terbuka.
+- **Laporan, Beranda, dan impor tidak lagi macet di loading** saat query gagal; ada pesan error dan tombol Coba lagi.
+- **CI menjalankan lint**, dan workflow rilis menjalankan unit test sebelum mempublish APK.
+
+### Perbaikan
+
+- **Poin yang ditukar dikembalikan** saat transaksi dibatalkan. Sebelumnya pelanggan kehilangan poin tersebut permanen.
+- **Backup format v8** menyimpan jumlah poin yang ditukar per transaksi; backup lama tetap bisa dipulihkan.
+- **Migrasi database otomatis v7 ke v8** tanpa menghapus data lama.
+- **Locale resource Indonesia diperbaiki** dari `in` menjadi `id` untuk per-app language di Android 13 ke atas.
+- **Guard overflow** pada perhitungan total keranjang dengan jumlah sangat besar.
+- **Kategori resource tidak lagi bentrok** dengan kode locale lama.
+
 ## v2.5.0
 
 Diskon dan loyalti yang lebih lengkap, target penjualan, serta pengamanan backup hasil audit lapisan data.

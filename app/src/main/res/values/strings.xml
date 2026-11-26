@@ -403,4 +403,17 @@
     <string name="target_monthly_progress">Bulanan: %1$s dari %2$s</string>
     <string name="target_none">Belum ada target</string>
     <string name="insufficient_payment">Uang bayar kurang dari total</string>
+    <!-- Scan barcode dan opname massal -->
+    <string name="scan_barcode">Scan barcode</string>
+    <string name="scan_barcode_hint">Ketik atau scan kode produk</string>
+    <string name="scan_not_found">Produk dengan barcode itu tidak ditemukan</string>
+    <string name="scan_added">Produk ditambahkan ke keranjang</string>
+    <string name="opname_title">Opname Massal</string>
+    <string name="opname_hint">Isi stok hasil hitung fisik, lalu simpan semua sekaligus</string>
+    <string name="opname_save">Simpan opname</string>
+    <string name="opname_saved">Opname tersimpan: %1$d produk</string>
+    <string name="opname_no_change">Tidak ada perubahan stok</string>
+    <string name="opname_open">Opname Massal</string>
+    <string name="button_retry">Coba lagi</string>
+    <string name="stock_current">Stok saat ini:</string>
 </resources>

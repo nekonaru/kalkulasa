@@ -60,6 +60,7 @@ class StatementsViewModel @Inject constructor(
             ReportPeriod.THIS_MONTH -> DateFormatter.startOfMonth(now) to DateFormatter.endOfDay(now)
         }
         viewModelScope.launch {
+            try {
             val breakdown = financeRepository.cashBreakdown()
             val piutang = receivableRepository.observeOutstanding().first()
             val hutang = payableRepository.observeOutstanding().first()
@@ -90,6 +91,9 @@ class StatementsViewModel @Inject constructor(
                     labaDitahanInfo = retained,
                     loading = false,
                 )
+            }
+            } catch (e: Exception) {
+                _state.value = _state.value.copy(loading = false)
             }
         }
     }

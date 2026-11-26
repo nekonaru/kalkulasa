@@ -10,6 +10,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import java.security.MessageDigest
+import java.security.SecureRandom
+import javax.crypto.SecretKeyFactory
+import javax.crypto.spec.PBEKeySpec
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -24,7 +27,7 @@ class SettingsDataStore @Inject constructor(
 ) {
     private object Keys {
         val theme = stringPreferencesKey("theme_mode")
-        val pinHash = stringPreferencesKey("pin_hash") // sha256 hex, empty = no PIN
+        val pinHash = stringPreferencesKey("pin_hash") // pbkdf2$salt$hash, empty = no PIN
         val warungMode = booleanPreferencesKey("warung_mode")
     }
 
@@ -42,14 +45,26 @@ class SettingsDataStore @Inject constructor(
 
     val hasPin: Flow<Boolean> = context.dataStore.data.map { !it[Keys.pinHash].isNullOrEmpty() }
 
-    /** Verify a PIN attempt against the stored hash. */
+    /** Verify a PIN attempt. Legacy unsalted hashes are upgraded on success. */
     suspend fun verifyPin(pin: String): Boolean {
-        val prefs = context.dataStore.data.first()
-        return prefs[Keys.pinHash] != null && prefs[Keys.pinHash] == hash(pin)
+        val stored = context.dataStore.data.first()[Keys.pinHash] ?: return false
+        if (stored.startsWith(PREFIX)) {
+            val parts = stored.split('$')
+            if (parts.size != 3) return false
+            val expected = derive(pin, hexToBytes(parts[1]))
+            return constantTimeEquals(parts[2], expected)
+        }
+        if (constantTimeEquals(stored, legacyHash(pin))) {
+            setPin(pin)
+            return true
+        }
+        return false
     }
 
     suspend fun setPin(pin: String) {
-        context.dataStore.edit { it[Keys.pinHash] = hash(pin) }
+        val salt = ByteArray(16).also { SecureRandom().nextBytes(it) }
+        val value = listOf(PREFIX, hex(salt), derive(pin, salt)).joinToString("$")
+        context.dataStore.edit { it[Keys.pinHash] = value }
     }
 
     suspend fun removePin() {
@@ -63,7 +78,28 @@ class SettingsDataStore @Inject constructor(
         context.dataStore.edit { it[Keys.warungMode] = enabled }
     }
 
-    private fun hash(pin: String): String =
-        MessageDigest.getInstance("SHA-256").digest(pin.toByteArray())
-            .joinToString("") { "%02x".format(it) }
+    private fun derive(pin: String, salt: ByteArray): String {
+        val spec = PBEKeySpec(pin.toCharArray(), salt, ITERATIONS, 256)
+        return hex(SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256").generateSecret(spec).encoded)
+    }
+
+    private fun legacyHash(pin: String): String =
+        hex(MessageDigest.getInstance("SHA-256").digest(pin.toByteArray()))
+
+    private fun hex(bytes: ByteArray): String = bytes.joinToString("") { "%02x".format(it) }
+
+    private fun hexToBytes(value: String): ByteArray =
+        ByteArray(value.length / 2) { i -> value.substring(i * 2, i * 2 + 2).toInt(16).toByte() }
+
+    private fun constantTimeEquals(a: String, b: String): Boolean {
+        if (a.length != b.length) return false
+        var diff = 0
+        for (i in a.indices) diff = diff or (a[i].code xor b[i].code)
+        return diff == 0
+    }
+
+    private companion object {
+        const val PREFIX = "pbkdf2"
+        const val ITERATIONS = 120_000
+    }
 }

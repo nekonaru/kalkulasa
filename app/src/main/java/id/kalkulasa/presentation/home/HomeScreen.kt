@@ -68,6 +68,16 @@ fun HomeScreen(
         modifier = Modifier.fillMaxSize().padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
+        if (state.error) {
+            item {
+                Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer)) {
+                    Column(modifier = Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text(context.getString(R.string.error_generic), color = MaterialTheme.colorScheme.onErrorContainer)
+                        TextButton(onClick = viewModel::refresh) { Text(context.getString(R.string.button_retry)) }
+                    }
+                }
+            }
+        }
         item {
             Column {
                 val greeting = greetingForTimeOfDay(context)

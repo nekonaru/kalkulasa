@@ -403,4 +403,17 @@
     <string name="target_monthly_progress">Monthly: %1$s of %2$s</string>
     <string name="target_none">No target set</string>
     <string name="insufficient_payment">Tendered amount is less than the total</string>
+    <!-- Barcode scan and bulk stock take -->
+    <string name="scan_barcode">Scan barcode</string>
+    <string name="scan_barcode_hint">Type or scan a product code</string>
+    <string name="scan_not_found">No product found with that barcode</string>
+    <string name="scan_added">Product added to cart</string>
+    <string name="opname_title">Bulk Stock Take</string>
+    <string name="opname_hint">Enter physical counts, then save them all at once</string>
+    <string name="opname_save">Save stock take</string>
+    <string name="opname_saved">Stock take saved: %1$d products</string>
+    <string name="opname_no_change">No stock changes</string>
+    <string name="opname_open">Bulk Stock Take</string>
+    <string name="button_retry">Retry</string>
+    <string name="stock_current">Current stock:</string>
 </resources>

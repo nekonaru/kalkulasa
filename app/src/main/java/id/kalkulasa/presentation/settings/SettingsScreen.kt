@@ -62,6 +62,7 @@ fun SettingsScreen(
 
     var pinDialog by remember { mutableStateOf(false) }
     var removingPin by remember { mutableStateOf(false) }
+    var removePinInput by remember { mutableStateOf("") }
     var restoreConfirm by remember { mutableStateOf(false) }
 
     val pickBackup = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
@@ -78,6 +79,7 @@ fun SettingsScreen(
                         event.text.startsWith("BACKUP:") -> context.getString(R.string.backup_done) + ": " + event.text.removePrefix("BACKUP:")
                         event.text == "BACKUP_TOO_BIG" -> context.getString(R.string.backup_too_big)
                         event.text == "ERROR" -> context.getString(R.string.error_backup_unreadable)
+                        event.text == "PIN_WRONG" -> context.getString(R.string.pin_wrong)
                         else -> context.getString(R.string.error_generic)
                     }
                     snackbar.showSnackbar(message)
@@ -185,7 +187,7 @@ fun SettingsScreen(
                 if (hasPin) {
                     OutlinedButton(onClick = { pinDialog = true }) { Text(context.getString(R.string.pin_change)) }
                     OutlinedButton(
-                        onClick = { removingPin = true },
+                        onClick = { removingPin = true; removePinInput = "" },
                         colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error),
                     ) { Text(context.getString(R.string.pin_remove)) }
                 } else {
@@ -227,9 +229,24 @@ fun SettingsScreen(
         AlertDialog(
             onDismissRequest = { removingPin = false },
             title = { Text(context.getString(R.string.pin_remove)) },
-            text = { Text(context.getString(R.string.pin_enable)) },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(context.getString(R.string.pin_enable))
+                    OutlinedTextField(
+                        value = removePinInput,
+                        onValueChange = { removePinInput = it.filter(Char::isDigit).take(6) },
+                        label = { Text(context.getString(R.string.pin_enter)) },
+                        singleLine = true,
+                    )
+                }
+            },
             confirmButton = {
-                TextButton(onClick = { viewModel.removePin(); removingPin = false }) {
+                TextButton(
+                    onClick = {
+                        if (viewModel.removePin(removePinInput)) removingPin = false
+                    },
+                    enabled = removePinInput.length == 6,
+                ) {
                     Text(context.getString(R.string.button_confirm))
                 }
             },

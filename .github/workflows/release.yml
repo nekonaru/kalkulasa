@@ -19,6 +19,9 @@ jobs:
 
       - uses: gradle/actions/setup-gradle@v4
 
+      - name: Run unit tests before release
+        run: bash ./gradlew :app:testDebugUnitTest
+
       - name: Decode release keystore
         run: echo "${{ secrets.KALKULASA_KEYSTORE_BASE64 }}" | base64 -d > "$GITHUB_WORKSPACE/release.jks"
 

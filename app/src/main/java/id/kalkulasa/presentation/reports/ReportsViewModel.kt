@@ -31,6 +31,7 @@ data class ReportsUiState(
     val report: PeriodReport = PeriodReport.empty(),
     val loading: Boolean = true,
     val exporting: Boolean = false,
+    val error: Boolean = false,
 )
 
 @HiltViewModel
@@ -63,15 +64,21 @@ class ReportsViewModel @Inject constructor(
     fun load() {
         val s = _state.value
         viewModelScope.launch {
-            val report = reportRepository.reportBetween(s.from, s.to)
-            val profitable = saleRepository.mostProfitableBetween(s.from, s.to, 5)
+            try {
+                val report = reportRepository.reportBetween(s.from, s.to)
+                val profitable = saleRepository.mostProfitableBetween(s.from, s.to, 5)
             // A fast period switch can start two queries. Only the one that still
             // matches the visible period is allowed to write state.
-            withContext(Dispatchers.Main) {
-                val current = _state.value
-                if (current.from == s.from && current.to == s.to && current.period == s.period) {
-                    _mostProfitable.value = profitable
-                    _state.value = current.copy(report = report, loading = false)
+                withContext(Dispatchers.Main) {
+                    val current = _state.value
+                    if (current.from == s.from && current.to == s.to && current.period == s.period) {
+                        _mostProfitable.value = profitable
+                        _state.value = current.copy(report = report, loading = false, error = false)
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    _state.value = _state.value.copy(loading = false, error = true)
                 }
             }
         }

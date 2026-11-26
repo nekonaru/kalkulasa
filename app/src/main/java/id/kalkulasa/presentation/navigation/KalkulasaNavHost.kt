@@ -32,6 +32,7 @@ import id.kalkulasa.presentation.employee.EmployeeScreen
 import id.kalkulasa.presentation.payable.PayableScreen
 import id.kalkulasa.presentation.statements.StatementsScreen
 import id.kalkulasa.presentation.target.TargetScreen
+import id.kalkulasa.presentation.opname.StockOpnameScreen
 import id.kalkulasa.presentation.cashier.CashierScreen
 import id.kalkulasa.presentation.customer.CustomersScreen
 import id.kalkulasa.presentation.finance.FinanceScreen
@@ -129,7 +130,11 @@ fun KalkulasaNavHost(startDestination: String) {
                     onOpenRestock = { navController.navigate(Routes.RESTOCK) },
                     onOpenCategories = { navController.navigate(Routes.CATEGORIES) },
                     onOpenImport = { navController.navigate(Routes.IMPORT_PRODUCTS) },
+                    onOpenOpname = { navController.navigate(Routes.OPNAME) },
                 )
+            }
+            composable(Routes.OPNAME) {
+                StockOpnameScreen(onBack = { navController.popBackStack() })
             }
             composable(Routes.CATEGORIES) {
                 CategoriesScreen(

@@ -74,9 +74,14 @@ class ImportProductsViewModel @Inject constructor(
         if (products.isEmpty() || _state.value.importing) return
         _state.value = _state.value.copy(importing = true)
         viewModelScope.launch {
-            val count = productRepository.importProducts(products)
-            _state.value = _state.value.copy(importedCount = count, importing = false, products = emptyList(), errors = emptyList())
-            _events.send(ImportProductsEvent.Message("DONE:$count"))
+            try {
+                val count = productRepository.importProducts(products)
+                _state.value = _state.value.copy(importedCount = count, importing = false, products = emptyList(), errors = emptyList())
+                _events.send(ImportProductsEvent.Message("DONE:$count"))
+            } catch (e: Exception) {
+                _state.value = _state.value.copy(importing = false)
+                _events.send(ImportProductsEvent.Message("ERROR"))
+            }
         }
     }
 

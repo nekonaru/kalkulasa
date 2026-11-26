@@ -59,7 +59,7 @@ import java.util.UUID
         PayableEntity::class,
         SalesTargetEntity::class,
     ],
-    version = 7,
+    version = 8,
     exportSchema = true,
 )
 abstract class KalkulasaDatabase : RoomDatabase() {
@@ -83,6 +83,11 @@ abstract class KalkulasaDatabase : RoomDatabase() {
 
     companion object {
         const val NAME = "kalkulasa.db"
+
+        /** Migration 7 -> 8: remember redeemed points so cancellation can refund them. */
+        val MIGRATION_7_8 = androidx.room.migration.Migration(7, 8) { db ->
+            db.execSQL("ALTER TABLE `sale` ADD COLUMN `poinDitukar` INTEGER NOT NULL DEFAULT 0")
+        }
 
         /** Migration 6 -> 7: daily and monthly sales targets. */
         val MIGRATION_6_7 = androidx.room.migration.Migration(6, 7) { db ->
@@ -241,7 +246,7 @@ abstract class KalkulasaDatabase : RoomDatabase() {
         fun build(context: Context, deviceId: String, passphrase: ByteArray): KalkulasaDatabase =
             Room.databaseBuilder(context, KalkulasaDatabase::class.java, NAME)
                 .openHelperFactory(SupportOpenHelperFactory(passphrase))
-                .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7)
+                .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, MIGRATION_7_8)
                 .addCallback(SeedCallback(deviceId))
                 .build()
     }

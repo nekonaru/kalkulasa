@@ -145,6 +145,7 @@ class SaleRepositoryImpl @Inject constructor(
                     waktu = now,
                     catatan = catatan?.ifBlank { null },
                     customerId = linkedCustomerId,
+                    poinDitukar = poinDitukar.coerceAtLeast(0),
                     updatedAt = now,
                     deviceId = deviceId,
                 )
@@ -192,7 +193,7 @@ class SaleRepositoryImpl @Inject constructor(
                     val points = PoinLoyalitasUseCase.pointsFor(sale.total)
                     db.customerDao().upsert(
                         customer.copy(
-                            poin = (customer.poin - points).coerceAtLeast(0L),
+                            poin = (customer.poin - points + sale.poinDitukar.coerceAtLeast(0)).coerceAtLeast(0L),
                             kunjungan = (customer.kunjungan - 1).coerceAtLeast(0),
                             totalBelanja = (customer.totalBelanja - sale.total).coerceAtLeast(0L),
                             updatedAt = now0,

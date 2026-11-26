@@ -77,6 +77,7 @@ fun CashierScreen(
     val namaPelanggan by viewModel.namaPelanggan.collectAsStateWithLifecycle()
     val todaySales by viewModel.todaySales.collectAsStateWithLifecycle()
     val saving by viewModel.saving.collectAsStateWithLifecycle()
+    val scanCode by viewModel.scanCode.collectAsStateWithLifecycle()
     var receiptToShare by remember { mutableStateOf<String?>(null) }
 
     val snackbar = remember { SnackbarHostState() }
@@ -93,6 +94,8 @@ fun CashierScreen(
                         event.text == "CUSTOMER_NAME_REQUIRED" -> context.getString(R.string.customer_name_required)
                         event.text == "INSUFFICIENT_PAYMENT" -> context.getString(R.string.insufficient_payment)
                         event.text == "POINTS_INSUFFICIENT" -> context.getString(R.string.points_insufficient)
+                        event.text == "SCAN_NOT_FOUND" -> context.getString(R.string.scan_not_found)
+                        event.text == "SCAN_ADDED" -> context.getString(R.string.scan_added)
                         event.text == "NO_LAST_SALE" -> context.getString(R.string.repeat_none)
                         event.text == "REPEAT_EMPTY" -> context.getString(R.string.repeat_empty)
                         event.text.startsWith("REPEAT_OK:") -> String.format(context.getString(R.string.repeat_ok), event.text.removePrefix("REPEAT_OK:").toIntOrNull() ?: 0)
@@ -117,6 +120,9 @@ fun CashierScreen(
                     onAdd = viewModel::addToCart,
                     onTogglePin = viewModel::togglePin,
                     onRepeatLast = viewModel::repeatLastSale,
+                    scanCode = scanCode,
+                    onScanCodeChange = viewModel::onScanCodeChange,
+                    onScan = viewModel::scanBarcode,
                     modifier = Modifier.weight(1.15f).padding(12.dp),
                 )
                 CartSection(
@@ -148,6 +154,9 @@ fun CashierScreen(
                     onAdd = viewModel::addToCart,
                     onTogglePin = viewModel::togglePin,
                     onRepeatLast = viewModel::repeatLastSale,
+                    scanCode = scanCode,
+                    onScanCodeChange = viewModel::onScanCodeChange,
+                    onScan = viewModel::scanBarcode,
                     modifier = Modifier.fillMaxWidth().weight(1f).padding(horizontal = 12.dp, vertical = 8.dp),
                 )
                 CartSection(
@@ -225,6 +234,9 @@ private fun ProductPickerSection(
     onAdd: (Product) -> Unit,
     onTogglePin: (Product) -> Unit,
     onRepeatLast: () -> Unit,
+    scanCode: String,
+    onScanCodeChange: (String) -> Unit,
+    onScan: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -234,6 +246,23 @@ private fun ProductPickerSection(
             onValueChange = onQueryChange,
             label = { Text(context.getString(R.string.search_product)) },
             singleLine = true,
+            modifier = Modifier.fillMaxWidth(),
+        )
+        OutlinedTextField(
+            value = scanCode,
+            onValueChange = onScanCodeChange,
+            label = { Text(context.getString(R.string.scan_barcode)) },
+            placeholder = { Text(context.getString(R.string.scan_barcode_hint)) },
+            singleLine = true,
+            keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
+                imeAction = androidx.compose.ui.text.input.ImeAction.Done,
+            ),
+            keyboardActions = androidx.compose.foundation.text.KeyboardActions(onDone = { onScan() }),
+            trailingIcon = {
+                TextButton(onClick = onScan, enabled = scanCode.isNotBlank()) {
+                    Text(context.getString(R.string.scan_barcode))
+                }
+            },
             modifier = Modifier.fillMaxWidth(),
         )
         TextButton(onClick = onRepeatLast) {

@@ -96,6 +96,39 @@ class StockRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun applyAdjustments(
+        items: List<Pair<String, Double>>,
+        reason: String,
+    ): Result<Int> = runCatching {
+        db.withTransaction {
+            var changed = 0
+            items.forEach { (productId, newQty) ->
+                val product = db.productDao().getById(productId) ?: return@forEach
+                if (newQty < 0.0 || newQty == product.stok) return@forEach
+                val delta = newQty - product.stok
+                val now = RepositorySupport.now()
+                db.stockMovementDao().insert(
+                    StockMovementEntity(
+                        id = RepositorySupport.newId(),
+                        produkId = productId,
+                        tipe = StockMovementType.PENYESUAIAN,
+                        jumlah = kotlin.math.abs(delta),
+                        hargaSatuan = product.hargaBeliRata2,
+                        referensiId = null,
+                        catatan = reason,
+                        waktu = now,
+                        updatedAt = now,
+                        deviceId = deviceId,
+                    ),
+                )
+                db.productDao().update(product.copy(stok = newQty, updatedAt = now))
+                RepositorySupport.log(changeLogDao, "product", productId, "UPDATE")
+                changed++
+            }
+            changed
+        }
+    }
+
     override suspend fun recordAdjustment(
         productId: String,
         newQty: Double,

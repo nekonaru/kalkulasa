@@ -36,6 +36,8 @@ class ProductRepositoryImpl @Inject constructor(
     override fun observeInventoryValue(): Flow<Long> = dao.observeInventoryValue()
 
     override suspend fun getById(id: String): Product? = dao.getById(id)?.toDomain()
+    override suspend fun getByBarcode(barcode: String): Product? =
+        dao.getByBarcode(barcode.trim())?.toDomain()
 
     override suspend fun getAll(): List<Product> = dao.getAllActive().map { it.toDomain() }
 

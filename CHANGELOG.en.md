@@ -1,5 +1,31 @@
 # Changelog
 
+## v2.6.0
+
+Export and security fixes from the audit, plus barcode scanning and bulk stock take.
+
+### New features
+
+- **Barcode scanning at the cashier.** Type or scan a product code from a keyboard-wedge scanner, then press Enter to add it to the cart. No camera permission needed.
+- **Bulk stock take.** Enter physical counts for all products in one screen and save every adjustment in a single transaction.
+
+### Improvements
+
+- **CSV and PDF export now works.** The FileProvider path was corrected so report files can actually be shared.
+- **PIN is protected with salted PBKDF2** at 120,000 iterations. Legacy hashes are upgraded on successful verification.
+- **Removing a PIN requires the current PIN**, so the lock cannot be disabled from an already unlocked screen.
+- **Reports, Home and import no longer stay stuck loading** when a query fails; they show an error and a Retry button.
+- **CI runs lint**, and the release workflow runs unit tests before publishing the APK.
+
+### Bug fixes
+
+- **Redeemed points are refunded** when a sale is cancelled. Customers previously lost them permanently.
+- **Backup format v8** stores the redeemed point count per sale; older backups still restore.
+- **Automatic v7 to v8 database migration** with no data loss.
+- **Indonesian resource locale fixed** from `in` to `id` for per-app language on Android 13 and above.
+- **Overflow guard** on cart totals with very large quantities.
+- **Resource qualifier conflict removed** by dropping the legacy locale code.
+
 ## v2.5.0
 
 Richer discounts and loyalty, sales targets, and backup hardening from the data layer audit.

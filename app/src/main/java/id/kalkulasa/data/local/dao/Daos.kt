@@ -84,6 +84,9 @@ interface ProductDao {
     @Query("SELECT * FROM product WHERE id = :id AND deletedAt IS NULL")
     suspend fun getById(id: String): ProductEntity?
 
+    @Query("SELECT * FROM product WHERE barcode = :barcode AND deletedAt IS NULL AND diarsipkan = 0 LIMIT 1")
+    suspend fun getByBarcode(barcode: String): ProductEntity?
+
     @Query("SELECT * FROM product WHERE deletedAt IS NULL")
     suspend fun getAllActive(): List<ProductEntity>
 

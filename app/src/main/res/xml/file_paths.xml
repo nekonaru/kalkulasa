@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths>
-    <files-path name="kalkulasa_files" path="files/" />
-    <cache-path name="kalkulasa_cache" path="cache/" />
-    <external-files-path name="kalkulasa_external_files" path="files/" />
-    <external-cache-path name="kalkulasa_external_cache" path="cache/" />
+    <files-path name="kalkulasa_files" path="." />
+    <cache-path name="kalkulasa_cache" path="." />
+    <external-files-path name="kalkulasa_external_files" path="." />
+    <external-cache-path name="kalkulasa_external_cache" path="." />
 </paths>

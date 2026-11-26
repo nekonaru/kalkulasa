@@ -114,6 +114,7 @@ data class SaleEntity(
     val waktu: Long,
     val catatan: String?,
     val customerId: String? = null,
+    val poinDitukar: Int = 0,
     val updatedAt: Long,
     val deletedAt: Long? = null,
     val deviceId: String,

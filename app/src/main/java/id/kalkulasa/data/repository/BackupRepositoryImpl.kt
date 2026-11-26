@@ -120,6 +120,9 @@ class BackupRepositoryImpl @Inject constructor(
     private fun JSONObject.optLongOrNull(name: String): Long? =
         if (isNull(name)) null else getLong(name)
 
+    private fun JSONObject.optInt(name: String, default: Int): Int =
+        if (has(name) && !isNull(name)) getInt(name) else default
+
     private fun BusinessProfileEntity.toJson() = JSONObject().apply {
         put("id", id); put("namaUsaha", namaUsaha); put("jenisUsaha", jenisUsaha)
         put("modalAwal", modalAwal); put("dibuatPada", dibuatPada); put("updatedAt", updatedAt)
@@ -207,7 +210,7 @@ class BackupRepositoryImpl @Inject constructor(
         put("metodeBayar", metodeBayar); put("status", status); put("waktu", waktu)
         jPut(this, "catatan", catatan)
         jPut(this, "customerId", customerId)
-        put("updatedAt", updatedAt)
+        put("updatedAt", updatedAt); put("poinDitukar", poinDitukar)
         jPut(this, "deletedAt", deletedAt); put("deviceId", deviceId); put("syncStatus", syncStatus)
     }
 
@@ -299,7 +302,7 @@ class BackupRepositoryImpl @Inject constructor(
         id = getString("id"), subtotal = getLong("subtotal"), diskon = getLong("diskon"),
         total = getLong("total"), metodeBayar = getString("metodeBayar"),
         status = getString("status"), waktu = getLong("waktu"), catatan = str("catatan"),
-        customerId = str("customerId"),
+        customerId = str("customerId"), poinDitukar = optInt("poinDitukar", 0),
         updatedAt = getLong("updatedAt"), deletedAt = optLongOrNull("deletedAt"),
         deviceId = getString("deviceId"), syncStatus = optString("syncStatus", "PENDING"),
     )
@@ -390,6 +393,6 @@ class BackupRepositoryImpl @Inject constructor(
     )
 
     private companion object {
-        const val BACKUP_VERSION = 7
+        const val BACKUP_VERSION = 8
     }
 }

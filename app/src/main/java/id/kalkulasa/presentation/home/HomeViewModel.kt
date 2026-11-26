@@ -39,6 +39,7 @@ data class HomeUiState(
     val omzetMonth: Long = 0L,
     val health: KesehatanUsahaUseCase.Result? = null,
     val loading: Boolean = true,
+    val error: Boolean = false,
 )
 
 @HiltViewModel
@@ -63,7 +64,8 @@ class HomeViewModel @Inject constructor(
 
     fun refresh() {
         viewModelScope.launch {
-            val from = DateFormatter.startOfDay()
+            try {
+                val from = DateFormatter.startOfDay()
             val to = DateFormatter.endOfDay()
             val monthAgo = DateFormatter.startOfDayDaysAgo(29, System.currentTimeMillis())
             val weekAgo = DateFormatter.startOfDayDaysAgo(6)
@@ -116,6 +118,9 @@ class HomeViewModel @Inject constructor(
                 health = health,
                 loading = false,
             )
+            } catch (e: Exception) {
+                _state.value = _state.value.copy(loading = false, error = true)
+            }
         }
     }
 }

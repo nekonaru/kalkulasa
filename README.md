@@ -91,6 +91,7 @@
 | **Hutang usaha** | Catat tagihan pemasok, bayar sebagian atau lunas, filter jatuh tempo, dan kirim konfirmasi pembayaran via WhatsApp |
 | **Laporan keuangan lengkap** | Neraca, rincian saldo kas, dan kategori biaya untuk melihat posisi dan arus uang usaha |
 | **Diskon dan poin** | Diskon Rupiah atau Persen, tukar poin pelanggan jadi potongan harga, dan target penjualan harian serta bulanan |
+| **Scan barcode dan opname massal** | Tambah produk ke keranjang dari scanner keyboard tanpa izin kamera, dan simpan hitung fisik seluruh stok sekaligus |
 
 ### Pelanggan dan poin
 
@@ -183,7 +184,7 @@
 ### Opsi A: Unduh APK (paling mudah)
 
 1. Buka halaman [Releases](https://github.com/nekonaru/kalkulasa/releases)
-2. Unduh `kalkulasa-v2.5.0.apk`
+2. Unduh `kalkulasa-v2.6.0.apk`
 3. Buka di ponsel kamu dan izinkan instalasi dari sumber tidak dikenal jika diminta
 4. Buka aplikasi dan isi profil usaha kamu
 

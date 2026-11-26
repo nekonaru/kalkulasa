@@ -41,6 +41,7 @@ interface ProductRepository {
     fun observeLowStock(): Flow<List<Product>>
     fun observeInventoryValue(): Flow<Long>
     suspend fun getById(id: String): Product?
+    suspend fun getByBarcode(barcode: String): Product?
     suspend fun getAll(): List<Product>
     suspend fun save(product: Product)
     suspend fun setArchived(id: String, archived: Boolean)
@@ -99,6 +100,8 @@ interface StockRepository {
     fun observeRecentMovements(limit: Int = 100): Flow<List<StockMovement>>
     suspend fun recordStockIn(productId: String, qty: Double, hargaBeli: Long, pemasok: String?, catatan: String?): Result<Unit>
     suspend fun recordAdjustment(productId: String, newQty: Double, reason: String): Result<Unit>
+    /** Apply a physical stock take atomically. Returns the number of products changed. */
+    suspend fun applyAdjustments(items: List<Pair<String, Double>>, reason: String): Result<Int>
 }
 
 interface CustomerRepository {

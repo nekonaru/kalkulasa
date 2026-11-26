@@ -20,5 +20,6 @@ object Routes {
     const val PAYABLE = "payable"
     const val STATEMENTS = "statements"
     const val TARGET = "target"
+    const val OPNAME = "opname"
     const val NO_SUPPLIER = "__no_supplier__"
 }
