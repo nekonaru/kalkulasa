@@ -477,4 +477,27 @@
     <string name="entity_sales_target">Target penjualan</string>
     <string name="entity_payment">Pembayaran hutang</string>
     <string name="aging_no_due">Tanpa jatuh tempo</string>
+    <string name="voucher_code">Kode voucher</string>
+    <string name="voucher_invalid">Kode voucher tidak valid</string>
+    <string name="voucher_discount">Diskon voucher</string>
+    <string name="member_discount">Diskon member</string>
+    <string name="ppn">PPN 11%</string>
+    <string name="ppn_enable">Aktifkan PPN 11%</string>
+    <string name="product_wholesale_price">Harga grosir</string>
+    <string name="product_wholesale_qty">Minimal qty grosir</string>
+    <string name="product_favorite">Produk favorit</string>
+    <string name="promotion_title">Promosi dan Deposit</string>
+    <string name="promotion_add">Tambah</string>
+    <string name="promotion_open">Voucher dan Deposit</string>
+    <string name="tab_voucher">Voucher</string>
+    <string name="tab_deposit">Deposit</string>
+    <string name="voucher_add">Tambah voucher</string>
+    <string name="voucher_empty">Belum ada voucher.</string>
+    <string name="voucher_nominal">Nominal</string>
+    <string name="voucher_percent">Persen</string>
+    <string name="voucher_min">Minimal belanja</string>
+    <string name="voucher_quota">Kuota</string>
+    <string name="voucher_days">Berlaku (hari)</string>
+    <string name="deposit_add">Tambah deposit</string>
+    <string name="deposit_empty">Belum ada deposit pelanggan.</string>
 </resources>

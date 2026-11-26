@@ -32,6 +32,10 @@ import id.kalkulasa.data.repository.ActivityRepositoryImpl
 import id.kalkulasa.domain.repository.ActivityRepository
 import id.kalkulasa.data.repository.PayablePaymentRepositoryImpl
 import id.kalkulasa.domain.repository.PayablePaymentRepository
+import id.kalkulasa.data.repository.VoucherRepositoryImpl
+import id.kalkulasa.domain.repository.VoucherRepository
+import id.kalkulasa.data.repository.DepositRepositoryImpl
+import id.kalkulasa.domain.repository.DepositRepository
 import id.kalkulasa.data.repository.SupplierRepositoryImpl
 import id.kalkulasa.data.repository.CategoryRepositoryImpl
 import id.kalkulasa.data.repository.CustomerRepositoryImpl
@@ -152,6 +156,16 @@ object AppModule {
     @Singleton
     fun providePayablePaymentRepository(db: KalkulasaDatabase): PayablePaymentRepository =
         PayablePaymentRepositoryImpl(db)
+
+    @Provides
+    @Singleton
+    fun provideVoucherRepository(db: KalkulasaDatabase, deviceId: String): VoucherRepository =
+        VoucherRepositoryImpl(db, deviceId)
+
+    @Provides
+    @Singleton
+    fun provideDepositRepository(db: KalkulasaDatabase, deviceId: String): DepositRepository =
+        DepositRepositoryImpl(db, deviceId)
 
     @Provides
     @Singleton

@@ -1,5 +1,24 @@
 # Changelog
 
+## v3.0.0
+
+Phase 1 of the Kalkulasa UMKM Suite: promotional cashier, members, vouchers, deposits, wholesale pricing and VAT.
+
+### New features
+
+- **Automatic member tiers.** Regular, Silver, Gold and Platinum from lifetime spend, with 5%, 10% and 15% discounts applied automatically when a customer name is entered.
+- **Vouchers and coupons.** Code, amount or percent type, minimum spend, quota and validity period. Codes are validated and quotas consumed in the same sale transaction.
+- **Customer deposits.** Record advances, view balances per customer and use them for payment. Balances are computed from all deposits minus usage.
+- **Wholesale pricing.** Products can carry a wholesale price and minimum quantity. The effective price is applied automatically in the cart once the threshold is met.
+- **Favorite products.** Mark favorites in the stock form for cashier shortcuts.
+- **Optional VAT.** Enable 11% VAT from the cashier settings; the amount is calculated after discounts and stored per sale.
+
+### Improvements
+
+- **Pure, tested promotion rules.** `MemberUseCase`, `PromosiLanjutanUseCase` and `DepositUseCase` hold logic without Android dependencies, with unit tests for tiers, vouchers, wholesale, VAT and deposits.
+- **Backup format v10** includes vouchers, deposits and the new product and sale columns. Older backups still restore.
+- **Automatic v9 to v10 database migration** with no data loss.
+
 ## v2.8.0
 
 Closing the remaining audit findings, plus payment history and an attendance report.

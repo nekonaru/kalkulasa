@@ -17,7 +17,12 @@ import id.kalkulasa.domain.repository.ProductRepository
 import id.kalkulasa.domain.repository.ProfileRepository
 import id.kalkulasa.domain.repository.SaleRepository
 import id.kalkulasa.domain.usecase.PromosiUseCase
+import id.kalkulasa.domain.usecase.PromosiLanjutanUseCase
+import id.kalkulasa.domain.usecase.MemberUseCase
 import id.kalkulasa.domain.usecase.StrukUseCase
+import id.kalkulasa.domain.repository.VoucherRepository
+import id.kalkulasa.domain.repository.DepositRepository
+import id.kalkulasa.core.datastore.SettingsDataStore
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -36,8 +41,12 @@ import javax.inject.Inject
 enum class DiscountMode { RUPIAH, PERCENT }
 
 data class CartEntry(val product: Product, val qty: Double) {
+    private val effectivePrice: Long
+        get() = PromosiLanjutanUseCase.hargaEfektif(
+            product.hargaJual, product.hargaGrosir, qty, product.qtyGrosir,
+        )
     val lineTotal: Long get() {
-        val raw = product.hargaJual.toDouble() * qty.coerceAtLeast(0.0)
+        val raw = effectivePrice.toDouble() * qty.coerceAtLeast(0.0)
         return if (raw >= Long.MAX_VALUE.toDouble()) Long.MAX_VALUE else kotlin.math.round(raw).toLong()
     }
 }
@@ -58,6 +67,9 @@ class CashierViewModel @Inject constructor(
     private val saleRepository: SaleRepository,
     private val profileRepository: ProfileRepository,
     private val customerRepository: CustomerRepository,
+    private val voucherRepository: VoucherRepository,
+    private val depositRepository: DepositRepository,
+    private val settings: SettingsDataStore,
 ) : ViewModel() {
 
     private val _query = MutableStateFlow("")
@@ -75,6 +87,15 @@ class CashierViewModel @Inject constructor(
 
     private val _scanCode = MutableStateFlow("")
     val scanCode: StateFlow<String> = _scanCode.asStateFlow()
+
+    private val _voucherCode = MutableStateFlow("")
+    val voucherCode: StateFlow<String> = _voucherCode.asStateFlow()
+
+    private val _voucher = MutableStateFlow<id.kalkulasa.domain.model.Voucher?>(null)
+    val voucher: StateFlow<id.kalkulasa.domain.model.Voucher?> = _voucher.asStateFlow()
+
+    val ppnEnabled: StateFlow<Boolean> = settings.ppnEnabled
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), false)
 
     private val _paymentMethod = MutableStateFlow(PaymentMethod.TUNAI)
     val paymentMethod: StateFlow<String> = _paymentMethod.asStateFlow()
@@ -116,6 +137,22 @@ class CashierViewModel @Inject constructor(
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 0L)
 
+    val memberDiscount: StateFlow<Long> = combine(
+        customerRepository.observeAll(), _namaPelanggan, subtotal,
+    ) { customers, name, sub ->
+        val customer = customers.find { it.nama.equals(name.trim(), ignoreCase = true) }
+        MemberUseCase.diskon(customer?.totalBelanja ?: 0L, sub)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 0L)
+
+    val voucherDiscount: StateFlow<Long> = combine(_voucher, subtotal) { voucher, sub ->
+        voucher?.let { PromosiLanjutanUseCase.diskonVoucher(it.tipe, it.nilai, sub) } ?: 0L
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 0L)
+
+    private val nonPointDiscount: StateFlow<Long> = combine(
+        discountAmount, memberDiscount, voucherDiscount,
+    ) { d, m, v -> d + m + v }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 0L)
+
     private val requestedPoints: StateFlow<Int> = _poinDitukar
         .map { it.filter(Char::isDigit).toIntOrNull() ?: 0 }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 0)
@@ -125,12 +162,12 @@ class CashierViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 0L)
 
     /** Discount shown on the receipt and saved with the sale. Never above subtotal. */
-    val totalDiscount: StateFlow<Long> = combine(subtotal, discountAmount, rawPointsDiscount) { sub, d, p ->
+    val totalDiscount: StateFlow<Long> = combine(subtotal, nonPointDiscount, rawPointsDiscount) { sub, d, p ->
         PromosiUseCase.gabungkanDiskon(sub, d, p)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 0L)
 
     /** Points actually consumed. When discounts overflow, no point is wasted. */
-    val effectivePoints: StateFlow<Int> = combine(totalDiscount, discountAmount) { total, d ->
+    val effectivePoints: StateFlow<Int> = combine(totalDiscount, nonPointDiscount) { total, d ->
         ((total - d).coerceAtLeast(0L) / PromosiUseCase.NILAI_POIN).toInt().coerceAtLeast(0)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 0)
 
@@ -138,8 +175,13 @@ class CashierViewModel @Inject constructor(
         .map { PromosiUseCase.nilaiPenukaranPoin(it) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 0L)
 
-    val total: StateFlow<Long> = combine(subtotal, totalDiscount) { sub, diskon -> (sub - diskon).coerceAtLeast(0) }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 0L)
+    val ppnAmount: StateFlow<Long> = combine(subtotal, totalDiscount, ppnEnabled) { sub, d, on ->
+        PromosiLanjutanUseCase.ppn(sub - d, on)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 0L)
+
+    val total: StateFlow<Long> = combine(subtotal, totalDiscount, ppnAmount) { sub, diskon, ppn ->
+        (sub - diskon + ppn).coerceAtLeast(0)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 0L)
 
     /** Change to give back for Tunai payments. 0 when tendered is insufficient or not filled. */
     val change: StateFlow<Long> = combine(total, _tendered) { totalValue, tenderText ->
@@ -171,6 +213,16 @@ class CashierViewModel @Inject constructor(
     fun onDiscountModeChange(mode: DiscountMode) { _discountMode.value = mode; _discount.value = "" }
     fun onPoinDitukarChange(value: String) { _poinDitukar.value = value.filter { it.isDigit() }.take(6) }
     fun onScanCodeChange(value: String) { _scanCode.value = value }
+    fun onVoucherCodeChange(value: String) {
+        _voucherCode.value = value.trim().uppercase()
+        viewModelScope.launch {
+            _voucher.value = if (value.isBlank()) null else voucherRepository.findByCode(value)
+            if (value.isNotBlank() && _voucher.value == null) {
+                _events.send(CashierEvent.Message("VOUCHER_INVALID"))
+            }
+        }
+    }
+    fun setPpnEnabled(enabled: Boolean) { viewModelScope.launch { settings.setPpnEnabled(enabled) } }
 
     /** Add a product from a keyboard-wedge barcode scanner (Enter triggers Done). */
     fun scanBarcode() {
@@ -237,6 +289,8 @@ class CashierViewModel @Inject constructor(
         _discount.value = ""
         _tendered.value = ""
         _poinDitukar.value = ""
+        _voucherCode.value = ""
+        _voucher.value = null
     }
 
     fun canSaveSale(): Boolean =
@@ -274,6 +328,8 @@ class CashierViewModel @Inject constructor(
                 catatan = null,
                 namaPelanggan = namaPelanggan,
                 poinDitukar = poin,
+                ppn = ppnAmount.value,
+                voucherKode = _voucherCode.value.ifBlank { null },
             )
             _saving.value = false
             result.onSuccess { sale ->

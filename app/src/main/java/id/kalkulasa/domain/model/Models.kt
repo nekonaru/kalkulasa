@@ -75,6 +75,9 @@ data class Product(
     val fotoUri: String?,
     val diarsipkan: Boolean,
     val isPinned: Boolean = false,
+    val isFavorite: Boolean = false,
+    val hargaGrosir: Long = 0L,
+    val qtyGrosir: Double = 0.0,
 ) {
     val isLowStock: Boolean get() = stok <= stokMinimum
 }
@@ -102,6 +105,8 @@ data class Sale(
     val status: String,
     val waktu: Long,
     val customerId: String? = null,
+    val ppn: Long = 0L,
+    val voucherKode: String? = null,
 )
 
 data class SaleLine(
@@ -220,6 +225,25 @@ data class PayablePayment(
     val nominal: Long,
     val catatan: String?,
     val waktu: Long,
+)
+
+data class Voucher(
+    val id: String,
+    val kode: String,
+    val tipe: String,
+    val nilai: Long,
+    val minimalBelanja: Long,
+    val sisaKuota: Int,
+    val berlakuSampai: Long,
+)
+
+data class Deposit(
+    val id: String,
+    val namaPelanggan: String,
+    val nominal: Long,
+    val sisa: Long,
+    val waktu: Long,
+    val catatan: String?,
 )
 
 data class CashBreakdown(

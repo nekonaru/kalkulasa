@@ -16,6 +16,8 @@ import id.kalkulasa.data.local.entity.KasbonEntity
 import id.kalkulasa.data.local.entity.PayrollEntity
 import id.kalkulasa.data.local.entity.PayableEntity
 import id.kalkulasa.data.local.entity.PayablePaymentEntity
+import id.kalkulasa.data.local.entity.VoucherEntity
+import id.kalkulasa.data.local.entity.DepositEntity
 import id.kalkulasa.data.local.entity.SalesTargetEntity
 import id.kalkulasa.data.local.entity.ExpenseEntity
 import id.kalkulasa.data.local.entity.ProductEntity
@@ -114,6 +116,9 @@ interface ProductDao {
 
     @Query("UPDATE product SET isPinned = :pinned, updatedAt = :now WHERE id = :id")
     suspend fun setPinned(id: String, pinned: Boolean, now: Long)
+
+    @Query("UPDATE product SET isFavorite = :favorite, updatedAt = :now WHERE id = :id")
+    suspend fun setFavorite(id: String, favorite: Boolean, now: Long)
 }
 
 data class MovementWithProduct(
@@ -499,6 +504,36 @@ interface PayablePaymentDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(payment: PayablePaymentEntity)
+}
+
+@Dao
+interface VoucherDao {
+    @Query("SELECT * FROM voucher WHERE deletedAt IS NULL ORDER BY berlakuSampai")
+    fun observeAll(): Flow<List<VoucherEntity>>
+
+    @Query("SELECT * FROM voucher WHERE kode = :kode AND deletedAt IS NULL AND aktif = 1 LIMIT 1")
+    suspend fun findByCode(kode: String): VoucherEntity?
+
+    @Query("SELECT * FROM voucher WHERE deletedAt IS NULL")
+    suspend fun getAll(): List<VoucherEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsert(voucher: VoucherEntity)
+}
+
+@Dao
+interface DepositDao {
+    @Query("SELECT * FROM deposit WHERE deletedAt IS NULL ORDER BY waktu DESC")
+    fun observeAll(): Flow<List<DepositEntity>>
+
+    @Query("SELECT * FROM deposit WHERE namaPelanggan = :nama AND deletedAt IS NULL")
+    suspend fun getForCustomer(nama: String): List<DepositEntity>
+
+    @Query("SELECT * FROM deposit WHERE deletedAt IS NULL")
+    suspend fun getAll(): List<DepositEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsert(deposit: DepositEntity)
 }
 
 @Dao

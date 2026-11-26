@@ -143,8 +143,8 @@ fun StockScreen(
             categories = categories,
             onAddCategory = viewModel::addCategory,
             onDismiss = { showAddProduct = false },
-            onSave = { nama, kategoriId, satuan, barcode, hargaBeli, hargaJual, stokAwal, stokMinimum, pin ->
-                viewModel.saveProduct(null, nama, kategoriId, satuan, barcode, hargaBeli, hargaJual, stokAwal, stokMinimum, pin)
+            onSave = { nama, kategoriId, satuan, barcode, hargaBeli, hargaJual, stokAwal, stokMinimum, pin, fav, grosir, qtyGrosir ->
+                viewModel.saveProduct(null, nama, kategoriId, satuan, barcode, hargaBeli, hargaJual, stokAwal, stokMinimum, pin, fav, grosir, qtyGrosir)
                 showAddProduct = false
             },
         )
@@ -155,8 +155,8 @@ fun StockScreen(
             categories = categories,
             onAddCategory = viewModel::addCategory,
             onDismiss = { editingProduct = null },
-            onSave = { nama, kategoriId, satuan, barcode, hargaBeli, hargaJual, _, stokMinimum, pin ->
-                viewModel.saveProduct(product, nama, kategoriId, satuan, barcode, hargaBeli, hargaJual, product.stok, stokMinimum, pin)
+            onSave = { nama, kategoriId, satuan, barcode, hargaBeli, hargaJual, _, stokMinimum, pin, fav, grosir, qtyGrosir ->
+                viewModel.saveProduct(product, nama, kategoriId, satuan, barcode, hargaBeli, hargaJual, product.stok, stokMinimum, pin, fav, grosir, qtyGrosir)
                 editingProduct = null
             },
         )
@@ -391,7 +391,7 @@ private fun ProductFormDialog(
     categories: List<id.kalkulasa.domain.model.Category>,
     onAddCategory: (String) -> Unit,
     onDismiss: () -> Unit,
-    onSave: (nama: String, kategoriId: String?, satuan: String, barcode: String, hargaBeli: Long, hargaJual: Long, stokAwal: Double, stokMinimum: Double, isPinned: Boolean) -> Unit,
+    onSave: (nama: String, kategoriId: String?, satuan: String, barcode: String, hargaBeli: Long, hargaJual: Long, stokAwal: Double, stokMinimum: Double, isPinned: Boolean, isFavorite: Boolean, hargaGrosir: Long, qtyGrosir: Double) -> Unit,
 ) {
     val context = LocalContext.current
     var nama by remember(initial) { mutableStateOf(initial?.nama ?: "") }
@@ -406,6 +406,9 @@ private fun ProductFormDialog(
     var stokAwal by remember(initial) { mutableStateOf("0") }
     var stokMinimum by remember(initial) { mutableStateOf(initial?.stokMinimum?.let { DateFormatter.formatQty(it) } ?: "0") }
     var isPinned by remember(initial) { mutableStateOf(initial?.isPinned ?: false) }
+    var isFavorite by remember(initial) { mutableStateOf(initial?.isFavorite ?: false) }
+    var hargaGrosir by remember(initial) { mutableStateOf(initial?.hargaGrosir?.takeIf { it > 0 }?.toString() ?: "") }
+    var qtyGrosir by remember(initial) { mutableStateOf(initial?.qtyGrosir?.takeIf { it > 0 }?.let { DateFormatter.formatQty(it) } ?: "") }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -455,6 +458,18 @@ private fun ProductFormDialog(
                     OutlinedTextField(stokMinimum, { stokMinimum = it.filter { c -> c.isDigit() || c == ',' || c == '.' } }, label = { Text(context.getString(R.string.product_min_stock)) }, singleLine = true, modifier = Modifier.fillMaxWidth())
                 }
                 item {
+                    OutlinedTextField(hargaGrosir, { hargaGrosir = it.filter(Char::isDigit) }, label = { Text(context.getString(R.string.product_wholesale_price)) }, singleLine = true, prefix = { Text("Rp ") }, modifier = Modifier.fillMaxWidth())
+                }
+                item {
+                    OutlinedTextField(qtyGrosir, { qtyGrosir = it.filter { c -> c.isDigit() || c == ',' || c == '.' } }, label = { Text(context.getString(R.string.product_wholesale_qty)) }, singleLine = true, modifier = Modifier.fillMaxWidth())
+                }
+                item {
+                    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                        Checkbox(checked = isFavorite, onCheckedChange = { isFavorite = it })
+                        Text(context.getString(R.string.product_favorite), style = MaterialTheme.typography.bodyLarge)
+                    }
+                }
+                item {
                     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                         Checkbox(checked = isPinned, onCheckedChange = { isPinned = it })
                         Text(context.getString(R.string.product_pin_dialog), style = MaterialTheme.typography.bodyLarge)
@@ -475,6 +490,9 @@ private fun ProductFormDialog(
                         stokAwal.replace(',', '.').toDoubleOrNull() ?: 0.0,
                         stokMinimum.replace(',', '.').toDoubleOrNull() ?: 0.0,
                         isPinned,
+                        isFavorite,
+                        hargaGrosir.toLongOrNull() ?: 0L,
+                        qtyGrosir.replace(',', '.').toDoubleOrNull() ?: 0.0,
                     )
                 },
             ) { Text(context.getString(R.string.button_save)) }

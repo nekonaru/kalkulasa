@@ -1,5 +1,24 @@
 # Changelog
 
+## v3.0.0
+
+Fase 1 dari Kalkulasa Suite UMKM: kasir promosi, member, voucher, deposit, harga grosir, dan PPN.
+
+### Fitur baru
+
+- **Tier member otomatis.** Reguler, Silver, Gold, dan Platinum dari total belanja seumur hidup, dengan diskon 5%, 10%, dan 15% yang diterapkan otomatis saat nama pelanggan diisi.
+- **Voucher dan kupon.** Kode, tipe nominal atau persen, minimal belanja, kuota, dan masa berlaku. Kode divalidasi dan kuota dipotong dalam transaksi penjualan yang sama.
+- **Deposit pelanggan.** Catat uang muka, lihat saldo per pelanggan, dan pakai untuk pembayaran. Saldo dihitung dari seluruh deposit dikurangi pemakaian.
+- **Harga grosir.** Produk bisa punya harga grosir dan minimal quantity. Harga efektif dipakai otomatis di keranjang saat quantity mencapai batas.
+- **Produk favorit.** Tandai produk favorit dari form stok untuk pintasan penjualan.
+- **PPN opsional.** Aktifkan PPN 11% dari Pengaturan kasir; nominal PPN dihitung setelah diskon dan tersimpan per transaksi.
+
+### Peningkatan
+
+- **Aturan promosi murni dan teruji.** `MemberUseCase`, `PromosiLanjutanUseCase`, dan `DepositUseCase` berisi logika tanpa Android, dengan tes unit untuk tier, voucher, grosir, PPN, dan deposit.
+- **Backup format v10** mencakup voucher, deposit, dan kolom baru pada produk serta penjualan. Backup lama tetap bisa dipulihkan.
+- **Migrasi database otomatis v9 ke v10** tanpa menghapus data lama.
+
 ## v2.8.0
 
 Penutupan temuan audit yang tersisa, ditambah riwayat pembayaran dan laporan absensi.

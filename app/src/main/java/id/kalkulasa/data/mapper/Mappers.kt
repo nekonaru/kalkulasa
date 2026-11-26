@@ -33,6 +33,9 @@ fun ProductEntity.toDomain() = Product(
     fotoUri = fotoUri,
     diarsipkan = diarsipkan,
     isPinned = isPinned,
+    isFavorite = isFavorite,
+    hargaGrosir = hargaGrosir,
+    qtyGrosir = qtyGrosir,
 )
 
 fun StockMovementEntity.toDomain(produkNama: String) = StockMovement(
@@ -59,7 +62,7 @@ fun id.kalkulasa.data.local.dao.MovementWithProduct.toDomain() = StockMovement(
     waktu = waktu,
 )
 
-fun SaleEntity.toDomain() = Sale(id, subtotal, diskon, total, metodeBayar, status, waktu, customerId)
+fun SaleEntity.toDomain() = Sale(id, subtotal, diskon, total, metodeBayar, status, waktu, customerId, ppn, voucherKode)
 
 fun ExpenseEntity.toDomain() = Expense(id, kategoriNama, nominal, catatan, waktu)
 

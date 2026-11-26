@@ -25,6 +25,7 @@ import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.material.icons.outlined.PushPin
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FilterChip
@@ -94,6 +95,7 @@ fun CashierScreen(
                         event.text == "CUSTOMER_NAME_REQUIRED" -> context.getString(R.string.customer_name_required)
                         event.text == "INSUFFICIENT_PAYMENT" -> context.getString(R.string.insufficient_payment)
                         event.text == "POINTS_INSUFFICIENT" -> context.getString(R.string.points_insufficient)
+                        event.text == "VOUCHER_INVALID" -> context.getString(R.string.voucher_invalid)
                         event.text == "SCAN_NOT_FOUND" -> context.getString(R.string.scan_not_found)
                         event.text == "SCAN_ADDED" -> context.getString(R.string.scan_added)
                         event.text == "NO_LAST_SALE" -> context.getString(R.string.repeat_none)
@@ -320,6 +322,11 @@ private fun CartSection(
     val availablePoints by viewModel.availablePoints.collectAsStateWithLifecycle()
     val poinDitukar by viewModel.poinDitukar.collectAsStateWithLifecycle()
     val combinedDiscount by viewModel.totalDiscount.collectAsStateWithLifecycle()
+    val voucherCode by viewModel.voucherCode.collectAsStateWithLifecycle()
+    val ppnEnabled by viewModel.ppnEnabled.collectAsStateWithLifecycle()
+    val ppnAmount by viewModel.ppnAmount.collectAsStateWithLifecycle()
+    val memberDiscount by viewModel.memberDiscount.collectAsStateWithLifecycle()
+    val voucherDiscount by viewModel.voucherDiscount.collectAsStateWithLifecycle()
     Column(
         modifier = modifier.verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -372,8 +379,22 @@ private fun CartSection(
             suffix = if (discountMode == id.kalkulasa.presentation.cashier.DiscountMode.PERCENT) ({ Text("%") }) else null,
             modifier = Modifier.fillMaxWidth(),
         )
+        OutlinedTextField(
+            value = voucherCode,
+            onValueChange = viewModel::onVoucherCodeChange,
+            label = { Text(context.getString(R.string.voucher_code)) },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth(),
+        )
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Checkbox(checked = ppnEnabled, onCheckedChange = viewModel::setPpnEnabled)
+            Text(context.getString(R.string.ppn_enable))
+        }
         TotalRow(context.getString(R.string.subtotal), RupiahFormatter.format(subtotal))
+        if (memberDiscount > 0) TotalRow(context.getString(R.string.member_discount), "- ${RupiahFormatter.format(memberDiscount)}")
+        if (voucherDiscount > 0) TotalRow(context.getString(R.string.voucher_discount), "- ${RupiahFormatter.format(voucherDiscount)}")
         TotalRow(context.getString(R.string.discount), "- ${RupiahFormatter.format(combinedDiscount)}")
+        if (ppnAmount > 0) TotalRow(context.getString(R.string.ppn), RupiahFormatter.format(ppnAmount))
         TotalRow(context.getString(R.string.total), RupiahFormatter.format(total), emphasize = true)
         if (paymentMethod == PaymentMethod.TUNAI) {
             OutlinedTextField(

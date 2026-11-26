@@ -23,6 +23,8 @@ import id.kalkulasa.domain.model.ProductProfit
 import id.kalkulasa.domain.model.ProductSales
 import id.kalkulasa.domain.model.Receivable
 import id.kalkulasa.domain.model.Sale
+import id.kalkulasa.domain.model.Deposit
+import id.kalkulasa.domain.model.Voucher
 import id.kalkulasa.domain.model.SaleLine
 import id.kalkulasa.domain.model.SalesTarget
 import id.kalkulasa.domain.model.StockMovement
@@ -50,6 +52,7 @@ interface ProductRepository {
     /** Bulk-import products atomically. Returns count imported. */
     suspend fun importProducts(products: List<ImportProdukUseCase.ImportedProduct>): Int
     suspend fun setPinned(id: String, pinned: Boolean)
+    suspend fun setFavorite(id: String, favorite: Boolean)
 }
 
 interface EmployeeRepository {
@@ -135,6 +138,19 @@ interface PayablePaymentRepository {
     suspend fun sumBetween(from: Long, to: Long): Long
 }
 
+interface VoucherRepository {
+    fun observeAll(): Flow<List<Voucher>>
+    suspend fun findByCode(kode: String): Voucher?
+    suspend fun save(voucher: Voucher): Result<Unit>
+    suspend fun consume(id: String): Result<Unit>
+}
+
+interface DepositRepository {
+    fun observeAll(): Flow<List<Deposit>>
+    suspend fun add(nama: String, nominal: Long, catatan: String?): Result<Unit>
+    suspend fun use(nama: String, jumlah: Long): Result<Unit>
+}
+
 interface PayableRepository {
     fun observeAll(): Flow<List<Payable>>
     fun observeOutstanding(): Flow<Long>
@@ -151,6 +167,8 @@ interface SaleRepository {
         catatan: String?,
         namaPelanggan: String? = null,
         poinDitukar: Int = 0,
+        ppn: Long = 0L,
+        voucherKode: String? = null,
     ): Result<Sale>
     suspend fun cancelSale(saleId: String): Result<Unit>
     suspend fun salesBetween(from: Long, to: Long): List<Sale>

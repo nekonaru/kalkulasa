@@ -29,6 +29,7 @@ class SettingsDataStore @Inject constructor(
         val theme = stringPreferencesKey("theme_mode")
         val pinHash = stringPreferencesKey("pin_hash") // pbkdf2$salt$hash, empty = no PIN
         val warungMode = booleanPreferencesKey("warung_mode")
+        val ppnEnabled = booleanPreferencesKey("ppn_enabled")
     }
 
     val themeMode: Flow<ThemeMode> = context.dataStore.data.map { prefs ->
@@ -80,6 +81,12 @@ class SettingsDataStore @Inject constructor(
 
     suspend fun setWarungMode(enabled: Boolean) {
         context.dataStore.edit { it[Keys.warungMode] = enabled }
+    }
+
+    val ppnEnabled: Flow<Boolean> = context.dataStore.data.map { it[Keys.ppnEnabled] ?: false }
+
+    suspend fun setPpnEnabled(enabled: Boolean) {
+        context.dataStore.edit { it[Keys.ppnEnabled] = enabled }
     }
 
     private fun derive(pin: String, salt: ByteArray): String {

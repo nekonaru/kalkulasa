@@ -52,6 +52,9 @@ data class ProductEntity(
     val fotoUri: String?,
     val diarsipkan: Boolean,
     val isPinned: Boolean = false,
+    val isFavorite: Boolean = false,
+    val hargaGrosir: Long = 0L,
+    val qtyGrosir: Double = 0.0,
     val updatedAt: Long,
     val deletedAt: Long? = null,
     val deviceId: String,
@@ -115,6 +118,8 @@ data class SaleEntity(
     val catatan: String?,
     val customerId: String? = null,
     val poinDitukar: Int = 0,
+    val ppn: Long = 0L,
+    val voucherKode: String? = null,
     val updatedAt: Long,
     val deletedAt: Long? = null,
     val deviceId: String,
@@ -262,6 +267,38 @@ data class PayableEntity(
     val jatuhTempo: Long? = null,
     val catatan: String? = null,
     val waktu: Long,
+    val updatedAt: Long,
+    val deletedAt: Long? = null,
+    val deviceId: String,
+    val syncStatus: String = SyncStatus.PENDING,
+)
+
+@Entity(tableName = "voucher", indices = [Index("kode")])
+data class VoucherEntity(
+    @PrimaryKey val id: String,
+    val kode: String,
+    val tipe: String, // NOMINAL, PERSEN
+    val nilai: Long,
+    val minimalBelanja: Long,
+    val kuota: Int,
+    val terpakai: Int,
+    val berlakuMulai: Long,
+    val berlakuSampai: Long,
+    val aktif: Boolean,
+    val updatedAt: Long,
+    val deletedAt: Long? = null,
+    val deviceId: String,
+    val syncStatus: String = SyncStatus.PENDING,
+)
+
+@Entity(tableName = "deposit", indices = [Index("namaPelanggan")])
+data class DepositEntity(
+    @PrimaryKey val id: String,
+    val namaPelanggan: String,
+    val nominal: Long,
+    val terpakai: Long,
+    val waktu: Long,
+    val catatan: String?,
     val updatedAt: Long,
     val deletedAt: Long? = null,
     val deviceId: String,

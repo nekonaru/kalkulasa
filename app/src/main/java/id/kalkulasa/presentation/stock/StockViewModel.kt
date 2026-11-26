@@ -69,6 +69,9 @@ class StockViewModel @Inject constructor(
         stokAwal: Double,
         stokMinimum: Double,
         isPinned: Boolean = false,
+        isFavorite: Boolean = false,
+        hargaGrosir: Long = 0L,
+        qtyGrosir: Double = 0.0,
     ) {
         viewModelScope.launch {
             val trimmed = nama.trim()
@@ -86,7 +89,10 @@ class StockViewModel @Inject constructor(
                 stokMinimum = stokMinimum,
                 fotoUri = base?.fotoUri,
                 diarsipkan = base?.diarsipkan ?: false,
-                isPinned = base?.isPinned ?: false,
+                isPinned = if (base != null) base.isPinned else isPinned,
+                isFavorite = if (base != null) base.isFavorite else isFavorite,
+                hargaGrosir = if (base != null) base.hargaGrosir else hargaGrosir,
+                qtyGrosir = if (base != null) base.qtyGrosir else qtyGrosir,
             )
             productRepository.save(product)
             _events.send(StockEvent.Message("SAVED"))

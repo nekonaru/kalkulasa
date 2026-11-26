@@ -41,6 +41,8 @@ class SaleRepositoryImpl @Inject constructor(
         catatan: String?,
         namaPelanggan: String?,
         poinDitukar: Int,
+        ppn: Long,
+        voucherKode: String?,
     ): Result<Sale> {
         if (items.isEmpty()) return Result.failure(IllegalArgumentException("Keranjang kosong"))
         if (diskon < 0) return Result.failure(IllegalArgumentException("Diskon tidak boleh negatif"))
@@ -61,7 +63,7 @@ class SaleRepositoryImpl @Inject constructor(
                     subtotal += kotlin.math.round(fresh.hargaJual * qty).toLong()
                     fresh to qty
                 }
-                val total = (subtotal - diskon).coerceAtLeast(0)
+                val total = (subtotal - diskon + ppn.coerceAtLeast(0L)).coerceAtLeast(0)
                 val now = RepositorySupport.now()
                 val saleId = RepositorySupport.newId()
 
@@ -146,9 +148,18 @@ class SaleRepositoryImpl @Inject constructor(
                     catatan = catatan?.ifBlank { null },
                     customerId = linkedCustomerId,
                     poinDitukar = poinDitukar.coerceAtLeast(0),
+                    ppn = ppn.coerceAtLeast(0L),
+                    voucherKode = voucherKode?.ifBlank { null },
                     updatedAt = now,
                     deviceId = deviceId,
                 )
+                voucherKode?.let { code ->
+                    val voucher = db.voucherDao().findByCode(code)
+                        ?: throw IllegalStateException("Voucher tidak ditemukan")
+                    require(voucher.terpakai < voucher.kuota) { "Kuota voucher habis" }
+                    db.voucherDao().upsert(voucher.copy(terpakai = voucher.terpakai + 1, updatedAt = now))
+                    RepositorySupport.log(changeLogDao, "voucher", voucher.id, "UPDATE")
+                }
                 db.saleDao().insert(sale)
                 if (metodeBayar == PaymentMethod.HUTANG && total > 0L) {
                     db.receivableDao().upsert(

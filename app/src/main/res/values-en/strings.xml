@@ -477,4 +477,27 @@
     <string name="entity_sales_target">Sales target</string>
     <string name="entity_payment">Debt payment</string>
     <string name="aging_no_due">No due date</string>
+    <string name="voucher_code">Voucher code</string>
+    <string name="voucher_invalid">Invalid voucher code</string>
+    <string name="voucher_discount">Voucher discount</string>
+    <string name="member_discount">Member discount</string>
+    <string name="ppn">VAT 11%</string>
+    <string name="ppn_enable">Enable VAT 11%</string>
+    <string name="product_wholesale_price">Wholesale price</string>
+    <string name="product_wholesale_qty">Minimum wholesale qty</string>
+    <string name="product_favorite">Favorite product</string>
+    <string name="promotion_title">Promotions and Deposits</string>
+    <string name="promotion_add">Add</string>
+    <string name="promotion_open">Vouchers and Deposits</string>
+    <string name="tab_voucher">Vouchers</string>
+    <string name="tab_deposit">Deposits</string>
+    <string name="voucher_add">Add voucher</string>
+    <string name="voucher_empty">No vouchers yet.</string>
+    <string name="voucher_nominal">Amount</string>
+    <string name="voucher_percent">Percent</string>
+    <string name="voucher_min">Minimum spend</string>
+    <string name="voucher_quota">Quota</string>
+    <string name="voucher_days">Valid for (days)</string>
+    <string name="deposit_add">Add deposit</string>
+    <string name="deposit_empty">No customer deposits yet.</string>
 </resources>

@@ -58,6 +58,9 @@ class ProductRepositoryImpl @Inject constructor(
                 fotoUri = product.fotoUri,
                 diarsipkan = product.diarsipkan,
                 isPinned = product.isPinned,
+                isFavorite = product.isFavorite,
+                hargaGrosir = product.hargaGrosir,
+                qtyGrosir = product.qtyGrosir,
                 updatedAt = now,
                 deletedAt = null,
                 deviceId = deviceId,
@@ -73,6 +76,11 @@ class ProductRepositoryImpl @Inject constructor(
 
     override suspend fun setPinned(id: String, pinned: Boolean) {
         dao.setPinned(id, pinned, RepositorySupport.now())
+        RepositorySupport.log(changeLogDao, "product", id, "UPDATE")
+    }
+
+    override suspend fun setFavorite(id: String, favorite: Boolean) {
+        dao.setFavorite(id, favorite, RepositorySupport.now())
         RepositorySupport.log(changeLogDao, "product", id, "UPDATE")
     }
 
