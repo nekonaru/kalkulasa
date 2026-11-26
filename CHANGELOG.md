@@ -1,5 +1,19 @@
 # Changelog
 
+## v3.4.0
+
+Fase 5 dan terakhir dari Kalkulasa Suite UMKM: ekspor data master dan pencarian global.
+
+### Fitur baru
+
+- **Ekspor data master ke CSV.** Unduh daftar produk, pelanggan, dan hutang usaha dalam format CSV yang siap dibuka di spreadsheet.
+- **Pencarian global.** Cari produk berdasarkan nama atau barcode, dan transaksi berdasarkan ID atau metode bayar dari satu kolom.
+
+### Peningkatan
+
+- **CSV escape yang benar.** Setiap sel dibungkus tanda kutip dan tanda kutip dalam nilai diduplikasi, sehingga koma tidak merusak kolom.
+- **File ekspor dibagikan lewat FileProvider** dengan izin baca sementara, tanpa izin penyimpanan permanen.
+
 ## v3.3.0
 
 Fase 4 dari Kalkulasa Suite UMKM: catatan pelanggan, tag, dan kartu member digital.

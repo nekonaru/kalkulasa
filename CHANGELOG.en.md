@@ -1,5 +1,19 @@
 # Changelog
 
+## v3.4.0
+
+Phase 5 and the final phase of the Kalkulasa UMKM Suite: master data export and global search.
+
+### New features
+
+- **Master data CSV export.** Download product, customer and supplier debt lists as CSV ready for a spreadsheet.
+- **Global search.** Search products by name or barcode and transactions by ID or payment method from a single field.
+
+### Improvements
+
+- **Correct CSV escaping.** Each cell is quoted and embedded quotes are doubled, so commas do not break columns.
+- **Exported files are shared through FileProvider** with temporary read permission and no permanent storage permission.
+
 ## v3.3.0
 
 Phase 4 of the Kalkulasa UMKM Suite: customer notes, tags and a digital member card.

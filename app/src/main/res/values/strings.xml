@@ -521,4 +521,13 @@
     <string name="crm_tag">Tag pelanggan</string>
     <string name="crm_note">Catatan pelanggan</string>
     <string name="crm_share_card">Bagikan kartu</string>
+    <string name="data_tools_title">Ekspor dan Pencarian</string>
+    <string name="data_tools_open">Ekspor Data dan Cari</string>
+    <string name="data_tools_export">Ekspor data master</string>
+    <string name="export_products">Produk CSV</string>
+    <string name="export_customers">Pelanggan CSV</string>
+    <string name="export_payables">Hutang CSV</string>
+    <string name="global_search">Pencarian global</string>
+    <string name="global_search_hint">Cari produk atau transaksi</string>
+    <string name="search_empty">Tidak ada hasil.</string>
 </resources>

@@ -521,4 +521,13 @@
     <string name="crm_tag">Customer tag</string>
     <string name="crm_note">Customer note</string>
     <string name="crm_share_card">Share card</string>
+    <string name="data_tools_title">Export and Search</string>
+    <string name="data_tools_open">Export Data and Search</string>
+    <string name="data_tools_export">Export master data</string>
+    <string name="export_products">Products CSV</string>
+    <string name="export_customers">Customers CSV</string>
+    <string name="export_payables">Payables CSV</string>
+    <string name="global_search">Global search</string>
+    <string name="global_search_hint">Search products or transactions</string>
+    <string name="search_empty">No results.</string>
 </resources>

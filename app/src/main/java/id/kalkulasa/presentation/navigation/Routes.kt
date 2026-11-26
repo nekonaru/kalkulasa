@@ -29,5 +29,6 @@ object Routes {
     const val PROMOTION = "promotion"
     const val FINANCE_MORE = "finance-more"
     const val CRM = "crm"
+    const val DATA_TOOLS = "data-tools"
     const val NO_SUPPLIER = "__no_supplier__"
 }

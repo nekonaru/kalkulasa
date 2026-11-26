@@ -41,6 +41,7 @@ import id.kalkulasa.presentation.attendancereport.AttendanceReportScreen
 import id.kalkulasa.presentation.promotion.PromotionScreen
 import id.kalkulasa.presentation.financemore.FinanceMoreScreen
 import id.kalkulasa.presentation.crm.CrmScreen
+import id.kalkulasa.presentation.datatools.DataToolsScreen
 import id.kalkulasa.presentation.cashier.CashierScreen
 import id.kalkulasa.presentation.customer.CustomersScreen
 import id.kalkulasa.presentation.finance.FinanceScreen
@@ -174,6 +175,7 @@ fun KalkulasaNavHost(startDestination: String) {
                     onOpenPromotion = { navController.navigate(Routes.PROMOTION) },
                     onOpenFinanceMore = { navController.navigate(Routes.FINANCE_MORE) },
                     onOpenCrm = { navController.navigate(Routes.CRM) },
+                    onOpenDataTools = { navController.navigate(Routes.DATA_TOOLS) },
                 )
             }
             composable(Routes.ACTIVITY) { ActivityScreen(onBack = { navController.popBackStack() }) }
@@ -184,6 +186,7 @@ fun KalkulasaNavHost(startDestination: String) {
             composable(Routes.PROMOTION) { PromotionScreen(onBack = { navController.popBackStack() }) }
             composable(Routes.FINANCE_MORE) { FinanceMoreScreen(onBack = { navController.popBackStack() }) }
             composable(Routes.CRM) { CrmScreen(onBack = { navController.popBackStack() }) }
+            composable(Routes.DATA_TOOLS) { DataToolsScreen(onBack = { navController.popBackStack() }) }
             composable(Routes.TARGET) {
                 TargetScreen(onBack = { navController.popBackStack() })
             }
