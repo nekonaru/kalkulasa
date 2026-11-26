@@ -92,6 +92,7 @@
 | **Full financial statements** | Balance sheet, cash detail and expense categories to see the business position and money flow |
 | **Discounts and points** | Rupiah or percentage discounts, redeem customer points for a discount, and daily and monthly sales targets |
 | **Barcode scan and bulk stock take** | Add products from a keyboard scanner without camera permission and save a full physical stock count at once |
+| **History, aging and insights** | Activity timeline, receivables by age, and insights on busy hours and highest-margin products |
 
 ### Customers and points
 
@@ -184,7 +185,7 @@
 ### Option A: Download the APK (easiest)
 
 1. Open the [Releases](https://github.com/nekonaru/kalkulasa/releases) page
-2. Download `kalkulasa-v2.6.0.apk`
+2. Download `kalkulasa-v2.7.0.apk`
 3. Open it on your phone and allow installs from unknown sources if asked
 4. Open the app and fill in your business profile
 
@@ -352,7 +353,7 @@ On your phone, in an encrypted local database. Nothing is uploaded anywhere. Exp
 <details>
 <summary><b>Is English supported?</b></summary>
 
-Yes. The UI follows your phone's language: Bahasa Indonesia by default, English when the phone language is English.
+Yes. The app opens in Indonesian by default regardless of device language. To switch, open Settings and choose English under Language. The choice is saved and applied immediately.
 
 </details>
 
@@ -366,7 +367,7 @@ No. Every feature works without internet. Internet is only used if you choose to
 <details>
 <summary><b>Can I scan barcodes?</b></summary>
 
-Products have a barcode field, but scanning is not implemented yet. It is on the roadmap.
+Yes. Type or scan a product code from a barcode scanner that behaves like a keyboard, then press Enter in the Scan barcode field at the cashier. Kalkulasa does not use the camera, so no camera permission is needed.
 
 </details>
 

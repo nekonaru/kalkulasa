@@ -33,6 +33,9 @@ import id.kalkulasa.presentation.payable.PayableScreen
 import id.kalkulasa.presentation.statements.StatementsScreen
 import id.kalkulasa.presentation.target.TargetScreen
 import id.kalkulasa.presentation.opname.StockOpnameScreen
+import id.kalkulasa.presentation.activity.ActivityScreen
+import id.kalkulasa.presentation.aging.AgingScreen
+import id.kalkulasa.presentation.insights.InsightsScreen
 import id.kalkulasa.presentation.cashier.CashierScreen
 import id.kalkulasa.presentation.customer.CustomersScreen
 import id.kalkulasa.presentation.finance.FinanceScreen
@@ -160,8 +163,14 @@ fun KalkulasaNavHost(startDestination: String) {
                     onOpenPayable = { navController.navigate(Routes.PAYABLE) },
                     onOpenStatements = { navController.navigate(Routes.STATEMENTS) },
                     onOpenTarget = { navController.navigate(Routes.TARGET) },
+                    onOpenActivity = { navController.navigate(Routes.ACTIVITY) },
+                    onOpenAging = { navController.navigate(Routes.AGING) },
+                    onOpenInsights = { navController.navigate(Routes.INSIGHTS) },
                 )
             }
+            composable(Routes.ACTIVITY) { ActivityScreen(onBack = { navController.popBackStack() }) }
+            composable(Routes.AGING) { AgingScreen(onBack = { navController.popBackStack() }) }
+            composable(Routes.INSIGHTS) { InsightsScreen(onBack = { navController.popBackStack() }) }
             composable(Routes.TARGET) {
                 TargetScreen(onBack = { navController.popBackStack() })
             }

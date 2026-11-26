@@ -90,6 +90,9 @@ interface ProductDao {
     @Query("SELECT * FROM product WHERE deletedAt IS NULL")
     suspend fun getAllActive(): List<ProductEntity>
 
+    @Query("SELECT * FROM product WHERE deletedAt IS NULL AND diarsipkan = 0")
+    suspend fun getActiveForInventory(): List<ProductEntity>
+
     @Query("SELECT COUNT(*) FROM product WHERE deletedAt IS NULL AND diarsipkan = 0 AND stok <= stokMinimum")
     fun observeLowStockCount(): Flow<Int>
 
@@ -479,4 +482,7 @@ interface ChangeLogDao {
 
     @Query("SELECT * FROM change_log WHERE syncStatus = 'PENDING' ORDER BY createdAt")
     suspend fun getPending(): List<ChangeLogEntity>
+
+    @Query("SELECT * FROM change_log ORDER BY createdAt DESC LIMIT :limit")
+    fun observeRecent(limit: Int): Flow<List<ChangeLogEntity>>
 }

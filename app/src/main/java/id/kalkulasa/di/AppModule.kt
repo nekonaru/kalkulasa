@@ -28,6 +28,8 @@ import id.kalkulasa.data.repository.PayableRepositoryImpl
 import id.kalkulasa.domain.repository.PayableRepository
 import id.kalkulasa.data.repository.SalesTargetRepositoryImpl
 import id.kalkulasa.domain.repository.SalesTargetRepository
+import id.kalkulasa.data.repository.ActivityRepositoryImpl
+import id.kalkulasa.domain.repository.ActivityRepository
 import id.kalkulasa.data.repository.SupplierRepositoryImpl
 import id.kalkulasa.data.repository.CategoryRepositoryImpl
 import id.kalkulasa.data.repository.CustomerRepositoryImpl
@@ -138,6 +140,11 @@ object AppModule {
     @Singleton
     fun provideSalesTargetRepository(db: KalkulasaDatabase, deviceId: String): SalesTargetRepository =
         SalesTargetRepositoryImpl(db, deviceId)
+
+    @Provides
+    @Singleton
+    fun provideActivityRepository(db: KalkulasaDatabase): ActivityRepository =
+        ActivityRepositoryImpl(db)
 
     @Provides
     @Singleton

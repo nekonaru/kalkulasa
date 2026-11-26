@@ -116,14 +116,27 @@ class CashierViewModel @Inject constructor(
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 0L)
 
-    private val pointsDiscount: StateFlow<Long> = _poinDitukar
-        .map { PromosiUseCase.nilaiPenukaranPoin(it.filter(Char::isDigit).toIntOrNull() ?: 0) }
+    private val requestedPoints: StateFlow<Int> = _poinDitukar
+        .map { it.filter(Char::isDigit).toIntOrNull() ?: 0 }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 0)
+
+    private val rawPointsDiscount: StateFlow<Long> = requestedPoints
+        .map { PromosiUseCase.nilaiPenukaranPoin(it) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 0L)
 
     /** Discount shown on the receipt and saved with the sale. Never above subtotal. */
-    val totalDiscount: StateFlow<Long> = combine(subtotal, discountAmount, pointsDiscount) { sub, d, p ->
+    val totalDiscount: StateFlow<Long> = combine(subtotal, discountAmount, rawPointsDiscount) { sub, d, p ->
         PromosiUseCase.gabungkanDiskon(sub, d, p)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 0L)
+
+    /** Points actually consumed. When discounts overflow, no point is wasted. */
+    val effectivePoints: StateFlow<Int> = combine(totalDiscount, discountAmount) { total, d ->
+        ((total - d).coerceAtLeast(0L) / PromosiUseCase.NILAI_POIN).toInt().coerceAtLeast(0)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 0)
+
+    val pointsDiscount: StateFlow<Long> = effectivePoints
+        .map { PromosiUseCase.nilaiPenukaranPoin(it) }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 0L)
 
     val total: StateFlow<Long> = combine(subtotal, totalDiscount) { sub, diskon -> (sub - diskon).coerceAtLeast(0) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 0L)
@@ -243,7 +256,7 @@ class CashierViewModel @Inject constructor(
             viewModelScope.launch { _events.send(CashierEvent.Message("INSUFFICIENT_PAYMENT")) }
             return
         }
-        val poin = _poinDitukar.value.filter(Char::isDigit).toIntOrNull() ?: 0
+        val poin = if (_poinDitukar.value.isNotBlank()) effectivePoints.value else 0
         if (poin > 0) {
             if (_namaPelanggan.value.isBlank() || availablePoints.value < poin) {
                 viewModelScope.launch { _events.send(CashierEvent.Message("POINTS_INSUFFICIENT")) }

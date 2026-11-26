@@ -27,7 +27,7 @@ class StockOpnameViewModel @Inject constructor(
     private val stockRepository: StockRepository,
 ) : ViewModel() {
 
-    val products: StateFlow<List<Product>> = productRepository.observeAll("")
+    val products: StateFlow<List<Product>> = productRepository.observeActive("")
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     private val _counts = MutableStateFlow<Map<String, String>>(emptyMap())

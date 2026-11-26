@@ -113,8 +113,11 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch { settings.setPin(pin); _events.send(SettingsEvent.Message("SAVED")) }
     }
 
-    fun removePin(pin: String): Boolean {
-        if (pin.length != 6) return false
+    fun removePin(pin: String) {
+        if (pin.length != 6) {
+            viewModelScope.launch { _events.send(SettingsEvent.Message("PIN_WRONG")) }
+            return
+        }
         viewModelScope.launch {
             if (settings.verifyPin(pin)) {
                 settings.removePin()
@@ -123,7 +126,6 @@ class SettingsViewModel @Inject constructor(
                 _events.send(SettingsEvent.Message("PIN_WRONG"))
             }
         }
-        return true
     }
 
     /** Export a full JSON backup to the public Downloads folder (app-specific dir below API 29). */

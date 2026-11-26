@@ -63,6 +63,7 @@ fun SettingsScreen(
     var pinDialog by remember { mutableStateOf(false) }
     var removingPin by remember { mutableStateOf(false) }
     var removePinInput by remember { mutableStateOf("") }
+    var pinRemovalPending by remember { mutableStateOf(false) }
     var restoreConfirm by remember { mutableStateOf(false) }
 
     val pickBackup = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
@@ -81,6 +82,10 @@ fun SettingsScreen(
                         event.text == "ERROR" -> context.getString(R.string.error_backup_unreadable)
                         event.text == "PIN_WRONG" -> context.getString(R.string.pin_wrong)
                         else -> context.getString(R.string.error_generic)
+                    }
+                    if (event.text == "SAVED" && pinRemovalPending) {
+                        removingPin = false
+                        pinRemovalPending = false
                     }
                     snackbar.showSnackbar(message)
                 }
@@ -243,7 +248,8 @@ fun SettingsScreen(
             confirmButton = {
                 TextButton(
                     onClick = {
-                        if (viewModel.removePin(removePinInput)) removingPin = false
+                        pinRemovalPending = true
+                        viewModel.removePin(removePinInput)
                     },
                     enabled = removePinInput.length == 6,
                 ) {

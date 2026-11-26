@@ -204,6 +204,14 @@ data class SalesTarget(val jenis: String, val nominal: Long) {
     }
 }
 
+data class ActivityLog(
+    val id: String,
+    val entitas: String,
+    val entitasId: String,
+    val aksi: String,
+    val createdAt: Long,
+)
+
 data class CashBreakdown(
     val modal: Long,
     val prive: Long,

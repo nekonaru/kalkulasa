@@ -1,5 +1,29 @@
 # Changelog
 
+## v2.7.0
+
+Konsistensi angka lintas modul, perbaikan poin dan backup, ditambah riwayat aktivitas, umur piutang, dan wawasan usaha.
+
+### Fitur baru
+
+- **Riwayat Aktivitas.** Linimasa 200 perubahan terakhir pada penjualan, produk, pelanggan, karyawan, pengeluaran, dan data lainnya.
+- **Umur Piutang.** Ringkasan piutang belum lunas dalam empat kelompok: belum jatuh tempo, 1-30 hari, 31-60 hari, dan lebih dari 60 hari.
+- **Wawasan Usaha.** Rata-rata nilai transaksi, jam dan hari paling ramai, pelanggan paling sering, serta produk dengan margin tertinggi untuk bulan berjalan.
+
+### Peningkatan
+
+- **Nilai persediaan kini satu definisi.** Laporan, Beranda, dan Neraca sama-sama mengecualikan produk terarsipkan.
+- **Poin tidak hangus** ketika total diskon melebihi subtotal; jumlah poin yang benar-benar dipakai yang dikurangi.
+- **Laporan Keuangan dan Riwayat Penjualan** kini menampilkan pesan error dan tombol Coba lagi saat query gagal.
+- **Hapus PIN tetap menunggu verifikasi** sebelum dialog ditutup, dan hash PIN korup tidak lagi membuat aplikasi crash.
+- **Backup v1 bisa dipulihkan kembali** setelah penyesuaian validasi tabel inti.
+- **Opname massal hanya menampilkan produk aktif.**
+- **Profit negatif berwarna merah** pada daftar produk paling menguntungkan.
+
+### Perbaikan dokumentasi
+
+- FAQ scan barcode dan bahasa tampilan kini sesuai dengan implementasi nyata.
+
 ## v2.6.0
 
 Perbaikan ekspor dan keamanan hasil audit, ditambah scan barcode dan opname massal.

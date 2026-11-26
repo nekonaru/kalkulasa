@@ -69,6 +69,10 @@ fun StatementsScreen(
                 Tab(selected = tab == 1, onClick = { tab = 1 }, text = { Text(context.getString(R.string.tab_cash_detail)) })
                 Tab(selected = tab == 2, onClick = { tab = 2 }, text = { Text(context.getString(R.string.tab_expense_categories)) })
             }
+            if (state.error) {
+                Text(context.getString(R.string.error_generic), color = MaterialTheme.colorScheme.error, modifier = Modifier.padding(16.dp))
+                TextButton(onClick = viewModel::load, modifier = Modifier.padding(horizontal = 16.dp)) { Text(context.getString(R.string.button_retry)) }
+            }
             if (state.loading) {
                 Text(
                     context.getString(R.string.loading),

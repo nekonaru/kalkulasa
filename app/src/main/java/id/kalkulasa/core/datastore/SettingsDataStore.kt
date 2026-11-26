@@ -51,7 +51,11 @@ class SettingsDataStore @Inject constructor(
         if (stored.startsWith(PREFIX)) {
             val parts = stored.split('$')
             if (parts.size != 3) return false
-            val expected = derive(pin, hexToBytes(parts[1]))
+            val expected = try {
+                derive(pin, hexToBytes(parts[1]))
+            } catch (e: Exception) {
+                return false
+            }
             return constantTimeEquals(parts[2], expected)
         }
         if (constantTimeEquals(stored, legacyHash(pin))) {

@@ -62,9 +62,13 @@ class SalesHistoryViewModel @Inject constructor(
         }
         val from = DateFormatter.startOfDayDaysAgo(days)
         viewModelScope.launch {
-            val sales = saleRepository.salesBetween(from, System.currentTimeMillis())
-                .sortedByDescending { it.waktu }
-            _state.value = _state.value.copy(sales = sales, loading = false)
+            try {
+                val sales = saleRepository.salesBetween(from, System.currentTimeMillis())
+                    .sortedByDescending { it.waktu }
+                _state.value = _state.value.copy(sales = sales, loading = false)
+            } catch (e: Exception) {
+                _state.value = _state.value.copy(loading = false)
+            }
         }
     }
 

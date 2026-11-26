@@ -29,6 +29,7 @@ data class StatementsUiState(
     val modalInfo: Long = 0L,
     val labaDitahanInfo: Long = 0L,
     val loading: Boolean = true,
+    val error: Boolean = false,
 )
 
 @HiltViewModel
@@ -93,7 +94,7 @@ class StatementsViewModel @Inject constructor(
                 )
             }
             } catch (e: Exception) {
-                _state.value = _state.value.copy(loading = false)
+                _state.value = _state.value.copy(loading = false, error = true)
             }
         }
     }

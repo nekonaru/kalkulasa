@@ -62,8 +62,8 @@ class BackupRepositoryImpl @Inject constructor(
         // the database. Require the core tables that every version of our exporter writes.
         val coreTables = listOf(
             "business_profile", "category", "product", "stock_movement",
-            "purchase", "sale", "expense", "capital_entry", "receivable",
-        )
+            "purchase", "sale", "expense", "capital_entry",
+        ) + if (version >= 2) listOf("receivable") else emptyList()
         require(coreTables.all { root.optJSONArray(it) != null }) { "Isi backup tidak valid" }
 
         // Parse everything before touching the database so a corrupt file changes nothing.

@@ -21,5 +21,8 @@ object Routes {
     const val STATEMENTS = "statements"
     const val TARGET = "target"
     const val OPNAME = "opname"
+    const val ACTIVITY = "activity"
+    const val AGING = "aging"
+    const val INSIGHTS = "insights"
     const val NO_SUPPLIER = "__no_supplier__"
 }

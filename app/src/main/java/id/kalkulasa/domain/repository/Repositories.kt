@@ -1,6 +1,7 @@
 package id.kalkulasa.domain.repository
 
 import id.kalkulasa.domain.model.Attendance
+import id.kalkulasa.domain.model.ActivityLog
 import id.kalkulasa.domain.model.BusinessProfile
 import id.kalkulasa.domain.model.CashBreakdown
 import id.kalkulasa.domain.model.CategorySpend
@@ -122,6 +123,10 @@ interface ReceivableRepository {
 interface SalesTargetRepository {
     fun observeAll(): Flow<List<SalesTarget>>
     suspend fun save(jenis: String, nominal: Long): Result<Unit>
+}
+
+interface ActivityRepository {
+    fun observeRecent(limit: Int = 200): Flow<List<ActivityLog>>
 }
 
 interface PayableRepository {

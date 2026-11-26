@@ -143,7 +143,7 @@ fun ReportsScreen(
                                 Text(
                                     RupiahFormatter.format(item.profit),
                                     style = MaterialTheme.typography.bodyLarge,
-                                    color = Sukses,
+                                    color = if (item.profit >= 0) Sukses else Rugi,
                                 )
                             }
                         }

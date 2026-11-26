@@ -1,5 +1,29 @@
 # Changelog
 
+## v2.7.0
+
+Cross-module number consistency, point and backup fixes, plus activity history, receivables aging and business insights.
+
+### New features
+
+- **Activity History.** A timeline of the last 200 changes to sales, products, customers, employees, expenses and other data.
+- **Receivables Aging.** Outstanding receivables grouped into four buckets: not yet due, 1-30 days, 31-60 days and over 60 days.
+- **Business Insights.** Average transaction value, busiest hour and day, most frequent customer and highest-margin product for the current month.
+
+### Improvements
+
+- **Inventory value now has one definition.** Reports, Home and the balance sheet all exclude archived products.
+- **Points are no longer wasted** when combined discounts exceed the subtotal; only points actually used are deducted.
+- **Financial Statements and Sales History** now show an error message and a Retry button when a query fails.
+- **PIN removal waits for verification** before closing the dialog, and a corrupt PIN hash no longer crashes the app.
+- **Version 1 backups can be restored again** after adjusting the core-table validation.
+- **Bulk stock take shows active products only.**
+- **Negative profit is shown in red** in the most profitable products list.
+
+### Documentation fixes
+
+- The barcode scanning and display language FAQs now match the actual implementation.
+
 ## v2.6.0
 
 Export and security fixes from the audit, plus barcode scanning and bulk stock take.
