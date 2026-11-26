@@ -267,8 +267,24 @@ class SaleRepositoryImpl @Inject constructor(
         db.saleDao().countBetween(from, to)
 
     override suspend fun mostProfitableBetween(from: Long, to: Long, limit: Int): List<ProductProfit> =
-        db.saleDao().mostProfitableBetween(from, to, limit)
-            .map { ProductProfit(it.namaProduk, it.qty, it.profit) }
+        db.saleDao().profitRowsBetween(from, to)
+            .groupBy { it.namaProduk }
+            .map { (nama, rows) ->
+                val gross = rows.sumOf { it.gross }
+                val cogs = rows.sumOf { it.cogs }
+                // Allocate each sale's discount across its items proportionally.
+                val diskon = rows.sumOf { row ->
+                    if (row.saleGross <= 0.0) 0L
+                    else kotlin.math.round(row.diskon.toDouble() * row.gross / row.saleGross).toLong()
+                }
+                ProductProfit(
+                    nama,
+                    rows.sumOf { it.qty },
+                    kotlin.math.round(gross - cogs).toLong() - diskon,
+                )
+            }
+            .sortedByDescending { it.profit }
+            .take(limit)
 
     override suspend fun topProductsBetween(from: Long, to: Long, limit: Int): List<ProductSales> =
         db.saleDao().topProductsBetween(from, to, limit)

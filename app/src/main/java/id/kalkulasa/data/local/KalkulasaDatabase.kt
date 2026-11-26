@@ -26,6 +26,7 @@ import id.kalkulasa.data.local.entity.AttendanceEntity
 import id.kalkulasa.data.local.entity.KasbonEntity
 import id.kalkulasa.data.local.entity.PayrollEntity
 import id.kalkulasa.data.local.entity.PayableEntity
+import id.kalkulasa.data.local.entity.PayablePaymentEntity
 import id.kalkulasa.data.local.entity.SalesTargetEntity
 import id.kalkulasa.data.local.entity.ExpenseEntity
 import id.kalkulasa.data.local.entity.ProductEntity
@@ -57,9 +58,10 @@ import java.util.UUID
         KasbonEntity::class,
         PayrollEntity::class,
         PayableEntity::class,
+        PayablePaymentEntity::class,
         SalesTargetEntity::class,
     ],
-    version = 8,
+    version = 9,
     exportSchema = true,
 )
 abstract class KalkulasaDatabase : RoomDatabase() {
@@ -80,9 +82,31 @@ abstract class KalkulasaDatabase : RoomDatabase() {
     abstract fun payrollDao(): id.kalkulasa.data.local.dao.PayrollDao
     abstract fun payableDao(): id.kalkulasa.data.local.dao.PayableDao
     abstract fun salesTargetDao(): id.kalkulasa.data.local.dao.SalesTargetDao
+    abstract fun payablePaymentDao(): id.kalkulasa.data.local.dao.PayablePaymentDao
 
     companion object {
         const val NAME = "kalkulasa.db"
+
+        /** Migration 8 -> 9: supplier payment history and kasbon settlement flag. */
+        val MIGRATION_8_9 = androidx.room.migration.Migration(8, 9) { db ->
+            db.execSQL(
+                """CREATE TABLE IF NOT EXISTS `payable_payment` (
+                    `id` TEXT NOT NULL PRIMARY KEY,
+                    `payableId` TEXT NOT NULL,
+                    `pemasok` TEXT NOT NULL,
+                    `nominal` INTEGER NOT NULL,
+                    `catatan` TEXT,
+                    `waktu` INTEGER NOT NULL,
+                    `updatedAt` INTEGER NOT NULL,
+                    `deletedAt` INTEGER,
+                    `deviceId` TEXT NOT NULL,
+                    `syncStatus` TEXT NOT NULL
+                )""".trimIndent(),
+            )
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_payable_payment_waktu` ON `payable_payment` (`waktu`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_payable_payment_payableId` ON `payable_payment` (`payableId`)")
+            db.execSQL("ALTER TABLE `kasbon` ADD COLUMN `terpakai` INTEGER NOT NULL DEFAULT 0")
+        }
 
         /** Migration 7 -> 8: remember redeemed points so cancellation can refund them. */
         val MIGRATION_7_8 = androidx.room.migration.Migration(7, 8) { db ->
@@ -246,7 +270,7 @@ abstract class KalkulasaDatabase : RoomDatabase() {
         fun build(context: Context, deviceId: String, passphrase: ByteArray): KalkulasaDatabase =
             Room.databaseBuilder(context, KalkulasaDatabase::class.java, NAME)
                 .openHelperFactory(SupportOpenHelperFactory(passphrase))
-                .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, MIGRATION_7_8)
+                .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, MIGRATION_7_8, MIGRATION_8_9)
                 .addCallback(SeedCallback(deviceId))
                 .build()
     }

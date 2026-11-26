@@ -101,6 +101,7 @@ data class Sale(
     val metodeBayar: String,
     val status: String,
     val waktu: Long,
+    val customerId: String? = null,
 )
 
 data class SaleLine(
@@ -210,6 +211,15 @@ data class ActivityLog(
     val entitasId: String,
     val aksi: String,
     val createdAt: Long,
+)
+
+data class PayablePayment(
+    val id: String,
+    val payableId: String,
+    val pemasok: String,
+    val nominal: Long,
+    val catatan: String?,
+    val waktu: Long,
 )
 
 data class CashBreakdown(

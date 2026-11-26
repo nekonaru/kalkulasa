@@ -451,4 +451,30 @@
     <string name="insights_top_customer">Pelanggan paling sering</string>
     <string name="insights_top_margin">Produk margin tertinggi</string>
     <string name="insights_empty">Belum cukup transaksi untuk menampilkan wawasan.</string>
+    <!-- Riwayat pembayaran dan laporan absensi -->
+    <string name="payment_history_title">Riwayat Pembayaran Hutang</string>
+    <string name="payment_history_open">Riwayat Pembayaran</string>
+    <string name="payment_history_empty">Belum ada pembayaran hutang usaha.</string>
+    <string name="payment_to">Dibayar ke</string>
+    <string name="attendance_report_title">Laporan Absensi</string>
+    <string name="attendance_report_open">Laporan Absensi</string>
+    <string name="attendance_report_empty">Belum ada absensi pada periode ini.</string>
+    <string name="attendance_report_employee">Karyawan</string>
+    <string name="attendance_report_days">Hari hadir</string>
+    <string name="attendance_report_wage">Total upah</string>
+    <string name="receipt_payment_label">Bayar:</string>
+    <string name="receipt_thanks">Terima kasih sudah belanja!</string>
+    <string name="receipt_credit_note">Hutang (dicatat di buku utang)</string>
+    <string name="business_name_fallback">Usaha kami</string>
+    <string name="piutang_reminder_message">Halo %1$s, ini pengingat ramah dari %2$s. Tagihan %3$s masih belum lunas.%4$s Terima kasih.</string>
+    <string name="piutang_reminder_due"> Jatuh tempo: %1$s.</string>
+    <string name="restock_sent_from">Dikirim dari Kalkulasa</string>
+    <string name="import_file_too_big">File CSV terlalu besar (maks 5 MB)</string>
+    <string name="entity_capital">Modal</string>
+    <string name="entity_attendance">Absensi</string>
+    <string name="entity_kasbon">Kasbon</string>
+    <string name="entity_business_profile">Profil usaha</string>
+    <string name="entity_sales_target">Target penjualan</string>
+    <string name="entity_payment">Pembayaran hutang</string>
+    <string name="aging_no_due">Tanpa jatuh tempo</string>
 </resources>

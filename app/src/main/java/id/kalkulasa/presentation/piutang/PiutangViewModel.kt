@@ -53,7 +53,7 @@ class PiutangViewModel @Inject constructor(
         viewModelScope.launch {
             receivableRepository.addManual(trimmed, nominal, due, catatan)
                 .onSuccess { _events.send(PiutangEvent.Message("ADDED")) }
-                .onFailure { _events.send(PiutangEvent.Message(it.message ?: "ERROR")) }
+                .onFailure { _events.send(PiutangEvent.Message("ERROR")) }
         }
     }
 
@@ -63,18 +63,22 @@ class PiutangViewModel @Inject constructor(
         viewModelScope.launch {
             receivableRepository.recordPayment(id, amount)
                 .onSuccess { _events.send(PiutangEvent.Message("SAVED")) }
-                .onFailure { _events.send(PiutangEvent.Message(it.message ?: "ERROR")) }
+                .onFailure { _events.send(PiutangEvent.Message("ERROR")) }
         }
     }
 
     fun shareReminder(item: Receivable) {
         viewModelScope.launch {
             val profile = profileRepository.getProfile()
-            val usaha = profile?.namaUsaha ?: "Usaha kami"
+            val usaha = profile?.namaUsaha ?: context.getString(id.kalkulasa.R.string.business_name_fallback)
             val sisa = RupiahFormatter.format(item.sisa)
-            val due = item.jatuhTempo?.let { " Jatuh tempo: ${DateFormatter.formatDayMonthYear(it)}." } ?: ""
-            val text = "Halo ${item.namaPelanggan}, ini pengingat ramah dari $usaha. " +
-                "Tagihan $sisa masih belum lunas.$due Terima kasih."
+            val due = item.jatuhTempo?.let {
+                context.getString(id.kalkulasa.R.string.piutang_reminder_due, DateFormatter.formatDayMonthYear(it))
+            } ?: ""
+            val text = context.getString(
+                id.kalkulasa.R.string.piutang_reminder_message,
+                item.namaPelanggan, usaha, sisa, due,
+            )
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://wa.me/?text=" + Uri.encode(text)))
             try {
                 context.startActivity(intent.apply { addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) })

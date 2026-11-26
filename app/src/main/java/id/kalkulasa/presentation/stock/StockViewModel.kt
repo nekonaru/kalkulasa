@@ -114,7 +114,7 @@ class StockViewModel @Inject constructor(
         viewModelScope.launch {
             stockRepository.recordStockIn(id, qty, price, pemasok, catatan)
                 .onSuccess { _events.send(StockEvent.Message("STOCK_IN_SAVED")) }
-                .onFailure { _events.send(StockEvent.Message(it.message ?: "ERROR")) }
+                .onFailure { _events.send(StockEvent.Message("ERROR")) }
         }
     }
 
@@ -124,7 +124,7 @@ class StockViewModel @Inject constructor(
         viewModelScope.launch {
             stockRepository.recordAdjustment(id, newQty, reason)
                 .onSuccess { _events.send(StockEvent.Message("ADJUSTMENT_SAVED")) }
-                .onFailure { _events.send(StockEvent.Message(it.message ?: "ERROR")) }
+                .onFailure { _events.send(StockEvent.Message("ERROR")) }
         }
     }
 }

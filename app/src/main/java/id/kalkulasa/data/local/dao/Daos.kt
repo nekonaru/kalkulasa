@@ -15,6 +15,7 @@ import id.kalkulasa.data.local.entity.EmployeeEntity
 import id.kalkulasa.data.local.entity.KasbonEntity
 import id.kalkulasa.data.local.entity.PayrollEntity
 import id.kalkulasa.data.local.entity.PayableEntity
+import id.kalkulasa.data.local.entity.PayablePaymentEntity
 import id.kalkulasa.data.local.entity.SalesTargetEntity
 import id.kalkulasa.data.local.entity.ExpenseEntity
 import id.kalkulasa.data.local.entity.ProductEntity
@@ -272,6 +273,16 @@ interface SaleDao {
               GROUP BY si.namaProduk ORDER BY profit DESC LIMIT :limit""")
     suspend fun mostProfitableBetween(from: Long, to: Long, limit: Int): List<ProductProfitProjection>
 
+    @Query("""SELECT si.namaProduk AS namaProduk, si.jumlah AS qty,
+               si.jumlah * si.hargaJual AS gross, si.jumlah * si.hppSaatJual AS cogs,
+               s.diskon AS diskon,
+               (SELECT SUM(si2.jumlah * si2.hargaJual) FROM sale_item si2
+                WHERE si2.saleId = s.id AND si2.deletedAt IS NULL) AS saleGross
+               FROM sale_item si JOIN sale s ON s.id = si.saleId
+               WHERE si.deletedAt IS NULL AND s.deletedAt IS NULL AND s.status = 'SELESAI'
+               AND s.waktu BETWEEN :from AND :to""")
+    suspend fun profitRowsBetween(from: Long, to: Long): List<ProductProfitRow>
+
     @Query("UPDATE sale SET status = 'BATAL', updatedAt = :now WHERE id = :id")
     suspend fun markCancelled(id: String, now: Long)
 }
@@ -279,6 +290,15 @@ interface SaleDao {
 data class ProductSalesProjection(val namaProduk: String, val qty: Double)
 
 data class ProductProfitProjection(val namaProduk: String, val qty: Double, val profit: Long)
+
+data class ProductProfitRow(
+    val namaProduk: String,
+    val qty: Double,
+    val gross: Double,
+    val cogs: Double,
+    val diskon: Long,
+    val saleGross: Double,
+)
 
 @Dao
 interface ExpenseDao {
@@ -359,6 +379,12 @@ interface KasbonDao {
 
     @Query("SELECT * FROM kasbon WHERE deletedAt IS NULL")
     suspend fun getAll(): List<KasbonEntity>
+
+    @Query("SELECT COALESCE(SUM(nominal), 0) FROM kasbon WHERE deletedAt IS NULL AND terpakai = 0")
+    suspend fun sumUnsettled(): Long
+
+    @Query("UPDATE kasbon SET terpakai = 1, updatedAt = :now WHERE karyawanId = :id AND terpakai = 0")
+    suspend fun markUsed(id: String, now: Long)
 
     @Query("SELECT COALESCE(SUM(nominal), 0) FROM kasbon WHERE deletedAt IS NULL")
     suspend fun sumAll(): Long
@@ -458,6 +484,21 @@ interface PayableDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(payable: PayableEntity)
+}
+
+@Dao
+interface PayablePaymentDao {
+    @Query("SELECT * FROM payable_payment WHERE deletedAt IS NULL ORDER BY waktu DESC LIMIT :limit")
+    fun observeRecent(limit: Int): Flow<List<PayablePaymentEntity>>
+
+    @Query("SELECT * FROM payable_payment WHERE deletedAt IS NULL")
+    suspend fun getAll(): List<PayablePaymentEntity>
+
+    @Query("SELECT COALESCE(SUM(nominal), 0) FROM payable_payment WHERE deletedAt IS NULL AND waktu BETWEEN :from AND :to")
+    suspend fun sumBetween(from: Long, to: Long): Long
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(payment: PayablePaymentEntity)
 }
 
 @Dao

@@ -283,7 +283,7 @@ class CashierViewModel @Inject constructor(
                 refreshTodaySales()
                 _events.send(CashierEvent.SaleSaved(receipt))
             }.onFailure { error ->
-                _events.send(CashierEvent.Message(error.message ?: "ERROR"))
+                _events.send(CashierEvent.Message("ERROR"))
             }
         }
     }
@@ -303,8 +303,21 @@ class CashierViewModel @Inject constructor(
             diskon = sale.diskon,
             total = sale.total,
             metodeBayar = sale.metodeBayar,
+            labels = receiptLabels(),
+            locale = java.util.Locale.getDefault(),
         )
     }
+
+    private fun receiptLabels() = id.kalkulasa.domain.usecase.ReceiptLabels(
+        diskon = context.getString(id.kalkulasa.R.string.discount),
+        total = context.getString(id.kalkulasa.R.string.total),
+        bayar = context.getString(id.kalkulasa.R.string.receipt_payment_label),
+        thanks = context.getString(id.kalkulasa.R.string.receipt_thanks),
+        cash = context.getString(id.kalkulasa.R.string.payment_cash),
+        transfer = context.getString(id.kalkulasa.R.string.payment_transfer),
+        qris = context.getString(id.kalkulasa.R.string.payment_qris),
+        hutang = context.getString(id.kalkulasa.R.string.receipt_credit_note),
+    )
 
     private fun shareText(text: String) {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://wa.me/?text=" + Uri.encode(text)))

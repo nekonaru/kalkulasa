@@ -57,7 +57,7 @@ class PayableViewModel @Inject constructor(
         viewModelScope.launch {
             payableRepository.add(pemasok, nominal, due, catatan)
                 .onSuccess { _events.send(PayableEvent.Message("SAVED")) }
-                .onFailure { _events.send(PayableEvent.Message(it.message ?: "ERROR")) }
+                .onFailure { _events.send(PayableEvent.Message("ERROR")) }
         }
     }
 
@@ -67,7 +67,7 @@ class PayableViewModel @Inject constructor(
         viewModelScope.launch {
             payableRepository.recordPayment(id, amount)
                 .onSuccess { _events.send(PayableEvent.Message("PAYMENT_SAVED")) }
-                .onFailure { _events.send(PayableEvent.Message(it.message ?: "ERROR")) }
+                .onFailure { _events.send(PayableEvent.Message("ERROR")) }
         }
     }
 

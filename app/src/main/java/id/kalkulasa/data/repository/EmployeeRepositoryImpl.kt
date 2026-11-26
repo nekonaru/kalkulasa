@@ -152,6 +152,12 @@ class PayrollRepositoryImpl @Inject constructor(
         catatan: String,
     ): Result<Unit> = runCatching {
         db.withTransaction {
+            val alreadyPaid = db.payrollDao().getAll()
+                .filter { it.karyawanId == karyawan.id && it.periodeAwal == from && it.deletedAt == null }
+                .sumOf { it.dibayar }
+            if (alreadyPaid >= (upah - kasbon).coerceAtLeast(0L) && dibayar > 0) {
+                throw IllegalStateException("Gaji periode ini sudah lunas")
+            }
             val now = RepositorySupport.now()
             val id = RepositorySupport.newId()
             db.payrollDao().upsert(
@@ -162,6 +168,9 @@ class PayrollRepositoryImpl @Inject constructor(
                     waktu = now, updatedAt = now, deviceId = deviceId,
                 ),
             )
+            // Advances applied to this payroll are consumed. Leaving them active
+            // would keep them as an asset forever and overstate equity.
+            db.kasbonDao().markUsed(karyawan.id, now)
             // Payroll and its expense must succeed together. A partial write would
             // lock the Pay button forever while leaving cash untouched.
             val expenseId = RepositorySupport.newId()

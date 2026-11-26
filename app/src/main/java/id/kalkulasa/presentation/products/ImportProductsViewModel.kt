@@ -47,6 +47,11 @@ class ImportProductsViewModel @Inject constructor(
 
     fun onFilePicked(uri: Uri) {
         viewModelScope.launch {
+            val size = context.contentResolver.openAssetFileDescriptor(uri, "r")?.use { it.length } ?: -1L
+            if (size > MAX_CSV_BYTES) {
+                _events.send(ImportProductsEvent.Message("TOO_BIG"))
+                return@launch
+            }
             val result = withContext(Dispatchers.IO) {
                 runCatching {
                     val text = context.contentResolver.openInputStream(uri)
@@ -93,5 +98,9 @@ class ImportProductsViewModel @Inject constructor(
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
         context.startActivity(Intent.createChooser(intent, null))
+    }
+
+    companion object {
+        private const val MAX_CSV_BYTES = 5L * 1024 * 1024
     }
 }

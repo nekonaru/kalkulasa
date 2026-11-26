@@ -36,6 +36,8 @@ import id.kalkulasa.presentation.opname.StockOpnameScreen
 import id.kalkulasa.presentation.activity.ActivityScreen
 import id.kalkulasa.presentation.aging.AgingScreen
 import id.kalkulasa.presentation.insights.InsightsScreen
+import id.kalkulasa.presentation.paymenthistory.PaymentHistoryScreen
+import id.kalkulasa.presentation.attendancereport.AttendanceReportScreen
 import id.kalkulasa.presentation.cashier.CashierScreen
 import id.kalkulasa.presentation.customer.CustomersScreen
 import id.kalkulasa.presentation.finance.FinanceScreen
@@ -171,6 +173,8 @@ fun KalkulasaNavHost(startDestination: String) {
             composable(Routes.ACTIVITY) { ActivityScreen(onBack = { navController.popBackStack() }) }
             composable(Routes.AGING) { AgingScreen(onBack = { navController.popBackStack() }) }
             composable(Routes.INSIGHTS) { InsightsScreen(onBack = { navController.popBackStack() }) }
+            composable(Routes.PAYMENT_HISTORY) { PaymentHistoryScreen(onBack = { navController.popBackStack() }) }
+            composable(Routes.ATTENDANCE_REPORT) { AttendanceReportScreen(onBack = { navController.popBackStack() }) }
             composable(Routes.TARGET) {
                 TargetScreen(onBack = { navController.popBackStack() })
             }
@@ -182,11 +186,13 @@ fun KalkulasaNavHost(startDestination: String) {
             composable(Routes.PAYABLE) {
                 PayableScreen(
                     onBack = { navController.popBackStack() },
+                    onOpenHistory = { navController.navigate(Routes.PAYMENT_HISTORY) },
                 )
             }
             composable(Routes.EMPLOYEES) {
                 EmployeeScreen(
                     onBack = { navController.popBackStack() },
+                    onOpenReport = { navController.navigate(Routes.ATTENDANCE_REPORT) },
                 )
             }
             composable(Routes.SUPPLIERS) {

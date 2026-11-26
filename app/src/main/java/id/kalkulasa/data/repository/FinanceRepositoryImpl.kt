@@ -90,6 +90,8 @@ class FinanceRepositoryImpl @Inject constructor(
     override suspend fun netCapital(): Long =
         db.capitalEntryDao().sumCapital() - db.capitalEntryDao().sumPrivateDraws()
 
+    override suspend fun unsettledKasbon(): Long = db.kasbonDao().sumUnsettled()
+
     override suspend fun expensesByCategoryBetween(from: Long, to: Long): List<CategorySpend> =
         db.expenseDao().sumByCategoryBetween(from, to).map { CategorySpend(it.nama, it.total) }
 

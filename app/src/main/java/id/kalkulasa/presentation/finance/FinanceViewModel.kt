@@ -85,7 +85,7 @@ class FinanceViewModel @Inject constructor(
                     refreshBalance()
                     _events.send(FinanceEvent.Message("SAVED"))
                 }
-                .onFailure { _events.send(FinanceEvent.Message(it.message ?: "ERROR")) }
+                .onFailure { _events.send(FinanceEvent.Message("ERROR")) }
         }
     }
 }

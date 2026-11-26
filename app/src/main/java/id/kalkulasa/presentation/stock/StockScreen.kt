@@ -93,6 +93,7 @@ fun StockScreen(
                         "SAVED" -> context.getString(R.string.saved_generic)
                         "STOCK_IN_SAVED" -> context.getString(R.string.stock_in_saved)
                         "ADJUSTMENT_SAVED" -> context.getString(R.string.stock_adjustment_saved)
+                        "ERROR" -> context.getString(R.string.error_generic)
                         else -> event.text
                     },
                 )

@@ -25,7 +25,7 @@ class AgingViewModel @Inject constructor(
             val now = System.currentTimeMillis()
             PiutangAgingUseCase.totals(
                 list.filter { !it.isLunas }
-                    .map { Triple(it.sisa, it.jatuhTempo ?: it.waktu, now) },
+                    .map { Triple(it.sisa, it.jatuhTempo, now) },
             )
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyMap())

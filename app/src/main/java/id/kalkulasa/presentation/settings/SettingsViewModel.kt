@@ -181,7 +181,7 @@ class SettingsViewModel @Inject constructor(
                 }
                 backupRepository.importJson(json)
                     .onSuccess { _events.send(SettingsEvent.Message("RESTORED")) }
-                    .onFailure { _events.send(SettingsEvent.Message(it.message ?: "ERROR")) }
+                    .onFailure { _events.send(SettingsEvent.Message("ERROR")) }
             } catch (e: Exception) {
                 _events.send(SettingsEvent.Message(e.message ?: "ERROR"))
             }

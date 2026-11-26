@@ -40,15 +40,16 @@ class RestockViewModel @Inject constructor(
         val products = lowStock.value
         if (products.isEmpty()) return
         viewModelScope.launch {
-            val usaha = profileRepository.getProfile()?.namaUsaha ?: "Usaha kami"
+            val usaha = profileRepository.getProfile()?.namaUsaha
+                ?: context.getString(id.kalkulasa.R.string.business_name_fallback)
             val message = buildString {
-                appendLine("Saran restok dari $usaha:")
+                appendLine(context.getString(id.kalkulasa.R.string.restock_share_title, usaha))
                 products.forEach { p ->
                     val suggested = ((p.stokMinimum * 2.0) - p.stok).coerceAtLeast(1.0)
                     appendLine("- ${p.nama}: +${trim(suggested)} ${p.satuan} @ ${RupiahFormatter.format(p.hargaBeliRata2)}")
                 }
                 appendLine()
-                append("Dikirim dari Kalkulasa")
+                append(context.getString(id.kalkulasa.R.string.restock_sent_from))
             }
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://wa.me/?text=" + Uri.encode(message)))
             try {

@@ -17,13 +17,22 @@ class PiutangAgingUseCaseTest {
     }
 
     @Test
+    fun items_without_due_date_are_current() {
+        val now = 100L * day
+        val result = PiutangAgingUseCase.totals(
+            listOf(Triple<Long, Long?, Long>(500L, null, now - 90 * day)),
+        )
+        assertThat(result[PiutangAgingUseCase.Bucket.CURRENT]).isEqualTo(500L)
+    }
+
+    @Test
     fun totals_ignore_settled_items_and_group_correctly() {
         val now = 100L * day
         val result = PiutangAgingUseCase.totals(
             listOf(
-                Triple(100L, now, now),
-                Triple(200L, now - 10 * day, now),
-                Triple(0L, now - 90 * day, now),
+                Triple<Long, Long?, Long>(100L, now, now),
+                Triple<Long, Long?, Long>(200L, now - 10 * day, now),
+                Triple<Long, Long?, Long>(0L, now - 90 * day, now),
             ),
         )
         assertThat(result[PiutangAgingUseCase.Bucket.CURRENT]).isEqualTo(100L)

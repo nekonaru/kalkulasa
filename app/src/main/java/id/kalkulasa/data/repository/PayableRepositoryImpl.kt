@@ -3,6 +3,7 @@ package id.kalkulasa.data.repository
 import androidx.room.withTransaction
 import id.kalkulasa.data.local.KalkulasaDatabase
 import id.kalkulasa.data.local.entity.PayableEntity
+import id.kalkulasa.data.local.entity.PayablePaymentEntity
 import id.kalkulasa.domain.model.Payable
 import id.kalkulasa.domain.repository.PayableRepository
 import id.kalkulasa.domain.usecase.UtangUseCase
@@ -56,7 +57,21 @@ class PayableRepositoryImpl @Inject constructor(
                 .getOrThrow()
             val now = RepositorySupport.now()
             db.payableDao().upsert(payable.copy(terbayar = newPaid, updatedAt = now))
+            val paymentId = RepositorySupport.newId()
+            db.payablePaymentDao().insert(
+                PayablePaymentEntity(
+                    id = paymentId,
+                    payableId = id,
+                    pemasok = payable.pemasok,
+                    nominal = amount,
+                    catatan = null,
+                    waktu = now,
+                    updatedAt = now,
+                    deviceId = deviceId,
+                ),
+            )
             RepositorySupport.log(db.changeLogDao(), "payable", id, "UPDATE")
+            RepositorySupport.log(db.changeLogDao(), "payable_payment", paymentId, "INSERT")
         }
     }
 

@@ -99,6 +99,7 @@ fun CashierScreen(
                         event.text == "NO_LAST_SALE" -> context.getString(R.string.repeat_none)
                         event.text == "REPEAT_EMPTY" -> context.getString(R.string.repeat_empty)
                         event.text.startsWith("REPEAT_OK:") -> String.format(context.getString(R.string.repeat_ok), event.text.removePrefix("REPEAT_OK:").toIntOrNull() ?: 0)
+                        event.text == "ERROR" -> context.getString(R.string.error_generic)
                         else -> event.text
                     },
                 )

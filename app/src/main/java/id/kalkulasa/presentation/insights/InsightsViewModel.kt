@@ -53,7 +53,10 @@ class InsightsViewModel @Inject constructor(
                     byHour[hour] = (byHour[hour] ?: 0L) + sale.total
                     byDay[day] = (byDay[day] ?: 0L) + sale.total
                 }
-                val customer = customerRepository.observeAll().first().maxByOrNull { it.kunjungan }
+                val customers = customerRepository.observeAll().first()
+                val topCustomerId = sales.mapNotNull { it.customerId }
+                    .groupingBy { it }.eachCount().maxByOrNull { it.value }?.key
+                val customer = customers.find { it.id == topCustomerId }
                 val product = saleRepository.mostProfitableBetween(from, to, 1).firstOrNull()
                 _state.value = InsightsUiState(
                     averageSale = if (sales.isEmpty()) 0L else sales.sumOf { it.total } / sales.size.toLong(),

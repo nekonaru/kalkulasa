@@ -67,7 +67,7 @@ class HomeViewModel @Inject constructor(
             try {
                 val from = DateFormatter.startOfDay()
             val to = DateFormatter.endOfDay()
-            val monthAgo = DateFormatter.startOfDayDaysAgo(29, System.currentTimeMillis())
+            val monthStart = DateFormatter.startOfMonth(System.currentTimeMillis())
             val weekAgo = DateFormatter.startOfDayDaysAgo(6)
 
             // Run independent reads concurrently to keep the home screen snappy
@@ -80,10 +80,10 @@ class HomeViewModel @Inject constructor(
             val trend = async { saleRepository.dailyTrend(7) }
             val best = async { saleRepository.topProductsBetween(weekAgo, to, 3) }
             val piutang = async { receivableRepository.observeOutstanding().first() }
-            val monthReport = async { reportRepository.reportBetween(monthAgo, to) }
+            val monthReport = async { reportRepository.reportBetween(monthStart, to) }
             val saldoKas = async { financeRepository.cashBalance() }
             val targets = async { salesTargetRepository.observeAll().first() }
-            val monthOmzet = async { reportRepository.reportBetween(DateFormatter.startOfMonth(), to).omzet }
+            val monthOmzet = async { reportRepository.reportBetween(monthStart, to).omzet }
 
             val profileValue = profile.await()
             val omzetValue = omzet.await()

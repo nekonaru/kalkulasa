@@ -66,7 +66,7 @@ class StatementsViewModel @Inject constructor(
             val piutang = receivableRepository.observeOutstanding().first()
             val hutang = payableRepository.observeOutstanding().first()
             val persediaan = productRepository.observeInventoryValue().first()
-            val kasbon = breakdown.kasbon
+            val kasbon = financeRepository.unsettledKasbon()
             val cumulative = reportRepository.reportBetween(0L, Long.MAX_VALUE)
             val modal = financeRepository.netCapital()
             val retained = LaporanKeuanganUseCase.labaDitahan(

@@ -46,10 +46,10 @@ class TargetViewModel @Inject constructor(
         val monthly = RupiahFormatter.parseOrZero(_monthly.value).coerceAtLeast(0L)
         viewModelScope.launch {
             repository.save(SalesTarget.HARIAN, daily)
-                .onFailure { _events.send(TargetEvent.Message(it.message ?: "ERROR")); return@launch }
+                .onFailure { _events.send(TargetEvent.Message("ERROR")); return@launch }
             repository.save(SalesTarget.BULANAN, monthly)
                 .onSuccess { _events.send(TargetEvent.Message("SAVED")) }
-                .onFailure { _events.send(TargetEvent.Message(it.message ?: "ERROR")) }
+                .onFailure { _events.send(TargetEvent.Message("ERROR")) }
         }
     }
 }

@@ -62,6 +62,8 @@ fun ImportProductsScreen(
                     if (event.text.startsWith("DONE:")) {
                         val count = event.text.removePrefix("DONE:").toIntOrNull() ?: 0
                         snackbar.showSnackbar(String.format(context.getString(R.string.import_done), count))
+                    } else if (event.text == "TOO_BIG") {
+                        snackbar.showSnackbar(context.getString(R.string.import_file_too_big))
                     } else {
                         snackbar.showSnackbar(context.getString(R.string.error_generic))
                     }

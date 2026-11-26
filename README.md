@@ -93,6 +93,7 @@
 | **Diskon dan poin** | Diskon Rupiah atau Persen, tukar poin pelanggan jadi potongan harga, dan target penjualan harian serta bulanan |
 | **Scan barcode dan opname massal** | Tambah produk ke keranjang dari scanner keyboard tanpa izin kamera, dan simpan hitung fisik seluruh stok sekaligus |
 | **Riwayat, umur piutang, dan wawasan** | Linimasa perubahan data, ringkasan piutang menurut umur, serta wawasan jam ramai dan produk margin tertinggi |
+| **Riwayat pembayaran dan absensi** | Catatan otomatis tiap pembayaran hutang usaha dan rekap absensi serta upah per karyawan per periode |
 
 ### Pelanggan dan poin
 
@@ -185,7 +186,7 @@
 ### Opsi A: Unduh APK (paling mudah)
 
 1. Buka halaman [Releases](https://github.com/nekonaru/kalkulasa/releases)
-2. Unduh `kalkulasa-v2.7.0.apk`
+2. Unduh `kalkulasa-v2.8.0.apk`
 3. Buka di ponsel kamu dan izinkan instalasi dari sumber tidak dikenal jika diminta
 4. Buka aplikasi dan isi profil usaha kamu
 

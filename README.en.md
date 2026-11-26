@@ -93,6 +93,7 @@
 | **Discounts and points** | Rupiah or percentage discounts, redeem customer points for a discount, and daily and monthly sales targets |
 | **Barcode scan and bulk stock take** | Add products from a keyboard scanner without camera permission and save a full physical stock count at once |
 | **History, aging and insights** | Activity timeline, receivables by age, and insights on busy hours and highest-margin products |
+| **Payment and attendance history** | Automatic supplier payment log and per-employee attendance and wage recap by period |
 
 ### Customers and points
 
@@ -185,7 +186,7 @@
 ### Option A: Download the APK (easiest)
 
 1. Open the [Releases](https://github.com/nekonaru/kalkulasa/releases) page
-2. Download `kalkulasa-v2.7.0.apk`
+2. Download `kalkulasa-v2.8.0.apk`
 3. Open it on your phone and allow installs from unknown sources if asked
 4. Open the app and fill in your business profile
 

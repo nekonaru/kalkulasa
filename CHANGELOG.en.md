@@ -1,5 +1,32 @@
 # Changelog
 
+## v2.8.0
+
+Closing the remaining audit findings, plus payment history and an attendance report.
+
+### New features
+
+- **Supplier Payment History.** Every supplier payment is recorded automatically; view the list and this month's total from Accounts Payable.
+- **Attendance Report.** Present days and total wage per employee for today, 7 days, 30 days or this month.
+
+### Improvements
+
+- **Product profit now accounts for discounts.** Discounts are allocated proportionally to items in a sale, so "most profitable products" and "highest margin" are no longer overstated.
+- **Employee advances are no longer counted twice.** Advances deducted during payroll are marked as used and removed from the balance sheet assets.
+- **Salary payment is safer.** An in-flight flag and a repository guard reject a second payment for an already settled period.
+- **Health score uses one current-month definition**, matching the revenue card, Reports and Insights.
+- **Receipts, receivable reminders and restock messages follow the app language.**
+- **Error snackbars no longer show raw technical exception text.**
+- **CSV import is capped at 5 MB** to prevent out-of-memory failures.
+- **Activity History shows correct labels** for capital, attendance, advances, profile, targets and payments.
+- **Receivables aging is more honest.** Items without a due date always stay "not yet due", and a one-day partial overdue counts as a day.
+
+### Bug fixes
+
+- **Insights most frequent customer** is computed from this month's transactions instead of lifetime visits.
+- **Backup format v9** includes payment history and the kasbon used flag; older backups still restore.
+- **Automatic v8 to v9 database migration** with no data loss.
+
 ## v2.7.0
 
 Cross-module number consistency, point and backup fixes, plus activity history, receivables aging and business insights.

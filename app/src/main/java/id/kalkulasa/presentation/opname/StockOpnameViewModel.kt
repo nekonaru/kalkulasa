@@ -59,7 +59,7 @@ class StockOpnameViewModel @Inject constructor(
         viewModelScope.launch {
             stockRepository.applyAdjustments(items, reason)
                 .onSuccess { count -> _events.send(OpnameEvent.Message("SAVED:$count")) }
-                .onFailure { _events.send(OpnameEvent.Message(it.message ?: "ERROR")) }
+                .onFailure { _events.send(OpnameEvent.Message("ERROR")) }
             _saving.value = false
         }
     }

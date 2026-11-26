@@ -17,6 +17,7 @@ import id.kalkulasa.domain.model.Kasbon
 import id.kalkulasa.domain.model.PayrollRecord
 import id.kalkulasa.domain.model.PeriodReport
 import id.kalkulasa.domain.model.Payable
+import id.kalkulasa.domain.model.PayablePayment
 import id.kalkulasa.domain.model.Product
 import id.kalkulasa.domain.model.ProductProfit
 import id.kalkulasa.domain.model.ProductSales
@@ -129,6 +130,11 @@ interface ActivityRepository {
     fun observeRecent(limit: Int = 200): Flow<List<ActivityLog>>
 }
 
+interface PayablePaymentRepository {
+    fun observeRecent(limit: Int = 100): Flow<List<PayablePayment>>
+    suspend fun sumBetween(from: Long, to: Long): Long
+}
+
 interface PayableRepository {
     fun observeAll(): Flow<List<Payable>>
     fun observeOutstanding(): Flow<Long>
@@ -167,6 +173,7 @@ interface FinanceRepository {
     suspend fun cashBalance(): Long
     suspend fun cashBreakdown(): CashBreakdown
     suspend fun netCapital(): Long
+    suspend fun unsettledKasbon(): Long
     suspend fun expensesByCategoryBetween(from: Long, to: Long): List<CategorySpend>
     suspend fun expensesBetween(from: Long, to: Long): Long
     suspend fun purchasesBetween(from: Long, to: Long): Long

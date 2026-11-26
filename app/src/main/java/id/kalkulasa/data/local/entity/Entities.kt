@@ -200,6 +200,7 @@ data class KasbonEntity(
     val nominal: Long,
     val catatan: String?,
     val waktu: Long,
+    val terpakai: Boolean = false,
     val updatedAt: Long,
     val deletedAt: Long? = null,
     val deviceId: String,
@@ -260,6 +261,20 @@ data class PayableEntity(
     val terbayar: Long,
     val jatuhTempo: Long? = null,
     val catatan: String? = null,
+    val waktu: Long,
+    val updatedAt: Long,
+    val deletedAt: Long? = null,
+    val deviceId: String,
+    val syncStatus: String = SyncStatus.PENDING,
+)
+
+@Entity(tableName = "payable_payment", indices = [Index("waktu"), Index("payableId")])
+data class PayablePaymentEntity(
+    @PrimaryKey val id: String,
+    val payableId: String,
+    val pemasok: String,
+    val nominal: Long,
+    val catatan: String?,
     val waktu: Long,
     val updatedAt: Long,
     val deletedAt: Long? = null,

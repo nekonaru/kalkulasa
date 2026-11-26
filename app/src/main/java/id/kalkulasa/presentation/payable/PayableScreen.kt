@@ -55,6 +55,7 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun PayableScreen(
     onBack: () -> Unit,
+    onOpenHistory: () -> Unit,
     viewModel: PayableViewModel = hiltViewModel(),
 ) {
     val items by viewModel.items.collectAsStateWithLifecycle()
@@ -94,6 +95,9 @@ fun PayableScreen(
                 title = { Text(context.getString(R.string.payable_title)) },
                 navigationIcon = {
                     TextButton(onClick = onBack) { Text(context.getString(R.string.button_back)) }
+                },
+                actions = {
+                    TextButton(onClick = onOpenHistory) { Text(context.getString(R.string.payment_history_open)) }
                 },
             )
         },

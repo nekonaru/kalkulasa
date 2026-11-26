@@ -75,6 +75,12 @@ private fun ActivityRow(item: ActivityLog) {
         "category" -> context.getString(R.string.entity_category)
         "stock_movement" -> context.getString(R.string.entity_stock_movement)
         "purchase" -> context.getString(R.string.entity_purchase)
+        "capital_entry" -> context.getString(R.string.entity_capital)
+        "attendance" -> context.getString(R.string.entity_attendance)
+        "kasbon" -> context.getString(R.string.entity_kasbon)
+        "business_profile" -> context.getString(R.string.entity_business_profile)
+        "sales_target" -> context.getString(R.string.entity_sales_target)
+        "payable_payment" -> context.getString(R.string.entity_payment)
         else -> context.getString(R.string.entity_other)
     }
     val verb = when (item.aksi) {

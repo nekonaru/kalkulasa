@@ -1,5 +1,32 @@
 # Changelog
 
+## v2.8.0
+
+Penutupan temuan audit yang tersisa, ditambah riwayat pembayaran dan laporan absensi.
+
+### Fitur baru
+
+- **Riwayat Pembayaran Hutang.** Setiap pembayaran pemasok tercatat otomatis; lihat daftar dan total pembayaran bulan ini dari halaman Hutang Usaha.
+- **Laporan Absensi.** Rekap hari hadir dan total upah per karyawan untuk hari ini, 7 hari, 30 hari, atau bulan ini.
+
+### Peningkatan
+
+- **Laba per produk sekarang memperhitungkan diskon.** Diskon dialokasikan proporsional ke item dalam transaksi, sehingga "Produk paling menguntungkan" dan "Margin tertinggi" tidak lagi overstated.
+- **Kasbon tidak dihitung dua kali.** Kasbon yang sudah dipotong saat penggajian ditandai terpakai dan tidak lagi tampil sebagai aset di Neraca.
+- **Bayar gaji lebih aman.** Ada penanda in-flight dan penolakan di repository bila gaji periode tersebut sudah lunas, mencegah dobel pembayaran.
+- **Skor kesehatan memakai satu definisi bulan berjalan**, sama seperti kartu omzet, Laporan, dan Wawasan.
+- **Struk, pesan WhatsApp piutang, dan pesan saran restok mengikuti bahasa aplikasi.**
+- **Pesan snackbar error tidak lagi menampilkan teks teknis** dari exception.
+- **Impor CSV dibatasi maksimal 5 MB** untuk mencegah kehabisan memori.
+- **Riwayat Aktivitas menampilkan label yang benar** untuk modal, absensi, kasbon, profil, target, dan pembayaran.
+- **Umur piutang lebih jujur.** Piutang tanpa jatuh tempo selalu masuk "Belum jatuh tempo", dan keterlambatan satu jam sudah dihitung satu hari.
+
+### Perbaikan
+
+- **Wawasan pelanggan paling sering** kini dihitung dari transaksi bulan berjalan, bukan total seumur hidup.
+- **Backup format v9** mencakup riwayat pembayaran dan status terpakai kasbon; backup lama tetap bisa dipulihkan.
+- **Migrasi database otomatis v8 ke v9** tanpa menghapus data lama.
+
 ## v2.7.0
 
 Konsistensi angka lintas modul, perbaikan poin dan backup, ditambah riwayat aktivitas, umur piutang, dan wawasan usaha.

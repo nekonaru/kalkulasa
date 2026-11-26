@@ -58,12 +58,14 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun EmployeeScreen(
     onBack: () -> Unit,
+    onOpenReport: () -> Unit,
     viewModel: EmployeeViewModel = hiltViewModel(),
 ) {
     val employees by viewModel.employees.collectAsStateWithLifecycle()
     val attendance by viewModel.attendance.collectAsStateWithLifecycle()
     val selectedDate by viewModel.selectedDate.collectAsStateWithLifecycle()
     val payroll by viewModel.payroll.collectAsStateWithLifecycle()
+    val paying by viewModel.paying.collectAsStateWithLifecycle()
     val payrollPeriod by viewModel.payrollPeriod.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val snackbar = remember { SnackbarHostState() }
@@ -81,6 +83,7 @@ fun EmployeeScreen(
                         "SAVED" -> context.getString(R.string.employee_saved)
                         "ATTENDANCE_SAVED" -> context.getString(R.string.attendance_saved)
                         "SALARY_PAID" -> context.getString(R.string.salary_paid)
+                        "ERROR" -> context.getString(R.string.error_generic)
                         else -> event.text
                     },
                 )
@@ -97,6 +100,9 @@ fun EmployeeScreen(
                 title = { Text(context.getString(R.string.employees_title)) },
                 navigationIcon = {
                     TextButton(onClick = onBack) { Text(context.getString(R.string.button_back)) }
+                },
+                actions = {
+                    TextButton(onClick = onOpenReport) { Text(context.getString(R.string.attendance_report_open)) }
                 },
             )
         },
@@ -127,6 +133,7 @@ fun EmployeeScreen(
                     period = payrollPeriod,
                     onPeriod = viewModel::selectPayrollPeriod,
                     onPay = viewModel::paySalary,
+                    paying = paying,
                 )
             }
         }
@@ -249,6 +256,7 @@ private fun PayrollTab(
     period: Int,
     onPeriod: (Int) -> Unit,
     onPay: (Employee) -> Unit,
+    paying: Boolean,
 ) {
     val context = LocalContext.current
     Column(modifier = Modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -276,7 +284,7 @@ private fun PayrollTab(
                             )
                             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                                 Text(RupiahFormatter.format(item.dibayar), style = MaterialTheme.typography.titleMedium, color = Sukses)
-                                Button(onClick = { onPay(item.karyawan) }, enabled = item.dibayar > 0 && !item.sudahDibayar) {
+                                Button(onClick = { onPay(item.karyawan) }, enabled = item.dibayar > 0 && !item.sudahDibayar && !paying) {
                                     Text(if (item.sudahDibayar) context.getString(R.string.payroll_paid) else context.getString(R.string.payroll_pay))
                                 }
                             }

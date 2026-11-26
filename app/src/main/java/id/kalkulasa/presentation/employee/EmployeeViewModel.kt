@@ -90,7 +90,7 @@ class EmployeeViewModel @Inject constructor(
             val upah = HitungGajiUseCase.upahUntukStatus(employee.upahHarian, status)
             attendanceRepository.mark(karyawanId, _selectedDate.value, status, upah, catatan)
                 .onSuccess { _events.send(EmployeeEvent.Message("ATTENDANCE_SAVED")) }
-                .onFailure { _events.send(EmployeeEvent.Message(it.message ?: "ERROR")) }
+                .onFailure { _events.send(EmployeeEvent.Message("ERROR")) }
         }
     }
 
@@ -135,7 +135,11 @@ class EmployeeViewModel @Inject constructor(
         }
     }
 
+    private val _paying = MutableStateFlow(false)
+    val paying: StateFlow<Boolean> = _paying.asStateFlow()
+
     fun paySalary(employee: Employee) {
+        if (_paying.value) return
         val item = _payroll.value.find { it.karyawan.id == employee.id } ?: return
         val monthsBack = _payrollPeriod.value
         val calendar = java.util.Calendar.getInstance()
@@ -147,13 +151,15 @@ class EmployeeViewModel @Inject constructor(
         val to = DateFormatter.endOfDay(calendar.timeInMillis)
 
         val kategori = context.getString(R.string.expense_gaji)
+        _paying.value = true
         viewModelScope.launch {
             payrollRepository.pay(
                 employee, from, to, item.totalUpah, item.totalKasbon, item.dibayar,
                 kategori, "$kategori ${employee.nama}",
             )
                 .onSuccess { loadPayroll(); _events.send(EmployeeEvent.Message("SALARY_PAID")) }
-                .onFailure { _events.send(EmployeeEvent.Message(it.message ?: "ERROR")) }
+                .onFailure { _events.send(EmployeeEvent.Message("ERROR")) }
+            _paying.value = false
         }
     }
 }
