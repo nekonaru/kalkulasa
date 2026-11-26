@@ -1,5 +1,21 @@
 # Changelog
 
+## v3.1.0
+
+Phase 2 of the Kalkulasa UMKM Suite: storage locations, unit conversion, batches and expiry dates.
+
+### New features
+
+- **Location and shelf.** Every product can carry a storage location from the stock form.
+- **Unit conversion.** Products can define a conversion unit and quantity, for example one carton equals 12 pieces.
+- **Batch number.** Each stock-in entry can record a batch number for traceability.
+- **Expiry date.** Stock-in can store an expiry date in yyyy-MM-dd format, recorded in the movement history.
+
+### Improvements
+
+- **Backup format v11** includes locations, conversions, batches and expiry. Older backups still restore.
+- **Automatic v10 to v11 database migration** with no data loss.
+
 ## v3.0.0
 
 Phase 1 of the Kalkulasa UMKM Suite: promotional cashier, members, vouchers, deposits, wholesale pricing and VAT.

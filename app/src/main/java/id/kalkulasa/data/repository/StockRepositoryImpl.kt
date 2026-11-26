@@ -32,6 +32,8 @@ class StockRepositoryImpl @Inject constructor(
         hargaBeli: Long,
         pemasok: String?,
         catatan: String?,
+        batch: String?,
+        expiry: Long?,
     ): Result<Unit> {
         if (qty <= 0.0) return Result.failure(IllegalArgumentException("qty"))
         if (hargaBeli <= 0) return Result.failure(IllegalArgumentException("Harga beli harus lebih dari 0"))
@@ -76,6 +78,8 @@ class StockRepositoryImpl @Inject constructor(
                         hargaSatuan = hargaBeli,
                         referensiId = purchaseId,
                         catatan = catatan?.ifBlank { null },
+                        batch = batch?.ifBlank { null },
+                        expiry = expiry,
                         waktu = now,
                         updatedAt = now,
                         deviceId = deviceId,

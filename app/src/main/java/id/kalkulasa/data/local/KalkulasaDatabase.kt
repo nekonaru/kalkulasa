@@ -65,7 +65,7 @@ import java.util.UUID
         DepositEntity::class,
         SalesTargetEntity::class,
     ],
-    version = 10,
+    version = 11,
     exportSchema = true,
 )
 abstract class KalkulasaDatabase : RoomDatabase() {
@@ -92,6 +92,15 @@ abstract class KalkulasaDatabase : RoomDatabase() {
 
     companion object {
         const val NAME = "kalkulasa.db"
+
+        /** Migration 10 -> 11: locations, unit conversion, batch and expiry. */
+        val MIGRATION_10_11 = androidx.room.migration.Migration(10, 11) { db ->
+            db.execSQL("ALTER TABLE `product` ADD COLUMN `lokasi` TEXT")
+            db.execSQL("ALTER TABLE `product` ADD COLUMN `satuanKonversi` TEXT")
+            db.execSQL("ALTER TABLE `product` ADD COLUMN `qtyKonversi` REAL NOT NULL DEFAULT 0")
+            db.execSQL("ALTER TABLE `stock_movement` ADD COLUMN `batch` TEXT")
+            db.execSQL("ALTER TABLE `stock_movement` ADD COLUMN `expiry` INTEGER")
+        }
 
         /** Migration 9 -> 10: vouchers, deposits, wholesale price, favourites and PPN. */
         val MIGRATION_9_10 = androidx.room.migration.Migration(9, 10) { db ->
@@ -305,7 +314,7 @@ abstract class KalkulasaDatabase : RoomDatabase() {
         fun build(context: Context, deviceId: String, passphrase: ByteArray): KalkulasaDatabase =
             Room.databaseBuilder(context, KalkulasaDatabase::class.java, NAME)
                 .openHelperFactory(SupportOpenHelperFactory(passphrase))
-                .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, MIGRATION_7_8, MIGRATION_8_9, MIGRATION_9_10)
+                .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, MIGRATION_7_8, MIGRATION_8_9, MIGRATION_9_10, MIGRATION_10_11)
                 .addCallback(SeedCallback(deviceId))
                 .build()
     }

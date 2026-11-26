@@ -78,6 +78,9 @@ data class Product(
     val isFavorite: Boolean = false,
     val hargaGrosir: Long = 0L,
     val qtyGrosir: Double = 0.0,
+    val lokasi: String? = null,
+    val satuanKonversi: String? = null,
+    val qtyKonversi: Double = 0.0,
 ) {
     val isLowStock: Boolean get() = stok <= stokMinimum
 }

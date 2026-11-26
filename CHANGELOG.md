@@ -1,5 +1,21 @@
 # Changelog
 
+## v3.1.0
+
+Fase 2 dari Kalkulasa Suite UMKM: lokasi penyimpanan, konversi satuan, batch, dan tanggal kedaluwarsa.
+
+### Fitur baru
+
+- **Lokasi dan rak.** Setiap produk bisa diberi lokasi penyimpanan dari form stok.
+- **Konversi satuan.** Produk bisa punya satuan konversi dan jumlah per konversi, misalnya 1 dus berisi 12 pcs.
+- **Nomor batch.** Setiap stok masuk bisa dicatat dengan nomor batch untuk pelacakan.
+- **Tanggal kedaluwarsa.** Stok masuk bisa menyimpan tanggal expiry dalam format yyyy-MM-dd dan ikut tercatat di riwayat pergerakan.
+
+### Peningkatan
+
+- **Backup format v11** mencakup lokasi, konversi satuan, batch, dan expiry. Backup lama tetap bisa dipulihkan.
+- **Migrasi database otomatis v10 ke v11** tanpa menghapus data lama.
+
 ## v3.0.0
 
 Fase 1 dari Kalkulasa Suite UMKM: kasir promosi, member, voucher, deposit, harga grosir, dan PPN.

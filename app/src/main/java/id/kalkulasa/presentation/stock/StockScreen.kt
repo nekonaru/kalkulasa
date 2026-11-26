@@ -143,8 +143,8 @@ fun StockScreen(
             categories = categories,
             onAddCategory = viewModel::addCategory,
             onDismiss = { showAddProduct = false },
-            onSave = { nama, kategoriId, satuan, barcode, hargaBeli, hargaJual, stokAwal, stokMinimum, pin, fav, grosir, qtyGrosir ->
-                viewModel.saveProduct(null, nama, kategoriId, satuan, barcode, hargaBeli, hargaJual, stokAwal, stokMinimum, pin, fav, grosir, qtyGrosir)
+            onSave = { nama, kategoriId, satuan, barcode, hargaBeli, hargaJual, stokAwal, stokMinimum, pin, fav, grosir, qtyGrosir, lokasi, satuanKonversi, qtyKonversi ->
+                viewModel.saveProduct(null, nama, kategoriId, satuan, barcode, hargaBeli, hargaJual, stokAwal, stokMinimum, pin, fav, grosir, qtyGrosir, lokasi, satuanKonversi, qtyKonversi)
                 showAddProduct = false
             },
         )
@@ -155,8 +155,8 @@ fun StockScreen(
             categories = categories,
             onAddCategory = viewModel::addCategory,
             onDismiss = { editingProduct = null },
-            onSave = { nama, kategoriId, satuan, barcode, hargaBeli, hargaJual, _, stokMinimum, pin, fav, grosir, qtyGrosir ->
-                viewModel.saveProduct(product, nama, kategoriId, satuan, barcode, hargaBeli, hargaJual, product.stok, stokMinimum, pin, fav, grosir, qtyGrosir)
+            onSave = { nama, kategoriId, satuan, barcode, hargaBeli, hargaJual, _, stokMinimum, pin, fav, grosir, qtyGrosir, lokasi, satuanKonversi, qtyKonversi ->
+                viewModel.saveProduct(product, nama, kategoriId, satuan, barcode, hargaBeli, hargaJual, product.stok, stokMinimum, pin, fav, grosir, qtyGrosir, lokasi, satuanKonversi, qtyKonversi)
                 editingProduct = null
             },
         )
@@ -252,6 +252,8 @@ private fun StockEntryTab(
     var price by remember { mutableStateOf("") }
     var pemasok by remember { mutableStateOf("") }
     var catatan by remember { mutableStateOf("") }
+    var batch by remember { mutableStateOf("") }
+    var expiryText by remember { mutableStateOf("") }
     var newQty by remember { mutableStateOf("") }
     var reason by remember { mutableStateOf(context.getString(R.string.reason_opname)) }
     var reasonExpanded by remember { mutableStateOf(false) }
@@ -297,10 +299,17 @@ private fun StockEntryTab(
             OutlinedTextField(value = price, onValueChange = { price = it.filter { c -> c.isDigit() } }, label = { Text(context.getString(R.string.stock_in_price)) }, singleLine = true, prefix = { Text("Rp ") }, modifier = Modifier.fillMaxWidth())
             OutlinedTextField(value = pemasok, onValueChange = { pemasok = it }, label = { Text(context.getString(R.string.stock_in_supplier)) }, singleLine = true, modifier = Modifier.fillMaxWidth())
             OutlinedTextField(value = catatan, onValueChange = { catatan = it }, label = { Text(context.getString(R.string.stock_in_note)) }, singleLine = true, modifier = Modifier.fillMaxWidth())
+            OutlinedTextField(value = batch, onValueChange = { batch = it }, label = { Text(context.getString(R.string.stock_batch)) }, singleLine = true, modifier = Modifier.fillMaxWidth())
+            OutlinedTextField(value = expiryText, onValueChange = { expiryText = it }, label = { Text(context.getString(R.string.stock_expiry_hint)) }, singleLine = true, modifier = Modifier.fillMaxWidth())
             Button(
                 onClick = {
-                    viewModel.recordStockIn(selectedProductId, qty, price, pemasok, catatan)
-                    qty = ""; price = ""; pemasok = ""; catatan = ""
+                    val expiry = expiryText.takeIf { it.isNotBlank() }?.let { text ->
+                        runCatching {
+                            java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US).parse(text.trim())?.time
+                        }.getOrNull()
+                    }
+                    viewModel.recordStockIn(selectedProductId, qty, price, pemasok, catatan, batch, expiry)
+                    qty = ""; price = ""; pemasok = ""; catatan = ""; batch = ""; expiryText = ""
                 },
                 enabled = selectedProductId != null && qty.isNotBlank() && price.isNotBlank(),
                 modifier = Modifier.fillMaxWidth().height(52.dp),
@@ -391,7 +400,7 @@ private fun ProductFormDialog(
     categories: List<id.kalkulasa.domain.model.Category>,
     onAddCategory: (String) -> Unit,
     onDismiss: () -> Unit,
-    onSave: (nama: String, kategoriId: String?, satuan: String, barcode: String, hargaBeli: Long, hargaJual: Long, stokAwal: Double, stokMinimum: Double, isPinned: Boolean, isFavorite: Boolean, hargaGrosir: Long, qtyGrosir: Double) -> Unit,
+    onSave: (nama: String, kategoriId: String?, satuan: String, barcode: String, hargaBeli: Long, hargaJual: Long, stokAwal: Double, stokMinimum: Double, isPinned: Boolean, isFavorite: Boolean, hargaGrosir: Long, qtyGrosir: Double, lokasi: String?, satuanKonversi: String?, qtyKonversi: Double) -> Unit,
 ) {
     val context = LocalContext.current
     var nama by remember(initial) { mutableStateOf(initial?.nama ?: "") }
@@ -409,6 +418,9 @@ private fun ProductFormDialog(
     var isFavorite by remember(initial) { mutableStateOf(initial?.isFavorite ?: false) }
     var hargaGrosir by remember(initial) { mutableStateOf(initial?.hargaGrosir?.takeIf { it > 0 }?.toString() ?: "") }
     var qtyGrosir by remember(initial) { mutableStateOf(initial?.qtyGrosir?.takeIf { it > 0 }?.let { DateFormatter.formatQty(it) } ?: "") }
+    var lokasi by remember(initial) { mutableStateOf(initial?.lokasi ?: "") }
+    var satuanKonversi by remember(initial) { mutableStateOf(initial?.satuanKonversi ?: "") }
+    var qtyKonversi by remember(initial) { mutableStateOf(initial?.qtyKonversi?.takeIf { it > 0 }?.let { DateFormatter.formatQty(it) } ?: "") }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -464,6 +476,15 @@ private fun ProductFormDialog(
                     OutlinedTextField(qtyGrosir, { qtyGrosir = it.filter { c -> c.isDigit() || c == ',' || c == '.' } }, label = { Text(context.getString(R.string.product_wholesale_qty)) }, singleLine = true, modifier = Modifier.fillMaxWidth())
                 }
                 item {
+                    OutlinedTextField(lokasi, { lokasi = it }, label = { Text(context.getString(R.string.product_location)) }, singleLine = true, modifier = Modifier.fillMaxWidth())
+                }
+                item {
+                    OutlinedTextField(satuanKonversi, { satuanKonversi = it }, label = { Text(context.getString(R.string.product_conversion_unit)) }, singleLine = true, modifier = Modifier.fillMaxWidth())
+                }
+                item {
+                    OutlinedTextField(qtyKonversi, { qtyKonversi = it.filter { c -> c.isDigit() || c == ',' || c == '.' } }, label = { Text(context.getString(R.string.product_conversion_qty)) }, singleLine = true, modifier = Modifier.fillMaxWidth())
+                }
+                item {
                     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                         Checkbox(checked = isFavorite, onCheckedChange = { isFavorite = it })
                         Text(context.getString(R.string.product_favorite), style = MaterialTheme.typography.bodyLarge)
@@ -493,6 +514,9 @@ private fun ProductFormDialog(
                         isFavorite,
                         hargaGrosir.toLongOrNull() ?: 0L,
                         qtyGrosir.replace(',', '.').toDoubleOrNull() ?: 0.0,
+                        lokasi.ifBlank { null },
+                        satuanKonversi.ifBlank { null },
+                        qtyKonversi.replace(',', '.').toDoubleOrNull() ?: 0.0,
                     )
                 },
             ) { Text(context.getString(R.string.button_save)) }

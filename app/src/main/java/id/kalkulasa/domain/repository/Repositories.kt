@@ -103,7 +103,15 @@ interface CategoryRepository {
 
 interface StockRepository {
     fun observeRecentMovements(limit: Int = 100): Flow<List<StockMovement>>
-    suspend fun recordStockIn(productId: String, qty: Double, hargaBeli: Long, pemasok: String?, catatan: String?): Result<Unit>
+    suspend fun recordStockIn(
+        productId: String,
+        qty: Double,
+        hargaBeli: Long,
+        pemasok: String?,
+        catatan: String?,
+        batch: String? = null,
+        expiry: Long? = null,
+    ): Result<Unit>
     suspend fun recordAdjustment(productId: String, newQty: Double, reason: String): Result<Unit>
     /** Apply a physical stock take atomically. Returns the number of products changed. */
     suspend fun applyAdjustments(items: List<Pair<String, Double>>, reason: String): Result<Int>

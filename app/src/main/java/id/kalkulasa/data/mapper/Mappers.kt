@@ -36,6 +36,9 @@ fun ProductEntity.toDomain() = Product(
     isFavorite = isFavorite,
     hargaGrosir = hargaGrosir,
     qtyGrosir = qtyGrosir,
+    lokasi = lokasi,
+    satuanKonversi = satuanKonversi,
+    qtyKonversi = qtyKonversi,
 )
 
 fun StockMovementEntity.toDomain(produkNama: String) = StockMovement(

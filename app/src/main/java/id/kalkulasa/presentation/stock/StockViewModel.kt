@@ -72,6 +72,9 @@ class StockViewModel @Inject constructor(
         isFavorite: Boolean = false,
         hargaGrosir: Long = 0L,
         qtyGrosir: Double = 0.0,
+    lokasi: String? = null,
+    satuanKonversi: String? = null,
+    qtyKonversi: Double = 0.0,
     ) {
         viewModelScope.launch {
             val trimmed = nama.trim()
@@ -93,6 +96,9 @@ class StockViewModel @Inject constructor(
                 isFavorite = if (base != null) base.isFavorite else isFavorite,
                 hargaGrosir = if (base != null) base.hargaGrosir else hargaGrosir,
                 qtyGrosir = if (base != null) base.qtyGrosir else qtyGrosir,
+                lokasi = if (base != null) base.lokasi else lokasi,
+                satuanKonversi = if (base != null) base.satuanKonversi else satuanKonversi,
+                qtyKonversi = if (base != null) base.qtyKonversi else qtyKonversi,
             )
             productRepository.save(product)
             _events.send(StockEvent.Message("SAVED"))
@@ -109,7 +115,15 @@ class StockViewModel @Inject constructor(
         viewModelScope.launch { categoryRepository.addCategory(trimmed, id.kalkulasa.domain.model.CategoryType.PRODUCT) }
     }
 
-    fun recordStockIn(productId: String?, qtyText: String, priceText: String, pemasok: String, catatan: String) {
+    fun recordStockIn(
+        productId: String?,
+        qtyText: String,
+        priceText: String,
+        pemasok: String,
+        catatan: String,
+        batch: String = "",
+        expiry: Long? = null,
+    ) {
         val id = productId ?: return
         val qty = qtyText.replace(',', '.').toDoubleOrNull() ?: return
         val price = priceText.filter { it.isDigit() }.toLongOrNull() ?: return
@@ -118,7 +132,7 @@ class StockViewModel @Inject constructor(
             return
         }
         viewModelScope.launch {
-            stockRepository.recordStockIn(id, qty, price, pemasok, catatan)
+            stockRepository.recordStockIn(id, qty, price, pemasok, catatan, batch, expiry)
                 .onSuccess { _events.send(StockEvent.Message("STOCK_IN_SAVED")) }
                 .onFailure { _events.send(StockEvent.Message("ERROR")) }
         }

@@ -500,4 +500,9 @@
     <string name="voucher_days">Valid for (days)</string>
     <string name="deposit_add">Add deposit</string>
     <string name="deposit_empty">No customer deposits yet.</string>
+    <string name="stock_batch">Batch number</string>
+    <string name="stock_expiry_hint">Expiry (yyyy-MM-dd)</string>
+    <string name="product_location">Location/shelf</string>
+    <string name="product_conversion_unit">Conversion unit</string>
+    <string name="product_conversion_qty">Quantity per conversion</string>
 </resources>

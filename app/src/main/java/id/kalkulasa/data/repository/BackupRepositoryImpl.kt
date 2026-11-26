@@ -152,6 +152,7 @@ class BackupRepositoryImpl @Inject constructor(
         jPut(this, "fotoUri", fotoUri); put("diarsipkan", diarsipkan); put("isPinned", isPinned)
         put("updatedAt", updatedAt); put("isFavorite", isFavorite)
         put("hargaGrosir", hargaGrosir); put("qtyGrosir", qtyGrosir)
+        jPut(this, "lokasi", lokasi); jPut(this, "satuanKonversi", satuanKonversi); put("qtyKonversi", qtyKonversi)
         jPut(this, "deletedAt", deletedAt); put("deviceId", deviceId); put("syncStatus", syncStatus)
     }
 
@@ -159,6 +160,7 @@ class BackupRepositoryImpl @Inject constructor(
         put("id", id); put("produkId", produkId); put("tipe", tipe); put("jumlah", jumlah)
         put("hargaSatuan", hargaSatuan); jPut(this, "referensiId", referensiId)
         jPut(this, "catatan", catatan); put("waktu", waktu); put("updatedAt", updatedAt)
+        jPut(this, "batch", batch); jPut(this, "expiry", expiry)
         jPut(this, "deletedAt", deletedAt); put("deviceId", deviceId); put("syncStatus", syncStatus)
     }
 
@@ -306,6 +308,7 @@ class BackupRepositoryImpl @Inject constructor(
         fotoUri = str("fotoUri"), diarsipkan = getBoolean("diarsipkan"),
         isPinned = optBoolean("isPinned", false), isFavorite = optBoolean("isFavorite", false),
         hargaGrosir = optLong("hargaGrosir", 0L), qtyGrosir = optDouble("qtyGrosir", 0.0),
+        lokasi = str("lokasi"), satuanKonversi = str("satuanKonversi"), qtyKonversi = optDouble("qtyKonversi", 0.0),
         updatedAt = getLong("updatedAt"), deletedAt = optLongOrNull("deletedAt"),
         deviceId = getString("deviceId"), syncStatus = optString("syncStatus", "PENDING"),
     )
@@ -314,6 +317,7 @@ class BackupRepositoryImpl @Inject constructor(
         id = getString("id"), produkId = getString("produkId"), tipe = getString("tipe"),
         jumlah = getDouble("jumlah"), hargaSatuan = getLong("hargaSatuan"),
         referensiId = str("referensiId"), catatan = str("catatan"), waktu = getLong("waktu"),
+        batch = str("batch"), expiry = optLongOrNull("expiry"),
         updatedAt = getLong("updatedAt"), deletedAt = optLongOrNull("deletedAt"),
         deviceId = getString("deviceId"), syncStatus = optString("syncStatus", "PENDING"),
     )
@@ -453,6 +457,6 @@ class BackupRepositoryImpl @Inject constructor(
     )
 
     private companion object {
-        const val BACKUP_VERSION = 10
+        const val BACKUP_VERSION = 11
     }
 }

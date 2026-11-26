@@ -500,4 +500,9 @@
     <string name="voucher_days">Berlaku (hari)</string>
     <string name="deposit_add">Tambah deposit</string>
     <string name="deposit_empty">Belum ada deposit pelanggan.</string>
+    <string name="stock_batch">Nomor batch</string>
+    <string name="stock_expiry_hint">Kedaluwarsa (yyyy-MM-dd)</string>
+    <string name="product_location">Lokasi/rak</string>
+    <string name="product_conversion_unit">Satuan konversi</string>
+    <string name="product_conversion_qty">Jumlah per konversi</string>
 </resources>
