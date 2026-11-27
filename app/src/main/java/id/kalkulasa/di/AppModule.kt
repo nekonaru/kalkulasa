@@ -44,6 +44,10 @@ import id.kalkulasa.data.repository.SupplierRepositoryProImpl
 import id.kalkulasa.domain.repository.SupplierRepositoryPro
 import id.kalkulasa.data.repository.TransferRepositoryImpl
 import id.kalkulasa.domain.repository.TransferRepository
+import id.kalkulasa.data.repository.RecurringExpenseRepositoryImpl
+import id.kalkulasa.domain.repository.RecurringExpenseRepository
+import id.kalkulasa.data.repository.ProfitShareRepositoryImpl
+import id.kalkulasa.domain.repository.ProfitShareRepository
 import id.kalkulasa.data.repository.BudgetRepositoryImpl
 import id.kalkulasa.domain.repository.BudgetRepository
 import id.kalkulasa.data.repository.CashAuditRepositoryImpl
@@ -198,6 +202,19 @@ object AppModule {
     @Singleton
     fun provideTransferRepository(db: KalkulasaDatabase, deviceId: String): TransferRepository =
         TransferRepositoryImpl(db, deviceId)
+
+    @Provides
+    @Singleton
+    fun provideRecurringRepository(
+        db: KalkulasaDatabase,
+        deviceId: String,
+        financeRepository: id.kalkulasa.domain.repository.FinanceRepository,
+    ): RecurringExpenseRepository = RecurringExpenseRepositoryImpl(db, financeRepository, deviceId)
+
+    @Provides
+    @Singleton
+    fun provideProfitShareRepository(db: KalkulasaDatabase, deviceId: String): ProfitShareRepository =
+        ProfitShareRepositoryImpl(db, deviceId)
 
     @Provides
     @Singleton

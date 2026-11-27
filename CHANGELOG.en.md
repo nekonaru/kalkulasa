@@ -1,5 +1,20 @@
 # Changelog
 
+## v4.2.0
+
+Phase 3 of the Kalkulasa UMKM Pro Suite: recurring expenses and profit sharing.
+
+### New features
+
+- **Recurring expenses.** A list of routine costs with category, amount and monthly due day. One tap records it as a real expense.
+- **Profit sharing.** Set recipients and profit percentages. Total shares never exceed net profit.
+
+### Improvements
+
+- **Tested pro finance rules.** `KeuanganProUseCase` holds month-day clamping and profit allocation as pure Kotlin with unit tests.
+- **Backup format v16** includes recurring expenses and profit shares. Older backups still restore.
+- **Automatic v15 to v16 database migration** with no data loss.
+
 ## v4.1.0
 
 Phase 2 of the Kalkulasa UMKM Pro Suite: suppliers with lead time, stock transfers and internal barcodes.

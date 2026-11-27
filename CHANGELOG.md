@@ -1,5 +1,20 @@
 # Changelog
 
+## v4.2.0
+
+Fase 3 dari Kalkulasa UMKM Pro Suite: pengeluaran berulang dan bagi hasil.
+
+### Fitur baru
+
+- **Pengeluaran berulang.** Daftar biaya rutin dengan kategori, nominal, dan hari jatuh tempo tiap bulan. Satu ketuk menjalankannya sebagai pengeluaran nyata.
+- **Bagi hasil.** Atur penerima dan persentase pembagian laba. Total bagian tidak pernah melebihi laba bersih.
+
+### Peningkatan
+
+- **Aturan keuangan pro teruji.** `KeuanganProUseCase` memuat penyesuaian tanggal bulan dan pembagian laba sebagai Kotlin murni dengan tes unit.
+- **Backup format v16** mencakup pengeluaran berulang dan bagi hasil. Backup lama tetap bisa dipulihkan.
+- **Migrasi database otomatis v15 ke v16** tanpa menghapus data lama.
+
 ## v4.1.0
 
 Fase 2 dari Kalkulasa UMKM Pro Suite: pemasok dengan lead time, transfer stok, dan barcode internal.

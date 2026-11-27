@@ -17,6 +17,8 @@ import id.kalkulasa.data.local.entity.PayrollEntity
 import id.kalkulasa.data.local.entity.PayableEntity
 import id.kalkulasa.data.local.entity.PayablePaymentEntity
 import id.kalkulasa.data.local.entity.SupplierEntity
+import id.kalkulasa.data.local.entity.RecurringExpenseEntity
+import id.kalkulasa.data.local.entity.ProfitShareEntity
 import id.kalkulasa.data.local.entity.StockTransferEntity
 import id.kalkulasa.data.local.entity.StockTransferItemEntity
 import id.kalkulasa.data.local.entity.VoucherUsageEntity
@@ -601,6 +603,30 @@ interface BundleDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertItems(items: List<BundleItemEntity>)
+}
+
+@Dao
+interface RecurringExpenseDao {
+    @Query("SELECT * FROM recurring_expense WHERE deletedAt IS NULL AND aktif = 1 ORDER BY hariPerBulan")
+    fun observeActive(): Flow<List<RecurringExpenseEntity>>
+
+    @Query("SELECT * FROM recurring_expense WHERE deletedAt IS NULL")
+    suspend fun getAll(): List<RecurringExpenseEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsert(row: RecurringExpenseEntity)
+}
+
+@Dao
+interface ProfitShareDao {
+    @Query("SELECT * FROM profit_share WHERE deletedAt IS NULL AND aktif = 1")
+    fun observeActive(): Flow<List<ProfitShareEntity>>
+
+    @Query("SELECT * FROM profit_share WHERE deletedAt IS NULL")
+    suspend fun getAll(): List<ProfitShareEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsert(row: ProfitShareEntity)
 }
 
 @Dao

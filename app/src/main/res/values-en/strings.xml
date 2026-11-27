@@ -551,4 +551,13 @@
     <string name="transfer_empty">No stock transfers yet.</string>
     <string name="barcode_title">Internal Barcode</string>
     <string name="barcode_generate">Generate barcode</string>
+    <string name="keuangan_pro_title">Finance Pro</string>
+    <string name="keuangan_pro_open">Finance Pro</string>
+    <string name="recurring_title">Recurring Expenses</string>
+    <string name="recurring_day">Day of month</string>
+    <string name="recurring_save">Save recurring</string>
+    <string name="profit_share_title">Profit Sharing</string>
+    <string name="profit_share_name">Recipient name</string>
+    <string name="profit_share_percent">Percentage</string>
+    <string name="profit_share_save">Save profit share</string>
 </resources>

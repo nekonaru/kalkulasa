@@ -551,4 +551,13 @@
     <string name="transfer_empty">Belum ada transfer stok.</string>
     <string name="barcode_title">Barcode Internal</string>
     <string name="barcode_generate">Buat barcode</string>
+    <string name="keuangan_pro_title">Keuangan Pro</string>
+    <string name="keuangan_pro_open">Keuangan Pro</string>
+    <string name="recurring_title">Pengeluaran Rutin</string>
+    <string name="recurring_day">Hari per bulan</string>
+    <string name="recurring_save">Simpan rutin</string>
+    <string name="profit_share_title">Bagi Hasil</string>
+    <string name="profit_share_name">Nama penerima</string>
+    <string name="profit_share_percent">Persentase</string>
+    <string name="profit_share_save">Simpan bagi hasil</string>
 </resources>

@@ -35,6 +35,8 @@ import id.kalkulasa.data.local.entity.BundleEntity
 import id.kalkulasa.data.local.entity.BundleItemEntity
 import id.kalkulasa.data.local.entity.VoucherUsageEntity
 import id.kalkulasa.data.local.entity.SupplierEntity
+import id.kalkulasa.data.local.entity.RecurringExpenseEntity
+import id.kalkulasa.data.local.entity.ProfitShareEntity
 import id.kalkulasa.data.local.entity.StockTransferEntity
 import id.kalkulasa.data.local.entity.StockTransferItemEntity
 import id.kalkulasa.data.local.entity.BudgetEntity
@@ -79,13 +81,15 @@ import java.util.UUID
         BundleItemEntity::class,
         VoucherUsageEntity::class,
         SupplierEntity::class,
+        RecurringExpenseEntity::class,
+        ProfitShareEntity::class,
         StockTransferEntity::class,
         StockTransferItemEntity::class,
         BudgetEntity::class,
         CashAuditEntity::class,
         SalesTargetEntity::class,
     ],
-    version = 15,
+    version = 16,
     exportSchema = true,
 )
 abstract class KalkulasaDatabase : RoomDatabase() {
@@ -114,11 +118,36 @@ abstract class KalkulasaDatabase : RoomDatabase() {
     abstract fun voucherUsageDao(): id.kalkulasa.data.local.dao.VoucherUsageDao
     abstract fun supplierDao(): id.kalkulasa.data.local.dao.SupplierDao
     abstract fun stockTransferDao(): id.kalkulasa.data.local.dao.StockTransferDao
+    abstract fun recurringExpenseDao(): id.kalkulasa.data.local.dao.RecurringExpenseDao
+    abstract fun profitShareDao(): id.kalkulasa.data.local.dao.ProfitShareDao
     abstract fun budgetDao(): id.kalkulasa.data.local.dao.BudgetDao
     abstract fun cashAuditDao(): id.kalkulasa.data.local.dao.CashAuditDao
 
     companion object {
         const val NAME = "kalkulasa.db"
+
+        /** Migration 15 -> 16: recurring expenses and profit sharing. */
+        val MIGRATION_15_16 = androidx.room.migration.Migration(15, 16) { db ->
+            db.execSQL(
+                """CREATE TABLE IF NOT EXISTS `recurring_expense` (
+                    `id` TEXT NOT NULL PRIMARY KEY, `kategoriNama` TEXT NOT NULL,
+                    `nominal` INTEGER NOT NULL, `hariPerBulan` INTEGER NOT NULL,
+                    `aktif` INTEGER NOT NULL, `terakhirDijalankan` TEXT,
+                    `updatedAt` INTEGER NOT NULL, `deletedAt` INTEGER,
+                    `deviceId` TEXT NOT NULL, `syncStatus` TEXT NOT NULL
+                )""".trimIndent(),
+            )
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_recurring_expense_aktif` ON `recurring_expense` (`aktif`)")
+            db.execSQL(
+                """CREATE TABLE IF NOT EXISTS `profit_share` (
+                    `id` TEXT NOT NULL PRIMARY KEY, `namaPenerima` TEXT NOT NULL,
+                    `persentase` INTEGER NOT NULL, `aktif` INTEGER NOT NULL,
+                    `updatedAt` INTEGER NOT NULL, `deletedAt` INTEGER,
+                    `deviceId` TEXT NOT NULL, `syncStatus` TEXT NOT NULL
+                )""".trimIndent(),
+            )
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_profit_share_aktif` ON `profit_share` (`aktif`)")
+        }
 
         /** Migration 14 -> 15: suppliers, lead time and stock transfers. */
         val MIGRATION_14_15 = androidx.room.migration.Migration(14, 15) { db ->
@@ -451,7 +480,7 @@ abstract class KalkulasaDatabase : RoomDatabase() {
         fun build(context: Context, deviceId: String, passphrase: ByteArray): KalkulasaDatabase =
             Room.databaseBuilder(context, KalkulasaDatabase::class.java, NAME)
                 .openHelperFactory(SupportOpenHelperFactory(passphrase))
-                .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, MIGRATION_7_8, MIGRATION_8_9, MIGRATION_9_10, MIGRATION_10_11, MIGRATION_11_12, MIGRATION_12_13, MIGRATION_13_14, MIGRATION_14_15)
+                .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, MIGRATION_7_8, MIGRATION_8_9, MIGRATION_9_10, MIGRATION_10_11, MIGRATION_11_12, MIGRATION_12_13, MIGRATION_13_14, MIGRATION_14_15, MIGRATION_15_16)
                 .addCallback(SeedCallback(deviceId))
                 .build()
     }

@@ -310,6 +310,32 @@ data class CashAuditEntity(
     val syncStatus: String = SyncStatus.PENDING,
 )
 
+@Entity(tableName = "recurring_expense", indices = [Index("aktif")])
+data class RecurringExpenseEntity(
+    @PrimaryKey val id: String,
+    val kategoriNama: String,
+    val nominal: Long,
+    val hariPerBulan: Int,
+    val aktif: Boolean,
+    val terakhirDijalankan: String?,
+    val updatedAt: Long,
+    val deletedAt: Long? = null,
+    val deviceId: String,
+    val syncStatus: String = SyncStatus.PENDING,
+)
+
+@Entity(tableName = "profit_share", indices = [Index("aktif")])
+data class ProfitShareEntity(
+    @PrimaryKey val id: String,
+    val namaPenerima: String,
+    val persentase: Int,
+    val aktif: Boolean,
+    val updatedAt: Long,
+    val deletedAt: Long? = null,
+    val deviceId: String,
+    val syncStatus: String = SyncStatus.PENDING,
+)
+
 @Entity(tableName = "supplier", indices = [Index("nama")])
 data class SupplierEntity(
     @PrimaryKey val id: String,

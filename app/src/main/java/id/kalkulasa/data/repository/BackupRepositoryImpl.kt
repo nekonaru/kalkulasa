@@ -63,6 +63,8 @@ class BackupRepositoryImpl @Inject constructor(
         json.put("supplier", JSONArray().also { arr -> db.supplierDao().getAll().forEach { arr.put(it.toJson()) } })
         json.put("stock_transfer", JSONArray().also { arr -> db.stockTransferDao().getAll().forEach { arr.put(it.toJson()) } })
         json.put("stock_transfer_item", JSONArray().also { arr -> db.stockTransferDao().getAllItems().forEach { arr.put(it.toJson()) } })
+        json.put("recurring_expense", JSONArray().also { arr -> db.recurringExpenseDao().getAll().forEach { arr.put(it.toJson()) } })
+        json.put("profit_share", JSONArray().also { arr -> db.profitShareDao().getAll().forEach { arr.put(it.toJson()) } })
         json.toString()
     }
 
@@ -111,6 +113,8 @@ class BackupRepositoryImpl @Inject constructor(
         val suppliersPro = root.optJSONArray("supplier")?.toList { it.toSupplierPro() } ?: emptyList()
         val transfers = root.optJSONArray("stock_transfer")?.toList { it.toStockTransfer() } ?: emptyList()
         val transferItems = root.optJSONArray("stock_transfer_item")?.toList { it.toStockTransferItem() } ?: emptyList()
+        val recurringExpenses = root.optJSONArray("recurring_expense")?.toList { it.toRecurringExpense() } ?: emptyList()
+        val profitShares = root.optJSONArray("profit_share")?.toList { it.toProfitShare() } ?: emptyList()
 
         db.withTransaction {
             db.clearAllTables()
@@ -145,6 +149,8 @@ class BackupRepositoryImpl @Inject constructor(
             suppliersPro.forEach { db.supplierDao().upsert(it) }
             transfers.forEach { db.stockTransferDao().upsert(it) }
             transferItems.forEach { db.stockTransferDao().insertItems(listOf(it)) }
+            recurringExpenses.forEach { db.recurringExpenseDao().upsert(it) }
+            profitShares.forEach { db.profitShareDao().upsert(it) }
         }
     }
 
@@ -449,6 +455,18 @@ class BackupRepositoryImpl @Inject constructor(
         deviceId = getString("deviceId"), syncStatus = optString("syncStatus", "PENDING"),
     )
 
+    private fun id.kalkulasa.data.local.entity.RecurringExpenseEntity.toJson() = JSONObject().apply {
+        put("id", id); put("kategoriNama", kategoriNama); put("nominal", nominal)
+        put("hariPerBulan", hariPerBulan); put("aktif", aktif); jPut(this, "terakhirDijalankan", terakhirDijalankan)
+        put("updatedAt", updatedAt); put("deviceId", deviceId); put("syncStatus", syncStatus)
+    }
+
+    private fun id.kalkulasa.data.local.entity.ProfitShareEntity.toJson() = JSONObject().apply {
+        put("id", id); put("namaPenerima", namaPenerima); put("persentase", persentase)
+        put("aktif", aktif); put("updatedAt", updatedAt)
+        put("deviceId", deviceId); put("syncStatus", syncStatus)
+    }
+
     private fun id.kalkulasa.data.local.entity.SupplierEntity.toJson() = JSONObject().apply {
         put("id", id); put("nama", nama); jPut(this, "telepon", telepon); put("leadTimeDays", leadTimeDays)
         put("updatedAt", updatedAt); jPut(this, "deletedAt", deletedAt)
@@ -466,6 +484,19 @@ class BackupRepositoryImpl @Inject constructor(
         put("updatedAt", updatedAt); jPut(this, "deletedAt", deletedAt)
         put("deviceId", deviceId); put("syncStatus", syncStatus)
     }
+
+    private fun JSONObject.toRecurringExpense() = id.kalkulasa.data.local.entity.RecurringExpenseEntity(
+        id = getString("id"), kategoriNama = getString("kategoriNama"), nominal = getLong("nominal"),
+        hariPerBulan = getInt("hariPerBulan"), aktif = getBoolean("aktif"),
+        terakhirDijalankan = str("terakhirDijalankan"), updatedAt = getLong("updatedAt"),
+        deviceId = getString("deviceId"), syncStatus = optString("syncStatus", "PENDING"),
+    )
+
+    private fun JSONObject.toProfitShare() = id.kalkulasa.data.local.entity.ProfitShareEntity(
+        id = getString("id"), namaPenerima = getString("namaPenerima"), persentase = getInt("persentase"),
+        aktif = getBoolean("aktif"), updatedAt = getLong("updatedAt"),
+        deviceId = getString("deviceId"), syncStatus = optString("syncStatus", "PENDING"),
+    )
 
     private fun JSONObject.toSupplierPro() = id.kalkulasa.data.local.entity.SupplierEntity(
         id = getString("id"), nama = getString("nama"), telepon = str("telepon"),
@@ -627,6 +658,6 @@ class BackupRepositoryImpl @Inject constructor(
     )
 
     private companion object {
-        const val BACKUP_VERSION = 15
+        const val BACKUP_VERSION = 16
     }
 }

@@ -29,6 +29,8 @@ import id.kalkulasa.domain.model.CashAudit
 import id.kalkulasa.domain.model.Bundle
 import id.kalkulasa.domain.model.Supplier
 import id.kalkulasa.domain.model.StockTransfer
+import id.kalkulasa.domain.model.RecurringExpense
+import id.kalkulasa.domain.model.ProfitShare
 import id.kalkulasa.domain.model.Preorder
 import id.kalkulasa.domain.model.PreorderLine
 import id.kalkulasa.domain.model.Voucher
@@ -175,6 +177,17 @@ interface SupplierRepositoryPro {
 interface TransferRepository {
     fun observeAll(): Flow<List<StockTransfer>>
     suspend fun save(dari: String, ke: String, catatan: String?, items: List<Pair<String, Double>>): Result<Unit>
+}
+
+interface RecurringExpenseRepository {
+    fun observeActive(): Flow<List<RecurringExpense>>
+    suspend fun save(kategori: String, nominal: Long, hari: Int): Result<Unit>
+    suspend fun runOnce(id: String): Result<Unit>
+}
+
+interface ProfitShareRepository {
+    fun observeActive(): Flow<List<ProfitShare>>
+    suspend fun save(nama: String, persentase: Int): Result<Unit>
 }
 
 interface VoucherRepository {
