@@ -569,4 +569,10 @@
     <string name="crm_pro_empty">No customers yet.</string>
     <string name="crm_rfm">RFM score</string>
     <string name="crm_birthday">Birthday</string>
+    <string name="sistem_title">Daily Checklist</string>
+    <string name="sistem_open">Daily Checklist</string>
+    <string name="checklist_name">Task name</string>
+    <string name="checklist_buka">Add opening</string>
+    <string name="checklist_tutup">Add closing</string>
+    <string name="checklist_empty">No checklist tasks yet.</string>
 </resources>

@@ -18,6 +18,8 @@ import id.kalkulasa.data.local.entity.PayableEntity
 import id.kalkulasa.data.local.entity.PayablePaymentEntity
 import id.kalkulasa.data.local.entity.SupplierEntity
 import id.kalkulasa.data.local.entity.RecurringExpenseEntity
+import id.kalkulasa.data.local.entity.ChecklistItemEntity
+import id.kalkulasa.data.local.entity.ChecklistLogEntity
 import id.kalkulasa.data.local.entity.ProfitShareEntity
 import id.kalkulasa.data.local.entity.StockTransferEntity
 import id.kalkulasa.data.local.entity.StockTransferItemEntity
@@ -603,6 +605,27 @@ interface BundleDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertItems(items: List<BundleItemEntity>)
+}
+
+@Dao
+interface ChecklistDao {
+    @Query("SELECT * FROM checklist_item WHERE aktif = 1 ORDER BY nama")
+    fun observeItems(): Flow<List<ChecklistItemEntity>>
+
+    @Query("SELECT * FROM checklist_log WHERE tanggal = :tanggal")
+    suspend fun logsFor(tanggal: Long): List<ChecklistLogEntity>
+
+    @Query("SELECT * FROM checklist_item")
+    suspend fun getAll(): List<ChecklistItemEntity>
+
+    @Query("SELECT * FROM checklist_log")
+    suspend fun getAllLogs(): List<ChecklistLogEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsertItem(item: ChecklistItemEntity)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsertLog(log: ChecklistLogEntity)
 }
 
 @Dao

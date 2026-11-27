@@ -31,6 +31,7 @@ import id.kalkulasa.domain.model.Supplier
 import id.kalkulasa.domain.model.StockTransfer
 import id.kalkulasa.domain.model.RecurringExpense
 import id.kalkulasa.domain.model.ProfitShare
+import id.kalkulasa.domain.model.ChecklistItem
 import id.kalkulasa.domain.model.Preorder
 import id.kalkulasa.domain.model.PreorderLine
 import id.kalkulasa.domain.model.Voucher
@@ -188,6 +189,12 @@ interface RecurringExpenseRepository {
 interface ProfitShareRepository {
     fun observeActive(): Flow<List<ProfitShare>>
     suspend fun save(nama: String, persentase: Int): Result<Unit>
+}
+
+interface ChecklistRepository {
+    fun observeItems(): Flow<List<ChecklistItem>>
+    suspend fun toggle(itemId: String, selesai: Boolean): Result<Unit>
+    suspend fun add(nama: String, fase: String): Result<Unit>
 }
 
 interface VoucherRepository {

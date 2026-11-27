@@ -65,6 +65,8 @@ class BackupRepositoryImpl @Inject constructor(
         json.put("stock_transfer_item", JSONArray().also { arr -> db.stockTransferDao().getAllItems().forEach { arr.put(it.toJson()) } })
         json.put("recurring_expense", JSONArray().also { arr -> db.recurringExpenseDao().getAll().forEach { arr.put(it.toJson()) } })
         json.put("profit_share", JSONArray().also { arr -> db.profitShareDao().getAll().forEach { arr.put(it.toJson()) } })
+        json.put("checklist_item", JSONArray().also { arr -> db.checklistDao().getAll().forEach { arr.put(it.toJson()) } })
+        json.put("checklist_log", JSONArray().also { arr -> db.checklistDao().getAllLogs().forEach { arr.put(it.toJson()) } })
         json.toString()
     }
 
@@ -115,6 +117,8 @@ class BackupRepositoryImpl @Inject constructor(
         val transferItems = root.optJSONArray("stock_transfer_item")?.toList { it.toStockTransferItem() } ?: emptyList()
         val recurringExpenses = root.optJSONArray("recurring_expense")?.toList { it.toRecurringExpense() } ?: emptyList()
         val profitShares = root.optJSONArray("profit_share")?.toList { it.toProfitShare() } ?: emptyList()
+        val checklistItems = root.optJSONArray("checklist_item")?.toList { it.toChecklistItem() } ?: emptyList()
+        val checklistLogs = root.optJSONArray("checklist_log")?.toList { it.toChecklistLog() } ?: emptyList()
 
         db.withTransaction {
             db.clearAllTables()
@@ -151,6 +155,8 @@ class BackupRepositoryImpl @Inject constructor(
             transferItems.forEach { db.stockTransferDao().insertItems(listOf(it)) }
             recurringExpenses.forEach { db.recurringExpenseDao().upsert(it) }
             profitShares.forEach { db.profitShareDao().upsert(it) }
+            checklistItems.forEach { db.checklistDao().upsertItem(it) }
+            checklistLogs.forEach { db.checklistDao().upsertLog(it) }
         }
     }
 
@@ -456,6 +462,16 @@ class BackupRepositoryImpl @Inject constructor(
         deviceId = getString("deviceId"), syncStatus = optString("syncStatus", "PENDING"),
     )
 
+    private fun id.kalkulasa.data.local.entity.ChecklistItemEntity.toJson() = JSONObject().apply {
+        put("id", id); put("nama", nama); put("fase", fase); put("aktif", aktif)
+        put("updatedAt", updatedAt); put("deviceId", deviceId); put("syncStatus", syncStatus)
+    }
+
+    private fun id.kalkulasa.data.local.entity.ChecklistLogEntity.toJson() = JSONObject().apply {
+        put("id", id); put("itemId", itemId); put("tanggal", tanggal); put("selesai", selesai)
+        put("updatedAt", updatedAt); put("deviceId", deviceId); put("syncStatus", syncStatus)
+    }
+
     private fun id.kalkulasa.data.local.entity.RecurringExpenseEntity.toJson() = JSONObject().apply {
         put("id", id); put("kategoriNama", kategoriNama); put("nominal", nominal)
         put("hariPerBulan", hariPerBulan); put("aktif", aktif); jPut(this, "terakhirDijalankan", terakhirDijalankan)
@@ -485,6 +501,18 @@ class BackupRepositoryImpl @Inject constructor(
         put("updatedAt", updatedAt); jPut(this, "deletedAt", deletedAt)
         put("deviceId", deviceId); put("syncStatus", syncStatus)
     }
+
+    private fun JSONObject.toChecklistItem() = id.kalkulasa.data.local.entity.ChecklistItemEntity(
+        id = getString("id"), nama = getString("nama"), fase = getString("fase"),
+        aktif = getBoolean("aktif"), updatedAt = getLong("updatedAt"),
+        deviceId = getString("deviceId"), syncStatus = optString("syncStatus", "PENDING"),
+    )
+
+    private fun JSONObject.toChecklistLog() = id.kalkulasa.data.local.entity.ChecklistLogEntity(
+        id = getString("id"), itemId = getString("itemId"), tanggal = getLong("tanggal"),
+        selesai = getBoolean("selesai"), updatedAt = getLong("updatedAt"),
+        deviceId = getString("deviceId"), syncStatus = optString("syncStatus", "PENDING"),
+    )
 
     private fun JSONObject.toRecurringExpense() = id.kalkulasa.data.local.entity.RecurringExpenseEntity(
         id = getString("id"), kategoriNama = getString("kategoriNama"), nominal = getLong("nominal"),
@@ -660,6 +688,6 @@ class BackupRepositoryImpl @Inject constructor(
     )
 
     private companion object {
-        const val BACKUP_VERSION = 17
+        const val BACKUP_VERSION = 18
     }
 }

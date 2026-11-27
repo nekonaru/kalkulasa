@@ -1,5 +1,22 @@
 # Changelog
 
+## v4.5.0
+
+Fase 6 dan terakhir dari Kalkulasa UMKM Pro Suite: checklist harian buka dan tutup toko.
+
+### Fitur baru
+
+- **Checklist harian.** Buat tugas buka dan tutup toko, lalu centang statusnya setiap hari. Status tersimpan per tanggal sehingga progres harian tidak tercampur.
+
+### Peningkatan
+
+- **Backup format v18** mencakup item dan log checklist. Backup lama tetap bisa dipulihkan.
+- **Migrasi database otomatis v17 ke v18** tanpa menghapus data lama.
+
+### Catatan
+
+Widget layar utama, auto-backup terjadwal, dashboard customizable, audit aksesibilitas penuh, dan pencarian FTS tidak masuk rilis ini dan tetap menjadi utang teknis.
+
 ## v4.4.0
 
 Fase 5 dari Kalkulasa UMKM Pro Suite: CRM dengan skor RFM dan pengingat ulang tahun.

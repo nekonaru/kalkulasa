@@ -569,4 +569,10 @@
     <string name="crm_pro_empty">Belum ada pelanggan.</string>
     <string name="crm_rfm">Skor RFM</string>
     <string name="crm_birthday">Ulang tahun</string>
+    <string name="sistem_title">Checklist Harian</string>
+    <string name="sistem_open">Checklist Harian</string>
+    <string name="checklist_name">Nama tugas</string>
+    <string name="checklist_buka">Tambah buka</string>
+    <string name="checklist_tutup">Tambah tutup</string>
+    <string name="checklist_empty">Belum ada tugas checklist.</string>
 </resources>

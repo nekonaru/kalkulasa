@@ -270,6 +270,8 @@ data class RecurringExpense(val kategori: String, val nominal: Long, val hariPer
 
 data class ProfitShare(val nama: String, val persentase: Int, val aktif: Boolean)
 
+data class ChecklistItem(val id: String, val nama: String, val fase: String, val selesai: Boolean)
+
 data class Deposit(
     val id: String,
     val namaPelanggan: String,

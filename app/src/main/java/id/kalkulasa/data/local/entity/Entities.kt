@@ -311,6 +311,28 @@ data class CashAuditEntity(
     val syncStatus: String = SyncStatus.PENDING,
 )
 
+@Entity(tableName = "checklist_item", indices = [Index("fase")])
+data class ChecklistItemEntity(
+    @PrimaryKey val id: String,
+    val nama: String,
+    val fase: String,
+    val aktif: Boolean,
+    val updatedAt: Long,
+    val deviceId: String,
+    val syncStatus: String = SyncStatus.PENDING,
+)
+
+@Entity(tableName = "checklist_log", indices = [Index("tanggal")])
+data class ChecklistLogEntity(
+    @PrimaryKey val id: String,
+    val itemId: String,
+    val tanggal: Long,
+    val selesai: Boolean,
+    val updatedAt: Long,
+    val deviceId: String,
+    val syncStatus: String = SyncStatus.PENDING,
+)
+
 @Entity(tableName = "recurring_expense", indices = [Index("aktif")])
 data class RecurringExpenseEntity(
     @PrimaryKey val id: String,

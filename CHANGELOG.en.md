@@ -1,5 +1,22 @@
 # Changelog
 
+## v4.5.0
+
+Phase 6 and the final phase of the Kalkulasa UMKM Pro Suite: daily opening and closing checklists.
+
+### New features
+
+- **Daily checklist.** Create opening and closing tasks and tick their status each day. Status is stored per date so daily progress never mixes.
+
+### Improvements
+
+- **Backup format v18** includes checklist items and logs. Older backups still restore.
+- **Automatic v17 to v18 database migration** with no data loss.
+
+### Note
+
+Home screen widgets, scheduled backups, a customizable dashboard, a full accessibility audit and FTS search are not part of this release and remain technical debt.
+
 ## v4.4.0
 
 Phase 5 of the Kalkulasa UMKM Pro Suite: CRM with RFM scoring and birthday reminders.
