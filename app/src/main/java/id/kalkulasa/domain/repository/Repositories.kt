@@ -27,6 +27,8 @@ import id.kalkulasa.domain.model.Budget
 import id.kalkulasa.domain.model.Deposit
 import id.kalkulasa.domain.model.CashAudit
 import id.kalkulasa.domain.model.Bundle
+import id.kalkulasa.domain.model.Supplier
+import id.kalkulasa.domain.model.StockTransfer
 import id.kalkulasa.domain.model.Preorder
 import id.kalkulasa.domain.model.PreorderLine
 import id.kalkulasa.domain.model.Voucher
@@ -163,6 +165,16 @@ interface BundleRepository {
     fun observeActive(): Flow<List<Bundle>>
     suspend fun save(nama: String, hargaPaket: Long, items: List<Pair<String, Double>>): Result<Unit>
     suspend fun itemsFor(id: String): List<Pair<String, Double>>
+}
+
+interface SupplierRepositoryPro {
+    fun observeAll(): Flow<List<Supplier>>
+    suspend fun save(nama: String, telepon: String?, leadTimeDays: Int): Result<Unit>
+}
+
+interface TransferRepository {
+    fun observeAll(): Flow<List<StockTransfer>>
+    suspend fun save(dari: String, ke: String, catatan: String?, items: List<Pair<String, Double>>): Result<Unit>
 }
 
 interface VoucherRepository {

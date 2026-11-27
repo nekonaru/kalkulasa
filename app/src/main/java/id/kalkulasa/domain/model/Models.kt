@@ -261,6 +261,10 @@ data class PreorderLine(val produkId: String, val namaProduk: String, val jumlah
 
 data class Bundle(val id: String, val nama: String, val hargaPaket: Long, val aktif: Boolean)
 
+data class Supplier(val id: String, val nama: String, val telepon: String?, val leadTimeDays: Int)
+
+data class StockTransfer(val id: String, val dariLokasi: String, val keLokasi: String, val waktu: Long)
+
 data class Deposit(
     val id: String,
     val namaPelanggan: String,

@@ -16,6 +16,9 @@ import id.kalkulasa.data.local.entity.KasbonEntity
 import id.kalkulasa.data.local.entity.PayrollEntity
 import id.kalkulasa.data.local.entity.PayableEntity
 import id.kalkulasa.data.local.entity.PayablePaymentEntity
+import id.kalkulasa.data.local.entity.SupplierEntity
+import id.kalkulasa.data.local.entity.StockTransferEntity
+import id.kalkulasa.data.local.entity.StockTransferItemEntity
 import id.kalkulasa.data.local.entity.VoucherUsageEntity
 import id.kalkulasa.data.local.entity.PreorderEntity
 import id.kalkulasa.data.local.entity.PreorderItemEntity
@@ -598,6 +601,39 @@ interface BundleDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertItems(items: List<BundleItemEntity>)
+}
+
+@Dao
+interface SupplierDao {
+    @Query("SELECT * FROM supplier WHERE deletedAt IS NULL ORDER BY nama")
+    fun observeAll(): Flow<List<SupplierEntity>>
+
+    @Query("SELECT * FROM supplier WHERE deletedAt IS NULL")
+    suspend fun getAll(): List<SupplierEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsert(supplier: SupplierEntity)
+}
+
+@Dao
+interface StockTransferDao {
+    @Query("SELECT * FROM stock_transfer WHERE deletedAt IS NULL ORDER BY waktu DESC")
+    fun observeAll(): Flow<List<StockTransferEntity>>
+
+    @Query("SELECT * FROM stock_transfer WHERE deletedAt IS NULL")
+    suspend fun getAll(): List<StockTransferEntity>
+
+    @Query("SELECT * FROM stock_transfer_item WHERE transferId = :id AND deletedAt IS NULL")
+    suspend fun getItems(id: String): List<StockTransferItemEntity>
+
+    @Query("SELECT * FROM stock_transfer_item WHERE deletedAt IS NULL")
+    suspend fun getAllItems(): List<StockTransferItemEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsert(transfer: StockTransferEntity)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertItems(items: List<StockTransferItemEntity>)
 }
 
 @Dao

@@ -1,5 +1,21 @@
 # Changelog
 
+## v4.1.0
+
+Phase 2 of the Kalkulasa UMKM Pro Suite: suppliers with lead time, stock transfers and internal barcodes.
+
+### New features
+
+- **Suppliers and lead time.** Store supplier name, phone and delivery lead time in days. Lead time feeds a more realistic restock suggestion.
+- **Stock transfers.** Move products between locations or shelves with a movement record and item detail.
+- **Internal barcode.** Generate a KLK-prefixed unique code for products without a barcode, ready to share or print.
+
+### Improvements
+
+- **Tested warehouse rules.** `GudangUseCase` holds lead-time restock, barcode format and expiry detection as pure Kotlin with unit tests.
+- **Backup format v15** includes suppliers, transfers and transfer items. Older backups still restore.
+- **Automatic v14 to v15 database migration** with no data loss.
+
 ## v4.0.0
 
 Phase 1 of the Kalkulasa UMKM Pro Suite: preorders and product bundles at the cashier.

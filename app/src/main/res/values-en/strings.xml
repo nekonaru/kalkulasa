@@ -541,4 +541,14 @@
     <string name="bundle_empty">No bundles yet.</string>
     <string name="bundle_name">Bundle name</string>
     <string name="bundle_price">Bundle price</string>
+    <string name="gudang_pro_title">Warehouse Pro</string>
+    <string name="gudang_pro_open">Warehouse Pro</string>
+    <string name="supplier_lead_title">Suppliers and Lead Time</string>
+    <string name="supplier_name">Supplier name</string>
+    <string name="supplier_lead">Lead time (days)</string>
+    <string name="supplier_lead_save">Save supplier</string>
+    <string name="transfer_title">Stock Transfers</string>
+    <string name="transfer_empty">No stock transfers yet.</string>
+    <string name="barcode_title">Internal Barcode</string>
+    <string name="barcode_generate">Generate barcode</string>
 </resources>

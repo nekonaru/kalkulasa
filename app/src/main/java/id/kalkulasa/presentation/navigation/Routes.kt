@@ -31,5 +31,6 @@ object Routes {
     const val CRM = "crm"
     const val DATA_TOOLS = "data-tools"
     const val KASIR_PRO = "kasir-pro"
+    const val GUDANG_PRO = "gudang-pro"
     const val NO_SUPPLIER = "__no_supplier__"
 }

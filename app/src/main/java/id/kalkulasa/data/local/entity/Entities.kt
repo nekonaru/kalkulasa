@@ -310,6 +310,43 @@ data class CashAuditEntity(
     val syncStatus: String = SyncStatus.PENDING,
 )
 
+@Entity(tableName = "supplier", indices = [Index("nama")])
+data class SupplierEntity(
+    @PrimaryKey val id: String,
+    val nama: String,
+    val telepon: String?,
+    val leadTimeDays: Int,
+    val updatedAt: Long,
+    val deletedAt: Long? = null,
+    val deviceId: String,
+    val syncStatus: String = SyncStatus.PENDING,
+)
+
+@Entity(tableName = "stock_transfer", indices = [Index("waktu")])
+data class StockTransferEntity(
+    @PrimaryKey val id: String,
+    val dariLokasi: String,
+    val keLokasi: String,
+    val catatan: String?,
+    val waktu: Long,
+    val updatedAt: Long,
+    val deletedAt: Long? = null,
+    val deviceId: String,
+    val syncStatus: String = SyncStatus.PENDING,
+)
+
+@Entity(tableName = "stock_transfer_item", indices = [Index("transferId")])
+data class StockTransferItemEntity(
+    @PrimaryKey val id: String,
+    val transferId: String,
+    val produkId: String,
+    val jumlah: Double,
+    val updatedAt: Long,
+    val deletedAt: Long? = null,
+    val deviceId: String,
+    val syncStatus: String = SyncStatus.PENDING,
+)
+
 @Entity(tableName = "preorder", indices = [Index("waktu"), Index("status")])
 data class PreorderEntity(
     @PrimaryKey val id: String,

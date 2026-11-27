@@ -60,6 +60,9 @@ class BackupRepositoryImpl @Inject constructor(
         json.put("bundle", JSONArray().also { arr -> db.bundleDao().getAll().forEach { arr.put(it.toJson()) } })
         json.put("bundle_item", JSONArray().also { arr -> db.bundleDao().getAllItems().forEach { arr.put(it.toJson()) } })
         json.put("voucher_usage", JSONArray().also { arr -> db.voucherUsageDao().getAll().forEach { arr.put(it.toJson()) } })
+        json.put("supplier", JSONArray().also { arr -> db.supplierDao().getAll().forEach { arr.put(it.toJson()) } })
+        json.put("stock_transfer", JSONArray().also { arr -> db.stockTransferDao().getAll().forEach { arr.put(it.toJson()) } })
+        json.put("stock_transfer_item", JSONArray().also { arr -> db.stockTransferDao().getAllItems().forEach { arr.put(it.toJson()) } })
         json.toString()
     }
 
@@ -105,6 +108,9 @@ class BackupRepositoryImpl @Inject constructor(
         val bundles = root.optJSONArray("bundle")?.toList { it.toBundle() } ?: emptyList()
         val bundleItems = root.optJSONArray("bundle_item")?.toList { it.toBundleItem() } ?: emptyList()
         val voucherUsages = root.optJSONArray("voucher_usage")?.toList { it.toVoucherUsage() } ?: emptyList()
+        val suppliersPro = root.optJSONArray("supplier")?.toList { it.toSupplierPro() } ?: emptyList()
+        val transfers = root.optJSONArray("stock_transfer")?.toList { it.toStockTransfer() } ?: emptyList()
+        val transferItems = root.optJSONArray("stock_transfer_item")?.toList { it.toStockTransferItem() } ?: emptyList()
 
         db.withTransaction {
             db.clearAllTables()
@@ -136,6 +142,9 @@ class BackupRepositoryImpl @Inject constructor(
             bundles.forEach { db.bundleDao().upsert(it) }
             bundleItems.forEach { db.bundleDao().insertItems(listOf(it)) }
             voucherUsages.forEach { db.voucherUsageDao().insert(it) }
+            suppliersPro.forEach { db.supplierDao().upsert(it) }
+            transfers.forEach { db.stockTransferDao().upsert(it) }
+            transferItems.forEach { db.stockTransferDao().insertItems(listOf(it)) }
         }
     }
 
@@ -440,6 +449,45 @@ class BackupRepositoryImpl @Inject constructor(
         deviceId = getString("deviceId"), syncStatus = optString("syncStatus", "PENDING"),
     )
 
+    private fun id.kalkulasa.data.local.entity.SupplierEntity.toJson() = JSONObject().apply {
+        put("id", id); put("nama", nama); jPut(this, "telepon", telepon); put("leadTimeDays", leadTimeDays)
+        put("updatedAt", updatedAt); jPut(this, "deletedAt", deletedAt)
+        put("deviceId", deviceId); put("syncStatus", syncStatus)
+    }
+
+    private fun id.kalkulasa.data.local.entity.StockTransferEntity.toJson() = JSONObject().apply {
+        put("id", id); put("dariLokasi", dariLokasi); put("keLokasi", keLokasi)
+        jPut(this, "catatan", catatan); put("waktu", waktu); put("updatedAt", updatedAt)
+        jPut(this, "deletedAt", deletedAt); put("deviceId", deviceId); put("syncStatus", syncStatus)
+    }
+
+    private fun id.kalkulasa.data.local.entity.StockTransferItemEntity.toJson() = JSONObject().apply {
+        put("id", id); put("transferId", transferId); put("produkId", produkId); put("jumlah", jumlah)
+        put("updatedAt", updatedAt); jPut(this, "deletedAt", deletedAt)
+        put("deviceId", deviceId); put("syncStatus", syncStatus)
+    }
+
+    private fun JSONObject.toSupplierPro() = id.kalkulasa.data.local.entity.SupplierEntity(
+        id = getString("id"), nama = getString("nama"), telepon = str("telepon"),
+        leadTimeDays = getInt("leadTimeDays"), updatedAt = getLong("updatedAt"),
+        deletedAt = optLongOrNull("deletedAt"), deviceId = getString("deviceId"),
+        syncStatus = optString("syncStatus", "PENDING"),
+    )
+
+    private fun JSONObject.toStockTransfer() = id.kalkulasa.data.local.entity.StockTransferEntity(
+        id = getString("id"), dariLokasi = getString("dariLokasi"), keLokasi = getString("keLokasi"),
+        catatan = str("catatan"), waktu = getLong("waktu"), updatedAt = getLong("updatedAt"),
+        deletedAt = optLongOrNull("deletedAt"), deviceId = getString("deviceId"),
+        syncStatus = optString("syncStatus", "PENDING"),
+    )
+
+    private fun JSONObject.toStockTransferItem() = id.kalkulasa.data.local.entity.StockTransferItemEntity(
+        id = getString("id"), transferId = getString("transferId"), produkId = getString("produkId"),
+        jumlah = getDouble("jumlah"), updatedAt = getLong("updatedAt"),
+        deletedAt = optLongOrNull("deletedAt"), deviceId = getString("deviceId"),
+        syncStatus = optString("syncStatus", "PENDING"),
+    )
+
     private fun JSONObject.toPreorder() = id.kalkulasa.data.local.entity.PreorderEntity(
         id = getString("id"), namaPelanggan = str("namaPelanggan"), status = getString("status"),
         total = getLong("total"), catatan = str("catatan"), waktu = getLong("waktu"),
@@ -579,6 +627,6 @@ class BackupRepositoryImpl @Inject constructor(
     )
 
     private companion object {
-        const val BACKUP_VERSION = 14
+        const val BACKUP_VERSION = 15
     }
 }

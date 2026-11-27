@@ -541,4 +541,14 @@
     <string name="bundle_empty">Belum ada paket.</string>
     <string name="bundle_name">Nama paket</string>
     <string name="bundle_price">Harga paket</string>
+    <string name="gudang_pro_title">Gudang Pro</string>
+    <string name="gudang_pro_open">Gudang Pro</string>
+    <string name="supplier_lead_title">Pemasok dan Lead Time</string>
+    <string name="supplier_name">Nama pemasok</string>
+    <string name="supplier_lead">Lead time (hari)</string>
+    <string name="supplier_lead_save">Simpan pemasok</string>
+    <string name="transfer_title">Transfer Stok</string>
+    <string name="transfer_empty">Belum ada transfer stok.</string>
+    <string name="barcode_title">Barcode Internal</string>
+    <string name="barcode_generate">Buat barcode</string>
 </resources>

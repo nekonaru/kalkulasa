@@ -1,5 +1,21 @@
 # Changelog
 
+## v4.1.0
+
+Fase 2 dari Kalkulasa UMKM Pro Suite: pemasok dengan lead time, transfer stok, dan barcode internal.
+
+### Fitur baru
+
+- **Pemasok dan lead time.** Simpan nama pemasok, telepon, dan waktu tunggu pengiriman dalam hari. Lead time menjadi dasar saran restok yang lebih realistis.
+- **Transfer stok.** Pindahkan produk antar lokasi atau rak dengan catatan pergerakan dan rincian item.
+- **Barcode internal.** Hasilkan kode unik berprefix KLK untuk produk yang belum memiliki barcode, siap dibagikan atau dicetak.
+
+### Peningkatan
+
+- **Aturan gudang teruji.** `GudangUseCase` memuat saran restok berbasis lead time, format barcode, dan deteksi kedaluwarsa sebagai Kotlin murni dengan tes unit.
+- **Backup format v15** mencakup pemasok, transfer, dan item transfer. Backup lama tetap bisa dipulihkan.
+- **Migrasi database otomatis v14 ke v15** tanpa menghapus data lama.
+
 ## v4.0.0
 
 Fase 1 dari Kalkulasa UMKM Pro Suite: preorder dan paket bundling di kasir.

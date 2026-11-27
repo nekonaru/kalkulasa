@@ -34,6 +34,9 @@ import id.kalkulasa.data.local.entity.PreorderItemEntity
 import id.kalkulasa.data.local.entity.BundleEntity
 import id.kalkulasa.data.local.entity.BundleItemEntity
 import id.kalkulasa.data.local.entity.VoucherUsageEntity
+import id.kalkulasa.data.local.entity.SupplierEntity
+import id.kalkulasa.data.local.entity.StockTransferEntity
+import id.kalkulasa.data.local.entity.StockTransferItemEntity
 import id.kalkulasa.data.local.entity.BudgetEntity
 import id.kalkulasa.data.local.entity.CashAuditEntity
 import id.kalkulasa.data.local.entity.SalesTargetEntity
@@ -75,11 +78,14 @@ import java.util.UUID
         BundleEntity::class,
         BundleItemEntity::class,
         VoucherUsageEntity::class,
+        SupplierEntity::class,
+        StockTransferEntity::class,
+        StockTransferItemEntity::class,
         BudgetEntity::class,
         CashAuditEntity::class,
         SalesTargetEntity::class,
     ],
-    version = 14,
+    version = 15,
     exportSchema = true,
 )
 abstract class KalkulasaDatabase : RoomDatabase() {
@@ -106,11 +112,42 @@ abstract class KalkulasaDatabase : RoomDatabase() {
     abstract fun preorderDao(): id.kalkulasa.data.local.dao.PreorderDao
     abstract fun bundleDao(): id.kalkulasa.data.local.dao.BundleDao
     abstract fun voucherUsageDao(): id.kalkulasa.data.local.dao.VoucherUsageDao
+    abstract fun supplierDao(): id.kalkulasa.data.local.dao.SupplierDao
+    abstract fun stockTransferDao(): id.kalkulasa.data.local.dao.StockTransferDao
     abstract fun budgetDao(): id.kalkulasa.data.local.dao.BudgetDao
     abstract fun cashAuditDao(): id.kalkulasa.data.local.dao.CashAuditDao
 
     companion object {
         const val NAME = "kalkulasa.db"
+
+        /** Migration 14 -> 15: suppliers, lead time and stock transfers. */
+        val MIGRATION_14_15 = androidx.room.migration.Migration(14, 15) { db ->
+            db.execSQL(
+                """CREATE TABLE IF NOT EXISTS `supplier` (
+                    `id` TEXT NOT NULL PRIMARY KEY, `nama` TEXT NOT NULL, `telepon` TEXT,
+                    `leadTimeDays` INTEGER NOT NULL, `updatedAt` INTEGER NOT NULL,
+                    `deletedAt` INTEGER, `deviceId` TEXT NOT NULL, `syncStatus` TEXT NOT NULL
+                )""".trimIndent(),
+            )
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_supplier_nama` ON `supplier` (`nama`)")
+            db.execSQL(
+                """CREATE TABLE IF NOT EXISTS `stock_transfer` (
+                    `id` TEXT NOT NULL PRIMARY KEY, `dariLokasi` TEXT NOT NULL, `keLokasi` TEXT NOT NULL,
+                    `catatan` TEXT, `waktu` INTEGER NOT NULL, `updatedAt` INTEGER NOT NULL,
+                    `deletedAt` INTEGER, `deviceId` TEXT NOT NULL, `syncStatus` TEXT NOT NULL
+                )""".trimIndent(),
+            )
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_stock_transfer_waktu` ON `stock_transfer` (`waktu`)")
+            db.execSQL(
+                """CREATE TABLE IF NOT EXISTS `stock_transfer_item` (
+                    `id` TEXT NOT NULL PRIMARY KEY, `transferId` TEXT NOT NULL, `produkId` TEXT NOT NULL,
+                    `jumlah` REAL NOT NULL, `updatedAt` INTEGER NOT NULL,
+                    `deletedAt` INTEGER, `deviceId` TEXT NOT NULL, `syncStatus` TEXT NOT NULL
+                )""".trimIndent(),
+            )
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_stock_transfer_item_transferId` ON `stock_transfer_item` (`transferId`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_stock_movement_expiry` ON `stock_movement` (`expiry`)")
+        }
 
         /** Migration 13 -> 14: preorders, bundles, voucher usage and split payment. */
         val MIGRATION_13_14 = androidx.room.migration.Migration(13, 14) { db ->
@@ -414,7 +451,7 @@ abstract class KalkulasaDatabase : RoomDatabase() {
         fun build(context: Context, deviceId: String, passphrase: ByteArray): KalkulasaDatabase =
             Room.databaseBuilder(context, KalkulasaDatabase::class.java, NAME)
                 .openHelperFactory(SupportOpenHelperFactory(passphrase))
-                .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, MIGRATION_7_8, MIGRATION_8_9, MIGRATION_9_10, MIGRATION_10_11, MIGRATION_11_12, MIGRATION_12_13, MIGRATION_13_14)
+                .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, MIGRATION_7_8, MIGRATION_8_9, MIGRATION_9_10, MIGRATION_10_11, MIGRATION_11_12, MIGRATION_12_13, MIGRATION_13_14, MIGRATION_14_15)
                 .addCallback(SeedCallback(deviceId))
                 .build()
     }
