@@ -1,5 +1,19 @@
 # Changelog
 
+## v4.6.0
+
+Cashier additions: split payments, deposit usage and a 58 mm receipt.
+
+### New features
+
+- **Split payments.** One sale can use a second payment method with its own amount, for example cash plus transfer.
+- **Pay with deposit.** A customer's deposit balance can be used as part of payment and is deducted automatically.
+- **58 mm receipt.** A 32-character plain-text layout for thermal printers, with centered store name and totals.
+
+### Improvements
+
+- **Tested receipt rules.** `Struk58UseCase` holds line width, centering and detail formatting as pure Kotlin with unit tests.
+
 ## v4.5.0
 
 Phase 6 and the final phase of the Kalkulasa UMKM Pro Suite: daily opening and closing checklists.

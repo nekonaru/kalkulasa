@@ -117,8 +117,12 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideSaleRepository(db: KalkulasaDatabase, deviceId: String): SaleRepository =
-        SaleRepositoryImpl(db, db.changeLogDao(), deviceId)
+    fun provideSaleRepository(
+        db: KalkulasaDatabase,
+        deviceId: String,
+        depositRepository: id.kalkulasa.domain.repository.DepositRepository,
+    ): SaleRepository =
+        SaleRepositoryImpl(db, db.changeLogDao(), deviceId, depositRepository)
 
     @Provides
     @Singleton

@@ -575,4 +575,8 @@
     <string name="checklist_buka">Add opening</string>
     <string name="checklist_tutup">Add closing</string>
     <string name="checklist_empty">No checklist tasks yet.</string>
+    <string name="split_method">Second payment method</string>
+    <string name="split_amount">Second payment amount</string>
+    <string name="deposit_use">Use deposit</string>
+    <string name="receipt_58">58 mm receipt</string>
 </resources>

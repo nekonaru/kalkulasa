@@ -327,6 +327,10 @@ private fun CartSection(
     val ppnAmount by viewModel.ppnAmount.collectAsStateWithLifecycle()
     val memberDiscount by viewModel.memberDiscount.collectAsStateWithLifecycle()
     val voucherDiscount by viewModel.voucherDiscount.collectAsStateWithLifecycle()
+    val metodeBayar2 by viewModel.metodeBayar2.collectAsStateWithLifecycle()
+    val nominalBayar2 by viewModel.nominalBayar2.collectAsStateWithLifecycle()
+    val depositDipakai by viewModel.depositDipakai.collectAsStateWithLifecycle()
+    val depositBalance by viewModel.depositBalance.collectAsStateWithLifecycle()
     Column(
         modifier = modifier.verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -435,6 +439,29 @@ private fun CartSection(
                     onClick = { viewModel.onPaymentMethodChange(method) },
                     label = { Text(label) },
                 )
+            }
+        }
+        OutlinedTextField(
+            value = metodeBayar2,
+            onValueChange = viewModel::onMetodeBayar2Change,
+            label = { Text(context.getString(R.string.split_method)) },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth(),
+        )
+        if (metodeBayar2.isNotBlank()) {
+            OutlinedTextField(
+                value = nominalBayar2,
+                onValueChange = viewModel::onNominalBayar2Change,
+                label = { Text(context.getString(R.string.split_amount)) },
+                prefix = { Text("Rp ") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
+        if (depositBalance > 0) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Checkbox(checked = depositDipakai, onCheckedChange = viewModel::setDepositDipakai)
+                Text("${context.getString(R.string.deposit_use)}: ${RupiahFormatter.format(depositBalance)}")
             }
         }
         OutlinedTextField(

@@ -1,5 +1,19 @@
 # Changelog
 
+## v4.6.0
+
+Tambahan kasir: pembayaran terpisah, pemakaian deposit, dan struk 58 mm.
+
+### Fitur baru
+
+- **Pembayaran terpisah.** Satu transaksi bisa memakai metode kedua dengan nominal tersendiri, misalnya tunai plus transfer.
+- **Bayar pakai deposit.** Saldo deposit pelanggan bisa dipakai sebagai bagian dari pembayaran dan otomatis dipotong dari saldo.
+- **Struk 58 mm.** Format teks lebar 32 karakter untuk printer thermal, dengan perataan nama toko dan rincian total.
+
+### Peningkatan
+
+- **Aturan struk teruji.** `Struk58UseCase` memuat lebar baris, perataan tengah, dan format rincian sebagai Kotlin murni dengan tes unit.
+
 ## v4.5.0
 
 Fase 6 dan terakhir dari Kalkulasa UMKM Pro Suite: checklist harian buka dan tutup toko.

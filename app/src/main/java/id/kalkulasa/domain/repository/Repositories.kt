@@ -238,6 +238,9 @@ interface SaleRepository {
         poinDitukar: Int = 0,
         ppn: Long = 0L,
         voucherKode: String? = null,
+        metodeBayar2: String? = null,
+        nominalBayar2: Long = 0L,
+        depositTerpakai: Long = 0L,
     ): Result<Sale>
     suspend fun cancelSale(saleId: String): Result<Unit>
     suspend fun salesBetween(from: Long, to: Long): List<Sale>

@@ -575,4 +575,8 @@
     <string name="checklist_buka">Tambah buka</string>
     <string name="checklist_tutup">Tambah tutup</string>
     <string name="checklist_empty">Belum ada tugas checklist.</string>
+    <string name="split_method">Metode bayar kedua</string>
+    <string name="split_amount">Nominal metode kedua</string>
+    <string name="deposit_use">Pakai deposit</string>
+    <string name="receipt_58">Struk 58 mm</string>
 </resources>

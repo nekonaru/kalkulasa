@@ -30,6 +30,7 @@ class SaleRepositoryImpl @Inject constructor(
     private val db: KalkulasaDatabase,
     private val changeLogDao: ChangeLogDao,
     private val deviceId: String,
+    private val depositRepository: id.kalkulasa.domain.repository.DepositRepository,
 ) : SaleRepository {
 
     override fun observeRecentSales(limit: Int): Flow<List<Sale>> =
@@ -44,6 +45,9 @@ class SaleRepositoryImpl @Inject constructor(
         poinDitukar: Int,
         ppn: Long,
         voucherKode: String?,
+        metodeBayar2: String?,
+        nominalBayar2: Long,
+        depositTerpakai: Long,
     ): Result<Sale> {
         if (items.isEmpty()) return Result.failure(IllegalArgumentException("Keranjang kosong"))
         if (diskon < 0) return Result.failure(IllegalArgumentException("Diskon tidak boleh negatif"))
@@ -154,6 +158,9 @@ class SaleRepositoryImpl @Inject constructor(
                     poinDitukar = poinDitukar.coerceAtLeast(0),
                     ppn = ppn.coerceAtLeast(0L),
                     voucherKode = voucherKode?.ifBlank { null },
+                    metodeBayar2 = metodeBayar2?.ifBlank { null },
+                    nominalBayar2 = nominalBayar2.coerceAtLeast(0L),
+                    depositTerpakai = depositTerpakai.coerceAtLeast(0L),
                     updatedAt = now,
                     deviceId = deviceId,
                 )
@@ -163,6 +170,9 @@ class SaleRepositoryImpl @Inject constructor(
                     require(voucher.terpakai < voucher.kuota) { "Kuota voucher habis" }
                     db.voucherDao().upsert(voucher.copy(terpakai = voucher.terpakai + 1, updatedAt = now))
                     RepositorySupport.log(changeLogDao, "voucher", voucher.id, "UPDATE")
+                }
+                if (depositTerpakai > 0L && customerName.isNotBlank()) {
+                    depositRepository.use(customerName, depositTerpakai).getOrThrow()
                 }
                 db.saleDao().insert(sale)
                 if (metodeBayar == PaymentMethod.HUTANG && total > 0L) {

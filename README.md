@@ -187,7 +187,7 @@
 ### Opsi A: Unduh APK (paling mudah)
 
 1. Buka halaman [Releases](https://github.com/nekonaru/kalkulasa/releases)
-2. Unduh `kalkulasa-v4.5.0.apk`
+2. Unduh `kalkulasa-v4.6.0.apk`
 3. Buka di ponsel kamu dan izinkan instalasi dari sumber tidak dikenal jika diminta
 4. Buka aplikasi dan isi profil usaha kamu
 

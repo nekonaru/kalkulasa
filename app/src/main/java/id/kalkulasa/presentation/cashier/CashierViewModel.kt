@@ -91,6 +91,15 @@ class CashierViewModel @Inject constructor(
     private val _voucherCode = MutableStateFlow("")
     val voucherCode: StateFlow<String> = _voucherCode.asStateFlow()
 
+    private val _metodeBayar2 = MutableStateFlow("")
+    val metodeBayar2: StateFlow<String> = _metodeBayar2.asStateFlow()
+
+    private val _nominalBayar2 = MutableStateFlow("")
+    val nominalBayar2: StateFlow<String> = _nominalBayar2.asStateFlow()
+
+    private val _depositDipakai = MutableStateFlow(false)
+    val depositDipakai: StateFlow<Boolean> = _depositDipakai.asStateFlow()
+
     private val _voucher = MutableStateFlow<id.kalkulasa.domain.model.Voucher?>(null)
     val voucher: StateFlow<id.kalkulasa.domain.model.Voucher?> = _voucher.asStateFlow()
 
@@ -113,6 +122,10 @@ class CashierViewModel @Inject constructor(
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     /** Points of the customer whose name is currently typed in the form. */
+    val depositBalance: StateFlow<Long> = combine(depositRepository.observeAll(), _namaPelanggan) { list, name ->
+        list.filter { it.namaPelanggan.equals(name.trim(), ignoreCase = true) }.sumOf { it.sisa }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 0L)
+
     val availablePoints: StateFlow<Long> = combine(customers, _namaPelanggan) { list, name ->
         list.find { it.nama.equals(name.trim(), ignoreCase = true) }?.poin ?: 0L
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 0L)
@@ -232,6 +245,9 @@ class CashierViewModel @Inject constructor(
         }
     }
     fun setPpnEnabled(enabled: Boolean) { viewModelScope.launch { settings.setPpnEnabled(enabled) } }
+    fun onMetodeBayar2Change(value: String) { _metodeBayar2.value = value }
+    fun onNominalBayar2Change(value: String) { _nominalBayar2.value = value.filter(Char::isDigit).take(12) }
+    fun setDepositDipakai(enabled: Boolean) { _depositDipakai.value = enabled }
 
     /** Add a product from a keyboard-wedge barcode scanner (Enter triggers Done). */
     fun scanBarcode() {
@@ -300,6 +316,9 @@ class CashierViewModel @Inject constructor(
         _poinDitukar.value = ""
         _voucherCode.value = ""
         _voucher.value = null
+        _metodeBayar2.value = ""
+        _nominalBayar2.value = ""
+        _depositDipakai.value = false
     }
 
     fun canSaveSale(): Boolean =
@@ -339,6 +358,9 @@ class CashierViewModel @Inject constructor(
                 poinDitukar = poin,
                 ppn = ppnAmount.value,
                 voucherKode = _voucherCode.value.ifBlank { null },
+                metodeBayar2 = _metodeBayar2.value.ifBlank { null },
+                nominalBayar2 = RupiahFormatter.parseOrZero(_nominalBayar2.value),
+                depositTerpakai = if (_depositDipakai.value) minOf(total.value, depositBalance.value) else 0L,
             )
             _saving.value = false
             result.onSuccess { sale ->
