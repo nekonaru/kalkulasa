@@ -186,6 +186,12 @@ interface StockMovementDao {
     @Query("SELECT * FROM stock_movement WHERE deletedAt IS NULL")
     suspend fun getAll(): List<StockMovementEntity>
 
+    @Query("SELECT * FROM stock_movement WHERE deletedAt IS NULL AND expiry IS NOT NULL AND expiry > 0 AND expiry <= :to ORDER BY expiry LIMIT :limit")
+    suspend fun expiringBefore(to: Long, limit: Int): List<StockMovementEntity>
+
+    @Query("SELECT * FROM stock_movement WHERE deletedAt IS NULL AND produkId = :productId AND tipe = 'MASUK' ORDER BY waktu DESC")
+    suspend fun priceHistory(productId: String): List<StockMovementEntity>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(movement: StockMovementEntity)
 

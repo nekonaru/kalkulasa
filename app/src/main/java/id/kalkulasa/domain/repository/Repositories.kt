@@ -125,6 +125,8 @@ interface StockRepository {
     suspend fun recordAdjustment(productId: String, newQty: Double, reason: String): Result<Unit>
     /** Apply a physical stock take atomically. Returns the number of products changed. */
     suspend fun applyAdjustments(items: List<Pair<String, Double>>, reason: String): Result<Int>
+    suspend fun expiring(): List<Triple<String, Long, Double>>
+    suspend fun priceHistory(productId: String): List<Pair<Long, Long>>
 }
 
 interface CustomerRepository {

@@ -579,4 +579,9 @@
     <string name="split_amount">Nominal metode kedua</string>
     <string name="deposit_use">Pakai deposit</string>
     <string name="receipt_58">Struk 58 mm</string>
+    <string name="gudang_lanjutan_title">Expiry dan Riwayat Harga</string>
+    <string name="gudang_lanjutan_open">Expiry dan Harga</string>
+    <string name="expiry_title">Kedaluwarsa</string>
+    <string name="expiry_empty">Tidak ada batch mendekati kedaluwarsa.</string>
+    <string name="price_history_title">Riwayat Harga Beli</string>
 </resources>

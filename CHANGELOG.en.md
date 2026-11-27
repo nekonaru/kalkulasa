@@ -1,5 +1,14 @@
 # Changelog
 
+## v4.7.0
+
+Warehouse additions: expiry alerts and purchase price history.
+
+### New features
+
+- **Expiry alerts.** A list of batches expiring within the next seven days with their stock quantities.
+- **Purchase price history.** View unit price changes from stock-in records for each product.
+
 ## v4.6.0
 
 Cashier additions: split payments, deposit usage and a 58 mm receipt.

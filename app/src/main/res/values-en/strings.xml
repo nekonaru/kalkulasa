@@ -579,4 +579,9 @@
     <string name="split_amount">Second payment amount</string>
     <string name="deposit_use">Use deposit</string>
     <string name="receipt_58">58 mm receipt</string>
+    <string name="gudang_lanjutan_title">Expiry and Price History</string>
+    <string name="gudang_lanjutan_open">Expiry and Prices</string>
+    <string name="expiry_title">Expiry</string>
+    <string name="expiry_empty">No batches nearing expiry.</string>
+    <string name="price_history_title">Purchase Price History</string>
 </resources>

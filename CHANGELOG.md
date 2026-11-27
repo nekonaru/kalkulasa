@@ -1,5 +1,14 @@
 # Changelog
 
+## v4.7.0
+
+Tambahan gudang: peringatan kedaluwarsa dan riwayat harga beli.
+
+### Fitur baru
+
+- **Peringatan kedaluwarsa.** Daftar batch dengan tanggal expiry dalam tujuh hari berikutnya beserta jumlah stoknya.
+- **Riwayat harga beli.** Lihat perubahan harga satuan dari catatan stok masuk untuk setiap produk.
+
 ## v4.6.0
 
 Tambahan kasir: pembayaran terpisah, pemakaian deposit, dan struk 58 mm.

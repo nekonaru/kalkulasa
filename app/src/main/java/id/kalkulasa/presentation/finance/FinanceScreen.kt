@@ -80,6 +80,7 @@ fun FinanceScreen(
     onOpenKaryawanPro: () -> Unit,
     onOpenCrmPro: () -> Unit,
     onOpenSistem: () -> Unit,
+    onOpenGudangLanjutan: () -> Unit,
     viewModel: FinanceViewModel = hiltViewModel(),
 ) {
     val balance by viewModel.cashBalance.collectAsStateWithLifecycle()
@@ -153,6 +154,7 @@ fun FinanceScreen(
                     TextButton(onClick = onOpenKaryawanPro) { Text(context.getString(R.string.karyawan_pro_open)) }
                     TextButton(onClick = onOpenCrmPro) { Text(context.getString(R.string.crm_pro_open)) }
                     TextButton(onClick = onOpenSistem) { Text(context.getString(R.string.sistem_open)) }
+                    TextButton(onClick = onOpenGudangLanjutan) { Text(context.getString(R.string.gudang_lanjutan_open)) }
                 }
             }
 

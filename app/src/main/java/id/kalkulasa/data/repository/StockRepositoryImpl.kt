@@ -167,4 +167,15 @@ class StockRepositoryImpl @Inject constructor(
             }
         }
     }
+
+    override suspend fun expiring(): List<Triple<String, Long, Double>> {
+        val to = System.currentTimeMillis() + 7L * 24 * 60 * 60 * 1000
+        return db.stockMovementDao().expiringBefore(to, 100).mapNotNull { movement ->
+            val product = db.productDao().getById(movement.produkId) ?: return@mapNotNull null
+            Triple(product.nama, movement.expiry ?: return@mapNotNull null, movement.jumlah)
+        }
+    }
+
+    override suspend fun priceHistory(productId: String): List<Pair<Long, Long>> =
+        db.stockMovementDao().priceHistory(productId).map { it.waktu to it.hargaSatuan }
 }

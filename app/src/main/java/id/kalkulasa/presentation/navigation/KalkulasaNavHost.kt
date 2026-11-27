@@ -48,6 +48,7 @@ import id.kalkulasa.presentation.keuanganpro.KeuanganProScreen
 import id.kalkulasa.presentation.karyawanpro.KaryawanProScreen
 import id.kalkulasa.presentation.crmpro.CrmProScreen
 import id.kalkulasa.presentation.sistem.SistemScreen
+import id.kalkulasa.presentation.gudanglanjutan.GudangLanjutanScreen
 import id.kalkulasa.presentation.cashier.CashierScreen
 import id.kalkulasa.presentation.customer.CustomersScreen
 import id.kalkulasa.presentation.finance.FinanceScreen
@@ -188,6 +189,7 @@ fun KalkulasaNavHost(startDestination: String) {
                     onOpenKaryawanPro = { navController.navigate(Routes.KARYAWAN_PRO) },
                     onOpenCrmPro = { navController.navigate(Routes.CRM_PRO) },
                     onOpenSistem = { navController.navigate(Routes.SISTEM) },
+                    onOpenGudangLanjutan = { navController.navigate(Routes.GUDANG_LANJUTAN) },
                 )
             }
             composable(Routes.ACTIVITY) { ActivityScreen(onBack = { navController.popBackStack() }) }
@@ -205,6 +207,7 @@ fun KalkulasaNavHost(startDestination: String) {
             composable(Routes.KARYAWAN_PRO) { KaryawanProScreen(onBack = { navController.popBackStack() }) }
             composable(Routes.CRM_PRO) { CrmProScreen(onBack = { navController.popBackStack() }) }
             composable(Routes.SISTEM) { SistemScreen(onBack = { navController.popBackStack() }) }
+            composable(Routes.GUDANG_LANJUTAN) { GudangLanjutanScreen(onBack = { navController.popBackStack() }) }
             composable(Routes.TARGET) {
                 TargetScreen(onBack = { navController.popBackStack() })
             }
