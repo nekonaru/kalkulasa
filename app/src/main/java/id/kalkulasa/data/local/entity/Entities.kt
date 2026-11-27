@@ -125,6 +125,10 @@ data class SaleEntity(
     val poinDitukar: Int = 0,
     val ppn: Long = 0L,
     val voucherKode: String? = null,
+    val metodeBayar2: String? = null,
+    val nominalBayar2: Long = 0L,
+    val depositTerpakai: Long = 0L,
+    val cashAccountId: String? = null,
     val updatedAt: Long,
     val deletedAt: Long? = null,
     val deviceId: String,
@@ -140,6 +144,7 @@ data class SaleItemEntity(
     val jumlah: Double,
     val hargaJual: Long,
     val hppSaatJual: Long,
+    val diskonItem: Long = 0L,
     val updatedAt: Long,
     val deletedAt: Long? = null,
     val deviceId: String,
@@ -305,6 +310,72 @@ data class CashAuditEntity(
     val syncStatus: String = SyncStatus.PENDING,
 )
 
+@Entity(tableName = "preorder", indices = [Index("waktu"), Index("status")])
+data class PreorderEntity(
+    @PrimaryKey val id: String,
+    val namaPelanggan: String?,
+    val status: String,
+    val total: Long,
+    val catatan: String?,
+    val waktu: Long,
+    val updatedAt: Long,
+    val deletedAt: Long? = null,
+    val deviceId: String,
+    val syncStatus: String = SyncStatus.PENDING,
+)
+
+@Entity(tableName = "preorder_item", indices = [Index("preorderId"), Index("produkId")])
+data class PreorderItemEntity(
+    @PrimaryKey val id: String,
+    val preorderId: String,
+    val produkId: String,
+    val namaProduk: String,
+    val jumlah: Double,
+    val hargaJual: Long,
+    val updatedAt: Long,
+    val deletedAt: Long? = null,
+    val deviceId: String,
+    val syncStatus: String = SyncStatus.PENDING,
+)
+
+@Entity(tableName = "bundle")
+data class BundleEntity(
+    @PrimaryKey val id: String,
+    val nama: String,
+    val hargaPaket: Long,
+    val aktif: Boolean,
+    val updatedAt: Long,
+    val deletedAt: Long? = null,
+    val deviceId: String,
+    val syncStatus: String = SyncStatus.PENDING,
+)
+
+@Entity(tableName = "bundle_item", indices = [Index("bundleId")])
+data class BundleItemEntity(
+    @PrimaryKey val id: String,
+    val bundleId: String,
+    val produkId: String,
+    val jumlah: Double,
+    val updatedAt: Long,
+    val deletedAt: Long? = null,
+    val deviceId: String,
+    val syncStatus: String = SyncStatus.PENDING,
+)
+
+@Entity(tableName = "voucher_usage", indices = [Index("voucherId"), Index("waktu")])
+data class VoucherUsageEntity(
+    @PrimaryKey val id: String,
+    val voucherId: String,
+    val voucherKode: String,
+    val namaPelanggan: String,
+    val saleId: String,
+    val waktu: Long,
+    val updatedAt: Long,
+    val deletedAt: Long? = null,
+    val deviceId: String,
+    val syncStatus: String = SyncStatus.PENDING,
+)
+
 @Entity(tableName = "voucher", indices = [Index("kode")])
 data class VoucherEntity(
     @PrimaryKey val id: String,
@@ -317,6 +388,8 @@ data class VoucherEntity(
     val berlakuMulai: Long,
     val berlakuSampai: Long,
     val aktif: Boolean,
+    val scope: String = "GLOBAL",
+    val namaPelanggan: String? = null,
     val updatedAt: Long,
     val deletedAt: Long? = null,
     val deviceId: String,

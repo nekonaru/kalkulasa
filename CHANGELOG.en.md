@@ -1,5 +1,21 @@
 # Changelog
 
+## v4.0.0
+
+Phase 1 of the Kalkulasa UMKM Pro Suite: preorders and product bundles at the cashier.
+
+### New features
+
+- **Preorders.** Record a customer order before stock is available, then mark it sold or cancelled from one screen. The preorder total is computed from products and quantities.
+- **Product bundles.** Create a package of several products at a special price. The bundle price is capped at the normal total of its items.
+- **Tested pro cashier rules.** `PreorderBundlingUseCase` holds bundle price, split payment and per-line discount validation as pure Kotlin with unit tests.
+
+### Improvements
+
+- **Cashier structure prepared** for split payments, deposit usage and per-line discounts through new columns on sales and sale items.
+- **Backup format v14** includes preorders, preorder items, bundles, bundle items and voucher usage. Older backups still restore.
+- **Automatic v13 to v14 database migration** with no data loss.
+
 ## v3.5.0
 
 An optimization release that makes the app lighter, faster and smoother without new features.

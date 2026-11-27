@@ -65,7 +65,10 @@ fun id.kalkulasa.data.local.dao.MovementWithProduct.toDomain() = StockMovement(
     waktu = waktu,
 )
 
-fun SaleEntity.toDomain() = Sale(id, subtotal, diskon, total, metodeBayar, status, waktu, customerId, ppn, voucherKode)
+fun SaleEntity.toDomain() = Sale(
+    id, subtotal, diskon, total, metodeBayar, status, waktu, customerId,
+    ppn, voucherKode, metodeBayar2, nominalBayar2, depositTerpakai,
+)
 
 fun ExpenseEntity.toDomain() = Expense(id, kategoriNama, nominal, catatan, waktu)
 

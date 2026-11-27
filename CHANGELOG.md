@@ -1,5 +1,21 @@
 # Changelog
 
+## v4.0.0
+
+Fase 1 dari Kalkulasa UMKM Pro Suite: preorder dan paket bundling di kasir.
+
+### Fitur baru
+
+- **Preorder.** Catat pesanan pelanggan sebelum stok tersedia, lalu tandai menjadi terjual atau dibatalkan dari satu layar. Total preorder dihitung otomatis dari produk dan quantity.
+- **Paket bundling.** Buat paket beberapa produk dengan harga khusus. Harga paket dibatasi agar tidak melebihi total harga normal produk.
+- **Aturan kasir pro teruji.** `PreorderBundlingUseCase` memuat validasi harga paket, pembayaran terpisah, dan diskon per baris sebagai Kotlin murni dengan tes unit.
+
+### Peningkatan
+
+- **Struktur kasir disiapkan** untuk pembayaran terpisah, pemakaian deposit, dan diskon per baris melalui kolom baru pada transaksi dan item penjualan.
+- **Backup format v14** mencakup preorder, item preorder, paket, item paket, dan riwayat pemakaian voucher. Backup lama tetap bisa dipulihkan.
+- **Migrasi database otomatis v13 ke v14** tanpa menghapus data lama.
+
 ## v3.5.0
 
 Rilis optimalisasi untuk membuat aplikasi lebih ringan, cepat, dan lancar tanpa fitur baru.

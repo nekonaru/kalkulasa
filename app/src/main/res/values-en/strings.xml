@@ -530,4 +530,15 @@
     <string name="global_search">Global search</string>
     <string name="global_search_hint">Search products or transactions</string>
     <string name="search_empty">No results.</string>
+    <string name="kasir_pro_title">Pro Cashier</string>
+    <string name="kasir_pro_open">Preorders and Bundles</string>
+    <string name="preorder_title">Preorders</string>
+    <string name="preorder_add">Add preorder</string>
+    <string name="preorder_empty">No preorders yet.</string>
+    <string name="preorder_sell">Sell</string>
+    <string name="bundle_title">Bundles</string>
+    <string name="bundle_add">Add bundle</string>
+    <string name="bundle_empty">No bundles yet.</string>
+    <string name="bundle_name">Bundle name</string>
+    <string name="bundle_price">Bundle price</string>
 </resources>

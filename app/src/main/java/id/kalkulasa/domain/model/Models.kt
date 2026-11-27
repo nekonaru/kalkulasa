@@ -110,6 +110,9 @@ data class Sale(
     val customerId: String? = null,
     val ppn: Long = 0L,
     val voucherKode: String? = null,
+    val metodeBayar2: String? = null,
+    val nominalBayar2: Long = 0L,
+    val depositTerpakai: Long = 0L,
 )
 
 data class SaleLine(
@@ -118,6 +121,7 @@ data class SaleLine(
     val jumlah: Double,
     val hargaJual: Long,
     val hppSaatJual: Long,
+    val diskonItem: Long = 0L,
 )
 
 data class Expense(
@@ -240,7 +244,22 @@ data class Voucher(
     val minimalBelanja: Long,
     val sisaKuota: Int,
     val berlakuSampai: Long,
+    val scope: String = "GLOBAL",
+    val namaPelanggan: String? = null,
 )
+
+data class Preorder(
+    val id: String,
+    val namaPelanggan: String?,
+    val status: String,
+    val total: Long,
+    val catatan: String?,
+    val waktu: Long,
+)
+
+data class PreorderLine(val produkId: String, val namaProduk: String, val jumlah: Double, val hargaJual: Long)
+
+data class Bundle(val id: String, val nama: String, val hargaPaket: Long, val aktif: Boolean)
 
 data class Deposit(
     val id: String,

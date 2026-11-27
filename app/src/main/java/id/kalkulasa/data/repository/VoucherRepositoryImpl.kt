@@ -50,5 +50,6 @@ class VoucherRepositoryImpl @Inject constructor(
 
     private fun VoucherEntity.toDomain() = Voucher(
         id, kode, tipe, nilai, minimalBelanja, (kuota - terpakai).coerceAtLeast(0), berlakuSampai,
+        scope, namaPelanggan,
     )
 }

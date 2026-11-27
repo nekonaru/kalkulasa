@@ -253,6 +253,7 @@ class SaleRepositoryImpl @Inject constructor(
                 jumlah = it.jumlah,
                 hargaJual = it.hargaJual,
                 hppSaatJual = it.hppSaatJual,
+                diskonItem = it.diskonItem,
             )
         }
         return sale.toDomain() to items
@@ -266,6 +267,7 @@ class SaleRepositoryImpl @Inject constructor(
                 jumlah = it.jumlah,
                 hargaJual = it.hargaJual,
                 hppSaatJual = it.hppSaatJual,
+                diskonItem = it.diskonItem,
             )
         }
 

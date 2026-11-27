@@ -55,6 +55,11 @@ class BackupRepositoryImpl @Inject constructor(
         json.put("deposit", JSONArray().also { arr -> db.depositDao().getAll().forEach { arr.put(it.toJson()) } })
         json.put("budget", JSONArray().also { arr -> db.budgetDao().getAll().forEach { arr.put(it.toJson()) } })
         json.put("cash_audit", JSONArray().also { arr -> db.cashAuditDao().getAll().forEach { arr.put(it.toJson()) } })
+        json.put("preorder", JSONArray().also { arr -> db.preorderDao().getAll().forEach { arr.put(it.toJson()) } })
+        json.put("preorder_item", JSONArray().also { arr -> db.preorderDao().getAllItems().forEach { arr.put(it.toJson()) } })
+        json.put("bundle", JSONArray().also { arr -> db.bundleDao().getAll().forEach { arr.put(it.toJson()) } })
+        json.put("bundle_item", JSONArray().also { arr -> db.bundleDao().getAllItems().forEach { arr.put(it.toJson()) } })
+        json.put("voucher_usage", JSONArray().also { arr -> db.voucherUsageDao().getAll().forEach { arr.put(it.toJson()) } })
         json.toString()
     }
 
@@ -95,6 +100,11 @@ class BackupRepositoryImpl @Inject constructor(
         val deposits = root.optJSONArray("deposit")?.toList { it.toDeposit() } ?: emptyList()
         val budgets = root.optJSONArray("budget")?.toList { it.toBudget() } ?: emptyList()
         val audits = root.optJSONArray("cash_audit")?.toList { it.toCashAudit() } ?: emptyList()
+        val preorders = root.optJSONArray("preorder")?.toList { it.toPreorder() } ?: emptyList()
+        val preorderItems = root.optJSONArray("preorder_item")?.toList { it.toPreorderItem() } ?: emptyList()
+        val bundles = root.optJSONArray("bundle")?.toList { it.toBundle() } ?: emptyList()
+        val bundleItems = root.optJSONArray("bundle_item")?.toList { it.toBundleItem() } ?: emptyList()
+        val voucherUsages = root.optJSONArray("voucher_usage")?.toList { it.toVoucherUsage() } ?: emptyList()
 
         db.withTransaction {
             db.clearAllTables()
@@ -121,6 +131,11 @@ class BackupRepositoryImpl @Inject constructor(
             deposits.forEach { db.depositDao().upsert(it) }
             budgets.forEach { db.budgetDao().upsert(it) }
             audits.forEach { db.cashAuditDao().insert(it) }
+            preorders.forEach { db.preorderDao().upsert(it) }
+            preorderItems.forEach { db.preorderDao().insertItems(listOf(it)) }
+            bundles.forEach { db.bundleDao().upsert(it) }
+            bundleItems.forEach { db.bundleDao().insertItems(listOf(it)) }
+            voucherUsages.forEach { db.voucherUsageDao().insert(it) }
         }
     }
 
@@ -204,6 +219,39 @@ class BackupRepositoryImpl @Inject constructor(
         jPut(this, "deletedAt", deletedAt); put("deviceId", deviceId); put("syncStatus", syncStatus)
     }
 
+    private fun id.kalkulasa.data.local.entity.PreorderEntity.toJson() = JSONObject().apply {
+        put("id", id); jPut(this, "namaPelanggan", namaPelanggan); put("status", status)
+        put("total", total); jPut(this, "catatan", catatan); put("waktu", waktu)
+        put("updatedAt", updatedAt); jPut(this, "deletedAt", deletedAt)
+        put("deviceId", deviceId); put("syncStatus", syncStatus)
+    }
+
+    private fun id.kalkulasa.data.local.entity.PreorderItemEntity.toJson() = JSONObject().apply {
+        put("id", id); put("preorderId", preorderId); put("produkId", produkId)
+        put("namaProduk", namaProduk); put("jumlah", jumlah); put("hargaJual", hargaJual)
+        put("updatedAt", updatedAt); jPut(this, "deletedAt", deletedAt)
+        put("deviceId", deviceId); put("syncStatus", syncStatus)
+    }
+
+    private fun id.kalkulasa.data.local.entity.BundleEntity.toJson() = JSONObject().apply {
+        put("id", id); put("nama", nama); put("hargaPaket", hargaPaket); put("aktif", aktif)
+        put("updatedAt", updatedAt); jPut(this, "deletedAt", deletedAt)
+        put("deviceId", deviceId); put("syncStatus", syncStatus)
+    }
+
+    private fun id.kalkulasa.data.local.entity.BundleItemEntity.toJson() = JSONObject().apply {
+        put("id", id); put("bundleId", bundleId); put("produkId", produkId); put("jumlah", jumlah)
+        put("updatedAt", updatedAt); jPut(this, "deletedAt", deletedAt)
+        put("deviceId", deviceId); put("syncStatus", syncStatus)
+    }
+
+    private fun id.kalkulasa.data.local.entity.VoucherUsageEntity.toJson() = JSONObject().apply {
+        put("id", id); put("voucherId", voucherId); put("voucherKode", voucherKode)
+        put("namaPelanggan", namaPelanggan); put("saleId", saleId); put("waktu", waktu)
+        put("updatedAt", updatedAt); jPut(this, "deletedAt", deletedAt)
+        put("deviceId", deviceId); put("syncStatus", syncStatus)
+    }
+
     private fun id.kalkulasa.data.local.entity.BudgetEntity.toJson() = JSONObject().apply {
         put("id", id); put("kategoriNama", kategoriNama); put("nominal", nominal); put("bulan", bulan)
         put("updatedAt", updatedAt); put("deviceId", deviceId); put("syncStatus", syncStatus)
@@ -219,6 +267,7 @@ class BackupRepositoryImpl @Inject constructor(
         put("id", id); put("kode", kode); put("tipe", tipe); put("nilai", nilai)
         put("minimalBelanja", minimalBelanja); put("kuota", kuota); put("terpakai", terpakai)
         put("berlakuMulai", berlakuMulai); put("berlakuSampai", berlakuSampai); put("aktif", aktif)
+        put("scope", scope); jPut(this, "namaPelanggan", namaPelanggan)
         put("updatedAt", updatedAt); jPut(this, "deletedAt", deletedAt)
         put("deviceId", deviceId); put("syncStatus", syncStatus)
     }
@@ -263,18 +312,20 @@ class BackupRepositoryImpl @Inject constructor(
         jPut(this, "customerId", customerId)
         put("updatedAt", updatedAt); put("poinDitukar", poinDitukar)
         put("ppn", ppn); jPut(this, "voucherKode", voucherKode)
+        jPut(this, "metodeBayar2", metodeBayar2); put("nominalBayar2", nominalBayar2); put("depositTerpakai", depositTerpakai); jPut(this, "cashAccountId", cashAccountId)
         jPut(this, "deletedAt", deletedAt); put("deviceId", deviceId); put("syncStatus", syncStatus)
     }
 
     private fun CustomerEntity.toJson() = JSONObject().apply {
         put("id", id); put("nama", nama); put("poin", poin); put("kunjungan", kunjungan)
         put("totalBelanja", totalBelanja); put("updatedAt", updatedAt)
+        jPut(this, "catatan", catatan); jPut(this, "tag", tag)
         jPut(this, "deletedAt", deletedAt); put("deviceId", deviceId); put("syncStatus", syncStatus)
     }
 
     private fun SaleItemEntity.toJson() = JSONObject().apply {
         put("id", id); put("saleId", saleId); put("produkId", produkId); put("namaProduk", namaProduk)
-        put("jumlah", jumlah); put("hargaJual", hargaJual); put("hppSaatJual", hppSaatJual)
+        put("jumlah", jumlah); put("hargaJual", hargaJual); put("hppSaatJual", hppSaatJual); put("diskonItem", diskonItem)
         put("updatedAt", updatedAt); jPut(this, "deletedAt", deletedAt)
         put("deviceId", deviceId); put("syncStatus", syncStatus)
     }
@@ -359,6 +410,8 @@ class BackupRepositoryImpl @Inject constructor(
         status = getString("status"), waktu = getLong("waktu"), catatan = str("catatan"),
         customerId = str("customerId"), poinDitukar = optInt("poinDitukar", 0),
         ppn = optLong("ppn", 0L), voucherKode = str("voucherKode"),
+        metodeBayar2 = str("metodeBayar2"), nominalBayar2 = optLong("nominalBayar2", 0L),
+        depositTerpakai = optLong("depositTerpakai", 0L), cashAccountId = str("cashAccountId"),
         updatedAt = getLong("updatedAt"), deletedAt = optLongOrNull("deletedAt"),
         deviceId = getString("deviceId"), syncStatus = optString("syncStatus", "PENDING"),
     )
@@ -387,6 +440,41 @@ class BackupRepositoryImpl @Inject constructor(
         deviceId = getString("deviceId"), syncStatus = optString("syncStatus", "PENDING"),
     )
 
+    private fun JSONObject.toPreorder() = id.kalkulasa.data.local.entity.PreorderEntity(
+        id = getString("id"), namaPelanggan = str("namaPelanggan"), status = getString("status"),
+        total = getLong("total"), catatan = str("catatan"), waktu = getLong("waktu"),
+        updatedAt = getLong("updatedAt"), deletedAt = optLongOrNull("deletedAt"),
+        deviceId = getString("deviceId"), syncStatus = optString("syncStatus", "PENDING"),
+    )
+
+    private fun JSONObject.toPreorderItem() = id.kalkulasa.data.local.entity.PreorderItemEntity(
+        id = getString("id"), preorderId = getString("preorderId"), produkId = getString("produkId"),
+        namaProduk = getString("namaProduk"), jumlah = getDouble("jumlah"), hargaJual = getLong("hargaJual"),
+        updatedAt = getLong("updatedAt"), deletedAt = optLongOrNull("deletedAt"),
+        deviceId = getString("deviceId"), syncStatus = optString("syncStatus", "PENDING"),
+    )
+
+    private fun JSONObject.toBundle() = id.kalkulasa.data.local.entity.BundleEntity(
+        id = getString("id"), nama = getString("nama"), hargaPaket = getLong("hargaPaket"),
+        aktif = getBoolean("aktif"), updatedAt = getLong("updatedAt"),
+        deletedAt = optLongOrNull("deletedAt"), deviceId = getString("deviceId"),
+        syncStatus = optString("syncStatus", "PENDING"),
+    )
+
+    private fun JSONObject.toBundleItem() = id.kalkulasa.data.local.entity.BundleItemEntity(
+        id = getString("id"), bundleId = getString("bundleId"), produkId = getString("produkId"),
+        jumlah = getDouble("jumlah"), updatedAt = getLong("updatedAt"),
+        deletedAt = optLongOrNull("deletedAt"), deviceId = getString("deviceId"),
+        syncStatus = optString("syncStatus", "PENDING"),
+    )
+
+    private fun JSONObject.toVoucherUsage() = id.kalkulasa.data.local.entity.VoucherUsageEntity(
+        id = getString("id"), voucherId = getString("voucherId"), voucherKode = getString("voucherKode"),
+        namaPelanggan = getString("namaPelanggan"), saleId = getString("saleId"), waktu = getLong("waktu"),
+        updatedAt = getLong("updatedAt"), deletedAt = optLongOrNull("deletedAt"),
+        deviceId = getString("deviceId"), syncStatus = optString("syncStatus", "PENDING"),
+    )
+
     private fun JSONObject.toBudget() = id.kalkulasa.data.local.entity.BudgetEntity(
         id = getString("id"), kategoriNama = getString("kategoriNama"),
         nominal = getLong("nominal"), bulan = getString("bulan"),
@@ -406,7 +494,8 @@ class BackupRepositoryImpl @Inject constructor(
         nilai = getLong("nilai"), minimalBelanja = getLong("minimalBelanja"),
         kuota = getInt("kuota"), terpakai = getInt("terpakai"),
         berlakuMulai = getLong("berlakuMulai"), berlakuSampai = getLong("berlakuSampai"),
-        aktif = getBoolean("aktif"), updatedAt = getLong("updatedAt"),
+        aktif = getBoolean("aktif"), scope = optString("scope", "GLOBAL"), namaPelanggan = str("namaPelanggan"),
+        updatedAt = getLong("updatedAt"),
         deletedAt = optLongOrNull("deletedAt"), deviceId = getString("deviceId"),
         syncStatus = optString("syncStatus", "PENDING"),
     )
@@ -460,6 +549,7 @@ class BackupRepositoryImpl @Inject constructor(
         id = getString("id"), saleId = getString("saleId"), produkId = getString("produkId"),
         namaProduk = getString("namaProduk"), jumlah = getDouble("jumlah"),
         hargaJual = getLong("hargaJual"), hppSaatJual = getLong("hppSaatJual"),
+        diskonItem = optLong("diskonItem", 0L),
         updatedAt = getLong("updatedAt"), deletedAt = optLongOrNull("deletedAt"),
         deviceId = getString("deviceId"), syncStatus = optString("syncStatus", "PENDING"),
     )
@@ -489,6 +579,6 @@ class BackupRepositoryImpl @Inject constructor(
     )
 
     private companion object {
-        const val BACKUP_VERSION = 12
+        const val BACKUP_VERSION = 14
     }
 }

@@ -530,4 +530,15 @@
     <string name="global_search">Pencarian global</string>
     <string name="global_search_hint">Cari produk atau transaksi</string>
     <string name="search_empty">Tidak ada hasil.</string>
+    <string name="kasir_pro_title">Kasir Pro</string>
+    <string name="kasir_pro_open">Preorder dan Paket</string>
+    <string name="preorder_title">Preorder</string>
+    <string name="preorder_add">Tambah preorder</string>
+    <string name="preorder_empty">Belum ada preorder.</string>
+    <string name="preorder_sell">Jual</string>
+    <string name="bundle_title">Paket</string>
+    <string name="bundle_add">Tambah paket</string>
+    <string name="bundle_empty">Belum ada paket.</string>
+    <string name="bundle_name">Nama paket</string>
+    <string name="bundle_price">Harga paket</string>
 </resources>

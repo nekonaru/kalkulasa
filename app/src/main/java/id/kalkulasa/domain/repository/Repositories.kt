@@ -26,6 +26,9 @@ import id.kalkulasa.domain.model.Sale
 import id.kalkulasa.domain.model.Budget
 import id.kalkulasa.domain.model.Deposit
 import id.kalkulasa.domain.model.CashAudit
+import id.kalkulasa.domain.model.Bundle
+import id.kalkulasa.domain.model.Preorder
+import id.kalkulasa.domain.model.PreorderLine
 import id.kalkulasa.domain.model.Voucher
 import id.kalkulasa.domain.model.SaleLine
 import id.kalkulasa.domain.model.SalesTarget
@@ -147,6 +150,19 @@ interface ActivityRepository {
 interface PayablePaymentRepository {
     fun observeRecent(limit: Int = 100): Flow<List<PayablePayment>>
     suspend fun sumBetween(from: Long, to: Long): Long
+}
+
+interface PreorderRepository {
+    fun observeAll(): Flow<List<Preorder>>
+    suspend fun getWithItems(id: String): Pair<Preorder, List<PreorderLine>>?
+    suspend fun save(nama: String?, catatan: String?, items: List<PreorderLine>): Result<Unit>
+    suspend fun mark(id: String, status: String): Result<Unit>
+}
+
+interface BundleRepository {
+    fun observeActive(): Flow<List<Bundle>>
+    suspend fun save(nama: String, hargaPaket: Long, items: List<Pair<String, Double>>): Result<Unit>
+    suspend fun itemsFor(id: String): List<Pair<String, Double>>
 }
 
 interface VoucherRepository {

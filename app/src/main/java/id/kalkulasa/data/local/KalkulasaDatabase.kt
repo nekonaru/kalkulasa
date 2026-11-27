@@ -29,6 +29,11 @@ import id.kalkulasa.data.local.entity.PayableEntity
 import id.kalkulasa.data.local.entity.PayablePaymentEntity
 import id.kalkulasa.data.local.entity.VoucherEntity
 import id.kalkulasa.data.local.entity.DepositEntity
+import id.kalkulasa.data.local.entity.PreorderEntity
+import id.kalkulasa.data.local.entity.PreorderItemEntity
+import id.kalkulasa.data.local.entity.BundleEntity
+import id.kalkulasa.data.local.entity.BundleItemEntity
+import id.kalkulasa.data.local.entity.VoucherUsageEntity
 import id.kalkulasa.data.local.entity.BudgetEntity
 import id.kalkulasa.data.local.entity.CashAuditEntity
 import id.kalkulasa.data.local.entity.SalesTargetEntity
@@ -65,11 +70,16 @@ import java.util.UUID
         PayablePaymentEntity::class,
         VoucherEntity::class,
         DepositEntity::class,
+        PreorderEntity::class,
+        PreorderItemEntity::class,
+        BundleEntity::class,
+        BundleItemEntity::class,
+        VoucherUsageEntity::class,
         BudgetEntity::class,
         CashAuditEntity::class,
         SalesTargetEntity::class,
     ],
-    version = 13,
+    version = 14,
     exportSchema = true,
 )
 abstract class KalkulasaDatabase : RoomDatabase() {
@@ -93,11 +103,68 @@ abstract class KalkulasaDatabase : RoomDatabase() {
     abstract fun payablePaymentDao(): id.kalkulasa.data.local.dao.PayablePaymentDao
     abstract fun voucherDao(): id.kalkulasa.data.local.dao.VoucherDao
     abstract fun depositDao(): id.kalkulasa.data.local.dao.DepositDao
+    abstract fun preorderDao(): id.kalkulasa.data.local.dao.PreorderDao
+    abstract fun bundleDao(): id.kalkulasa.data.local.dao.BundleDao
+    abstract fun voucherUsageDao(): id.kalkulasa.data.local.dao.VoucherUsageDao
     abstract fun budgetDao(): id.kalkulasa.data.local.dao.BudgetDao
     abstract fun cashAuditDao(): id.kalkulasa.data.local.dao.CashAuditDao
 
     companion object {
         const val NAME = "kalkulasa.db"
+
+        /** Migration 13 -> 14: preorders, bundles, voucher usage and split payment. */
+        val MIGRATION_13_14 = androidx.room.migration.Migration(13, 14) { db ->
+            db.execSQL(
+                """CREATE TABLE IF NOT EXISTS `preorder` (
+                    `id` TEXT NOT NULL PRIMARY KEY, `namaPelanggan` TEXT, `status` TEXT NOT NULL,
+                    `total` INTEGER NOT NULL, `catatan` TEXT, `waktu` INTEGER NOT NULL,
+                    `updatedAt` INTEGER NOT NULL, `deletedAt` INTEGER,
+                    `deviceId` TEXT NOT NULL, `syncStatus` TEXT NOT NULL
+                )""".trimIndent(),
+            )
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_preorder_waktu` ON `preorder` (`waktu`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_preorder_status` ON `preorder` (`status`)")
+            db.execSQL(
+                """CREATE TABLE IF NOT EXISTS `preorder_item` (
+                    `id` TEXT NOT NULL PRIMARY KEY, `preorderId` TEXT NOT NULL, `produkId` TEXT NOT NULL,
+                    `namaProduk` TEXT NOT NULL, `jumlah` REAL NOT NULL, `hargaJual` INTEGER NOT NULL,
+                    `updatedAt` INTEGER NOT NULL, `deletedAt` INTEGER,
+                    `deviceId` TEXT NOT NULL, `syncStatus` TEXT NOT NULL
+                )""".trimIndent(),
+            )
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_preorder_item_preorderId` ON `preorder_item` (`preorderId`)")
+            db.execSQL(
+                """CREATE TABLE IF NOT EXISTS `bundle` (
+                    `id` TEXT NOT NULL PRIMARY KEY, `nama` TEXT NOT NULL, `hargaPaket` INTEGER NOT NULL,
+                    `aktif` INTEGER NOT NULL, `updatedAt` INTEGER NOT NULL, `deletedAt` INTEGER,
+                    `deviceId` TEXT NOT NULL, `syncStatus` TEXT NOT NULL
+                )""".trimIndent(),
+            )
+            db.execSQL(
+                """CREATE TABLE IF NOT EXISTS `bundle_item` (
+                    `id` TEXT NOT NULL PRIMARY KEY, `bundleId` TEXT NOT NULL, `produkId` TEXT NOT NULL,
+                    `jumlah` REAL NOT NULL, `updatedAt` INTEGER NOT NULL, `deletedAt` INTEGER,
+                    `deviceId` TEXT NOT NULL, `syncStatus` TEXT NOT NULL
+                )""".trimIndent(),
+            )
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_bundle_item_bundleId` ON `bundle_item` (`bundleId`)")
+            db.execSQL(
+                """CREATE TABLE IF NOT EXISTS `voucher_usage` (
+                    `id` TEXT NOT NULL PRIMARY KEY, `voucherId` TEXT NOT NULL, `voucherKode` TEXT NOT NULL,
+                    `namaPelanggan` TEXT NOT NULL, `saleId` TEXT NOT NULL, `waktu` INTEGER NOT NULL,
+                    `updatedAt` INTEGER NOT NULL, `deletedAt` INTEGER,
+                    `deviceId` TEXT NOT NULL, `syncStatus` TEXT NOT NULL
+                )""".trimIndent(),
+            )
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_voucher_usage_voucherId` ON `voucher_usage` (`voucherId`)")
+            db.execSQL("ALTER TABLE `sale` ADD COLUMN `metodeBayar2` TEXT")
+            db.execSQL("ALTER TABLE `sale` ADD COLUMN `nominalBayar2` INTEGER NOT NULL DEFAULT 0")
+            db.execSQL("ALTER TABLE `sale` ADD COLUMN `depositTerpakai` INTEGER NOT NULL DEFAULT 0")
+            db.execSQL("ALTER TABLE `sale` ADD COLUMN `cashAccountId` TEXT")
+            db.execSQL("ALTER TABLE `sale_item` ADD COLUMN `diskonItem` INTEGER NOT NULL DEFAULT 0")
+            db.execSQL("ALTER TABLE `voucher` ADD COLUMN `scope` TEXT NOT NULL DEFAULT 'GLOBAL'")
+            db.execSQL("ALTER TABLE `voucher` ADD COLUMN `namaPelanggan` TEXT")
+        }
 
         /** Migration 12 -> 13: customer notes and tags. */
         val MIGRATION_12_13 = androidx.room.migration.Migration(12, 13) { db ->
@@ -347,7 +414,7 @@ abstract class KalkulasaDatabase : RoomDatabase() {
         fun build(context: Context, deviceId: String, passphrase: ByteArray): KalkulasaDatabase =
             Room.databaseBuilder(context, KalkulasaDatabase::class.java, NAME)
                 .openHelperFactory(SupportOpenHelperFactory(passphrase))
-                .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, MIGRATION_7_8, MIGRATION_8_9, MIGRATION_9_10, MIGRATION_10_11, MIGRATION_11_12, MIGRATION_12_13)
+                .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, MIGRATION_7_8, MIGRATION_8_9, MIGRATION_9_10, MIGRATION_10_11, MIGRATION_11_12, MIGRATION_12_13, MIGRATION_13_14)
                 .addCallback(SeedCallback(deviceId))
                 .build()
     }

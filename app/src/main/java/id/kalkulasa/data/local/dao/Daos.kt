@@ -16,6 +16,11 @@ import id.kalkulasa.data.local.entity.KasbonEntity
 import id.kalkulasa.data.local.entity.PayrollEntity
 import id.kalkulasa.data.local.entity.PayableEntity
 import id.kalkulasa.data.local.entity.PayablePaymentEntity
+import id.kalkulasa.data.local.entity.VoucherUsageEntity
+import id.kalkulasa.data.local.entity.PreorderEntity
+import id.kalkulasa.data.local.entity.PreorderItemEntity
+import id.kalkulasa.data.local.entity.BundleEntity
+import id.kalkulasa.data.local.entity.BundleItemEntity
 import id.kalkulasa.data.local.entity.VoucherEntity
 import id.kalkulasa.data.local.entity.DepositEntity
 import id.kalkulasa.data.local.entity.BudgetEntity
@@ -548,6 +553,63 @@ interface PayablePaymentDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(payment: PayablePaymentEntity)
+}
+
+@Dao
+interface PreorderDao {
+    @Query("SELECT * FROM preorder WHERE deletedAt IS NULL ORDER BY waktu DESC")
+    fun observeAll(): Flow<List<PreorderEntity>>
+
+    @Query("SELECT * FROM preorder WHERE id = :id AND deletedAt IS NULL")
+    suspend fun getById(id: String): PreorderEntity?
+
+    @Query("SELECT * FROM preorder_item WHERE preorderId = :id AND deletedAt IS NULL")
+    suspend fun getItems(id: String): List<PreorderItemEntity>
+
+    @Query("SELECT * FROM preorder WHERE deletedAt IS NULL")
+    suspend fun getAll(): List<PreorderEntity>
+
+    @Query("SELECT * FROM preorder_item WHERE deletedAt IS NULL")
+    suspend fun getAllItems(): List<PreorderItemEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsert(preorder: PreorderEntity)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertItems(items: List<PreorderItemEntity>)
+}
+
+@Dao
+interface BundleDao {
+    @Query("SELECT * FROM bundle WHERE deletedAt IS NULL AND aktif = 1 ORDER BY nama")
+    fun observeActive(): Flow<List<BundleEntity>>
+
+    @Query("SELECT * FROM bundle WHERE deletedAt IS NULL")
+    suspend fun getAll(): List<BundleEntity>
+
+    @Query("SELECT * FROM bundle_item WHERE bundleId = :id AND deletedAt IS NULL")
+    suspend fun getItems(id: String): List<BundleItemEntity>
+
+    @Query("SELECT * FROM bundle_item WHERE deletedAt IS NULL")
+    suspend fun getAllItems(): List<BundleItemEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsert(bundle: BundleEntity)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertItems(items: List<BundleItemEntity>)
+}
+
+@Dao
+interface VoucherUsageDao {
+    @Query("SELECT * FROM voucher_usage WHERE voucherId = :id AND deletedAt IS NULL")
+    suspend fun getForVoucher(id: String): List<VoucherUsageEntity>
+
+    @Query("SELECT * FROM voucher_usage WHERE deletedAt IS NULL")
+    suspend fun getAll(): List<VoucherUsageEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(usage: VoucherUsageEntity)
 }
 
 @Dao
