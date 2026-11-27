@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -47,8 +48,6 @@ class ReportsViewModel @Inject constructor(
     private val _mostProfitable = MutableStateFlow<List<ProductProfit>>(emptyList())
     val mostProfitable: StateFlow<List<ProductProfit>> = _mostProfitable.asStateFlow()
 
-    init { load() }
-
     fun selectPeriod(period: ReportPeriod) {
         val now = System.currentTimeMillis()
         val (from, to) = when (period) {
@@ -65,15 +64,15 @@ class ReportsViewModel @Inject constructor(
         val s = _state.value
         viewModelScope.launch {
             try {
-                val report = reportRepository.reportBetween(s.from, s.to)
-                val profitable = saleRepository.mostProfitableBetween(s.from, s.to, 5)
-            // A fast period switch can start two queries. Only the one that still
-            // matches the visible period is allowed to write state.
+                val report = async { reportRepository.reportBetween(s.from, s.to) }
+                val profitable = async { saleRepository.mostProfitableBetween(s.from, s.to, 5) }
+                val reportValue = report.await()
+                val profitableValue = profitable.await()
                 withContext(Dispatchers.Main) {
                     val current = _state.value
                     if (current.from == s.from && current.to == s.to && current.period == s.period) {
-                        _mostProfitable.value = profitable
-                        _state.value = current.copy(report = report, loading = false, error = false)
+                        _mostProfitable.value = profitableValue
+                        _state.value = current.copy(report = reportValue, loading = false, error = false)
                     }
                 }
             } catch (e: Exception) {

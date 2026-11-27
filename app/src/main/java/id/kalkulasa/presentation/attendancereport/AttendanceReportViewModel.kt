@@ -32,8 +32,6 @@ class AttendanceReportViewModel @Inject constructor(
     private val _state = MutableStateFlow(AttendanceReportUiState())
     val state: StateFlow<AttendanceReportUiState> = _state.asStateFlow()
 
-    init { load() }
-
     fun selectPeriod(period: ReportPeriod) {
         _state.value = _state.value.copy(period = period, loading = true)
         load()
@@ -52,8 +50,9 @@ class AttendanceReportViewModel @Inject constructor(
             try {
                 val employees = employeeRepository.observeAll().first()
                 val attendance = attendanceRepository.getBetween(from, to)
+                val byEmployee = attendance.groupBy { it.karyawanId }
                 val rows = employees.map { employee ->
-                    val own = attendance.filter { it.karyawanId == employee.id }
+                    val own = byEmployee[employee.id].orEmpty()
                     AttendanceRow(
                         nama = employee.nama,
                         hadir = own.count { it.status == HitungGajiUseCase.HADIR },

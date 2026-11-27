@@ -1,5 +1,27 @@
 # Changelog
 
+## v3.5.0
+
+An optimization release that makes the app lighter, faster and smoother without new features.
+
+### Performance improvements
+
+- **Home no longer runs 58 queries on open.** Duplicate load triggers were removed and the monthly report is computed once, cutting queries dramatically.
+- **Cash balance is now one query.** Eight separate aggregates were merged into a single scalar-subquery statement in SQLite.
+- **Inventory value no longer loads the entire product table into memory.** The `SUM` is done directly in SQL.
+- **Financial Statements are lighter.** Queries run in parallel, the duplicate `netCapital` call is gone, and inventory reuses the existing aggregate.
+- **The cashier is more responsive.** One product observer and one customer observer, cart lookup uses an id map, and member discount reuses the same customer list.
+- **Sales and bulk stock take are batched.** Dozens to hundreds of statements per transaction were reduced to a few bulk operations.
+- **PIN verification no longer blocks the main thread.** PBKDF2 runs on the CPU dispatcher.
+- **Reports and history are no longer loaded twice** when a screen first opens.
+- **Global search debounces for 250 ms** so it does not read data on every keystroke.
+- **Backup restore limit lowered to 25 MB** and files with unknown size are rejected, preventing out-of-memory failures.
+
+### Bug fixes
+
+- Added a `LazyColumn` key for best-selling products.
+- Attendance report groups data per employee once instead of filtering repeatedly.
+
 ## v3.4.0
 
 Phase 5 and the final phase of the Kalkulasa UMKM Suite: master data export and global search.

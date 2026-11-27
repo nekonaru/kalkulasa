@@ -35,8 +35,6 @@ class InsightsViewModel @Inject constructor(
     private val _state = MutableStateFlow(InsightsUiState())
     val state: StateFlow<InsightsUiState> = _state.asStateFlow()
 
-    init { load() }
-
     fun load() {
         viewModelScope.launch {
             try {

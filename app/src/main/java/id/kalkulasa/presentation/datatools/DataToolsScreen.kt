@@ -42,7 +42,10 @@ fun DataToolsScreen(
     val context = LocalContext.current
     var results by remember { mutableStateOf(SearchResults(emptyList(), emptyList())) }
 
-    LaunchedEffect(query) { results = viewModel.search(query) }
+    LaunchedEffect(query) {
+        kotlinx.coroutines.delay(250)
+        results = viewModel.search(query)
+    }
 
     Scaffold(
         topBar = {

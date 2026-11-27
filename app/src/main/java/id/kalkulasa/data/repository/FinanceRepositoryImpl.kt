@@ -70,18 +70,16 @@ class FinanceRepositoryImpl @Inject constructor(
     }
 
     override suspend fun cashBreakdown(): CashBreakdown {
-        val now = RepositorySupport.now()
-        val from = 0L
-        // Hutang (credit) sales are not cash yet; count only cash/transfer/QRIS sales plus debt payments received.
+        val c = db.capitalEntryDao().cashComponents()
         return CashBreakdown(
-            modal = db.capitalEntryDao().sumCapital(),
-            prive = db.capitalEntryDao().sumPrivateDraws(),
-            penjualanTunai = db.saleDao().sumRevenueBetweenExcludingMethod(from, now, id.kalkulasa.domain.model.PaymentMethod.HUTANG),
-            penerimaanPiutang = db.receivableDao().sumPaid(),
-            pembelianStok = db.purchaseDao().sumBetween(from, now),
-            pembayaranHutang = db.payableDao().sumPaid(),
-            kasbon = db.kasbonDao().sumAll(),
-            pengeluaran = db.expenseDao().sumBetween(from, now),
+            modal = c.modal,
+            prive = c.prive,
+            penjualanTunai = c.salesCash,
+            penerimaanPiutang = c.receivablePaid,
+            pembelianStok = c.purchases,
+            pembayaranHutang = c.payablePaid,
+            kasbon = c.kasbon,
+            pengeluaran = c.expenses,
         )
     }
 

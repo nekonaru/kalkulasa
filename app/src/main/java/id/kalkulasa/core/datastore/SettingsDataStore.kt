@@ -6,6 +6,8 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -49,26 +51,30 @@ class SettingsDataStore @Inject constructor(
     /** Verify a PIN attempt. Legacy unsalted hashes are upgraded on success. */
     suspend fun verifyPin(pin: String): Boolean {
         val stored = context.dataStore.data.first()[Keys.pinHash] ?: return false
-        if (stored.startsWith(PREFIX)) {
-            val parts = stored.split('$')
-            if (parts.size != 3) return false
-            val expected = try {
-                derive(pin, hexToBytes(parts[1]))
-            } catch (e: Exception) {
-                return false
+        return withContext(Dispatchers.Default) {
+            if (stored.startsWith(PREFIX)) {
+                val parts = stored.split('$')
+                if (parts.size != 3) return@withContext false
+                val expected = try {
+                    derive(pin, hexToBytes(parts[1]))
+                } catch (e: Exception) {
+                    return@withContext false
+                }
+                return@withContext constantTimeEquals(parts[2], expected)
             }
-            return constantTimeEquals(parts[2], expected)
+            if (constantTimeEquals(stored, legacyHash(pin))) {
+                setPin(pin)
+                return@withContext true
+            }
+            false
         }
-        if (constantTimeEquals(stored, legacyHash(pin))) {
-            setPin(pin)
-            return true
-        }
-        return false
     }
 
     suspend fun setPin(pin: String) {
-        val salt = ByteArray(16).also { SecureRandom().nextBytes(it) }
-        val value = listOf(PREFIX, hex(salt), derive(pin, salt)).joinToString("$")
+        val value = withContext(Dispatchers.Default) {
+            val salt = ByteArray(16).also { SecureRandom().nextBytes(it) }
+            listOf(PREFIX, hex(salt), derive(pin, salt)).joinToString("$")
+        }
         context.dataStore.edit { it[Keys.pinHash] = value }
     }
 

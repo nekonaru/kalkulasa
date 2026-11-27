@@ -22,8 +22,6 @@ class SupplierViewModel @Inject constructor(
     private val _loading = MutableStateFlow(true)
     val loading: StateFlow<Boolean> = _loading.asStateFlow()
 
-    init { refresh() }
-
     fun refresh() {
         viewModelScope.launch {
             _spend.value = supplierRepository.supplierSpend()

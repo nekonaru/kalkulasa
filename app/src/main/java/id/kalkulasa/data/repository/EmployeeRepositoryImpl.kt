@@ -152,9 +152,7 @@ class PayrollRepositoryImpl @Inject constructor(
         catatan: String,
     ): Result<Unit> = runCatching {
         db.withTransaction {
-            val alreadyPaid = db.payrollDao().getAll()
-                .filter { it.karyawanId == karyawan.id && it.periodeAwal == from && it.deletedAt == null }
-                .sumOf { it.dibayar }
+            val alreadyPaid = db.payrollDao().sumPaidFor(karyawan.id, from)
             if (alreadyPaid >= (upah - kasbon).coerceAtLeast(0L) && dibayar > 0) {
                 throw IllegalStateException("Gaji periode ini sudah lunas")
             }

@@ -60,8 +60,6 @@ class HomeViewModel @Inject constructor(
     val warungMode: StateFlow<Boolean> = settings.warungMode
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), false)
 
-    init { refresh() }
-
     fun refresh() {
         viewModelScope.launch {
             try {
@@ -83,7 +81,6 @@ class HomeViewModel @Inject constructor(
             val monthReport = async { reportRepository.reportBetween(monthStart, to) }
             val saldoKas = async { financeRepository.cashBalance() }
             val targets = async { salesTargetRepository.observeAll().first() }
-            val monthOmzet = async { reportRepository.reportBetween(monthStart, to).omzet }
 
             val profileValue = profile.await()
             val omzetValue = omzet.await()
@@ -114,7 +111,7 @@ class HomeViewModel @Inject constructor(
                 piutangOutstanding = piutangValue,
                 targetHarian = targetList.find { it.jenis == "HARIAN" }?.nominal ?: 0L,
                 targetBulanan = targetList.find { it.jenis == "BULANAN" }?.nominal ?: 0L,
-                omzetMonth = monthOmzet.await(),
+                omzetMonth = reportValue.omzet,
                 health = health,
                 loading = false,
             )

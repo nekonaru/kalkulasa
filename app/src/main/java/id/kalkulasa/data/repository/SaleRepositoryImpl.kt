@@ -4,6 +4,7 @@ import androidx.room.withTransaction
 import id.kalkulasa.data.local.KalkulasaDatabase
 import id.kalkulasa.data.local.dao.ChangeLogDao
 import id.kalkulasa.data.local.entity.ReceivableEntity
+import id.kalkulasa.data.local.entity.ProductEntity
 import id.kalkulasa.data.local.entity.SaleEntity
 import id.kalkulasa.data.local.entity.SaleItemEntity
 import id.kalkulasa.domain.model.SaleStatus
@@ -53,9 +54,10 @@ class SaleRepositoryImpl @Inject constructor(
         return runCatching {
             db.withTransaction {
                 val productDao = db.productDao()
+                val productById = productDao.getByIds(items.map { it.first.id }).associateBy { it.id }
                 var subtotal = 0L
                 val resolved = items.map { (p, qty) ->
-                    val fresh = productDao.getById(p.id)
+                    val fresh = productById[p.id]
                         ?: throw IllegalStateException("Produk ${p.nama} tidak ditemukan")
                     if (fresh.stok < qty) {
                         throw IllegalStateException("Stok ${fresh.nama} tidak cukup (sisa ${fresh.stok})")
@@ -107,36 +109,38 @@ class SaleRepositoryImpl @Inject constructor(
                     RepositorySupport.log(changeLogDao, "customer", linkedCustomerId, "UPDATE")
                 }
 
+                val saleItems = mutableListOf<SaleItemEntity>()
+                val movements = mutableListOf<StockMovementEntity>()
+                val updatedProducts = mutableListOf<ProductEntity>()
                 resolved.forEach { (fresh, qty) ->
-                    db.saleDao().insertItem(
-                        SaleItemEntity(
-                            id = RepositorySupport.newId(),
-                            saleId = saleId,
-                            produkId = fresh.id,
-                            namaProduk = fresh.nama,
-                            jumlah = qty,
-                            hargaJual = fresh.hargaJual,
-                            hppSaatJual = fresh.hargaBeliRata2,
-                            updatedAt = now,
-                            deviceId = deviceId,
-                        ),
+                    saleItems += SaleItemEntity(
+                        id = RepositorySupport.newId(),
+                        saleId = saleId,
+                        produkId = fresh.id,
+                        namaProduk = fresh.nama,
+                        jumlah = qty,
+                        hargaJual = fresh.hargaJual,
+                        hppSaatJual = fresh.hargaBeliRata2,
+                        updatedAt = now,
+                        deviceId = deviceId,
                     )
-                    productDao.update(fresh.copy(stok = fresh.stok - qty, updatedAt = now))
-                    db.stockMovementDao().insert(
-                        StockMovementEntity(
-                            id = RepositorySupport.newId(),
-                            produkId = fresh.id,
-                            tipe = StockMovementType.KELUAR,
-                            jumlah = qty,
-                            hargaSatuan = fresh.hargaBeliRata2,
-                            referensiId = saleId,
-                            catatan = null,
-                            waktu = now,
-                            updatedAt = now,
-                            deviceId = deviceId,
-                        ),
+                    updatedProducts += fresh.copy(stok = fresh.stok - qty, updatedAt = now)
+                    movements += StockMovementEntity(
+                        id = RepositorySupport.newId(),
+                        produkId = fresh.id,
+                        tipe = StockMovementType.KELUAR,
+                        jumlah = qty,
+                        hargaSatuan = fresh.hargaBeliRata2,
+                        referensiId = saleId,
+                        catatan = null,
+                        waktu = now,
+                        updatedAt = now,
+                        deviceId = deviceId,
                     )
                 }
+                db.saleDao().insertItems(saleItems)
+                productDao.updateAll(updatedProducts)
+                db.stockMovementDao().insertAll(movements)
                 val sale = SaleEntity(
                     id = saleId,
                     subtotal = subtotal,

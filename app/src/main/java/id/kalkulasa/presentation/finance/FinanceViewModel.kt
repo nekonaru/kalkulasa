@@ -60,8 +60,6 @@ class FinanceViewModel @Inject constructor(
     private val _events = Channel<FinanceEvent>(Channel.BUFFERED)
     val events: Flow<FinanceEvent> = _events.receiveAsFlow()
 
-    init { refreshBalance() }
-
     fun refreshBalance() {
         viewModelScope.launch { _cashBalance.value = financeRepository.cashBalance() }
     }

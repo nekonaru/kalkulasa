@@ -170,7 +170,7 @@ fun HomeScreen(
                     )
                 }
             } else {
-                items(state.bestSellers) { product ->
+                items(state.bestSellers, key = { it.namaProduk }) { product ->
                     Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
                         Row(
                             modifier = Modifier.fillMaxWidth().padding(12.dp),

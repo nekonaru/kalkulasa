@@ -4,6 +4,7 @@ import androidx.room.withTransaction
 import id.kalkulasa.data.local.KalkulasaDatabase
 import id.kalkulasa.data.local.dao.ChangeLogDao
 import id.kalkulasa.data.local.entity.PurchaseEntity
+import id.kalkulasa.data.local.entity.ProductEntity
 import id.kalkulasa.data.local.entity.PurchaseItemEntity
 import id.kalkulasa.data.local.entity.StockMovementEntity
 import id.kalkulasa.domain.model.StockMovementType
@@ -105,31 +106,32 @@ class StockRepositoryImpl @Inject constructor(
         reason: String,
     ): Result<Int> = runCatching {
         db.withTransaction {
-            var changed = 0
+            val productById = db.productDao().getByIds(items.map { it.first }).associateBy { it.id }
+            val movements = mutableListOf<StockMovementEntity>()
+            val updated = mutableListOf<ProductEntity>()
             items.forEach { (productId, newQty) ->
-                val product = db.productDao().getById(productId) ?: return@forEach
+                val product = productById[productId] ?: return@forEach
                 if (newQty < 0.0 || newQty == product.stok) return@forEach
                 val delta = newQty - product.stok
                 val now = RepositorySupport.now()
-                db.stockMovementDao().insert(
-                    StockMovementEntity(
-                        id = RepositorySupport.newId(),
-                        produkId = productId,
-                        tipe = StockMovementType.PENYESUAIAN,
-                        jumlah = kotlin.math.abs(delta),
-                        hargaSatuan = product.hargaBeliRata2,
-                        referensiId = null,
-                        catatan = reason,
-                        waktu = now,
-                        updatedAt = now,
-                        deviceId = deviceId,
-                    ),
+                movements += StockMovementEntity(
+                    id = RepositorySupport.newId(),
+                    produkId = productId,
+                    tipe = StockMovementType.PENYESUAIAN,
+                    jumlah = kotlin.math.abs(delta),
+                    hargaSatuan = product.hargaBeliRata2,
+                    referensiId = null,
+                    catatan = reason,
+                    waktu = now,
+                    updatedAt = now,
+                    deviceId = deviceId,
                 )
-                db.productDao().update(product.copy(stok = newQty, updatedAt = now))
+                updated += product.copy(stok = newQty, updatedAt = now)
                 RepositorySupport.log(changeLogDao, "product", productId, "UPDATE")
-                changed++
             }
-            changed
+            db.stockMovementDao().insertAll(movements)
+            db.productDao().updateAll(updated)
+            updated.size
         }
     }
 

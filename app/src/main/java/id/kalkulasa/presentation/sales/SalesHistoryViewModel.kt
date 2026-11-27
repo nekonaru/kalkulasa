@@ -47,8 +47,6 @@ class SalesHistoryViewModel @Inject constructor(
     private val _events = Channel<SalesHistoryEvent>(Channel.BUFFERED)
     val events = _events.receiveAsFlow()
 
-    init { load() }
-
     fun selectPeriod(period: SalesPeriod) {
         _state.value = _state.value.copy(period = period, loading = true)
         load()

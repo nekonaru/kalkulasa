@@ -1,5 +1,27 @@
 # Changelog
 
+## v3.5.0
+
+Rilis optimalisasi untuk membuat aplikasi lebih ringan, cepat, dan lancar tanpa fitur baru.
+
+### Peningkatan performa
+
+- **Beranda tidak lagi menjalankan 58 query saat dibuka.** Duplikasi pemicu muat dihapus dan laporan bulan dihitung sekali, sehingga query turun drastis.
+- **Saldo kas jadi satu query.** Delapan agregat terpisah digabung menjadi satu kueri dengan subquery skalar di SQLite.
+- **Nilai persediaan tidak lagi memuat seluruh tabel produk ke memori.** Agregat `SUM` dilakukan langsung di SQL.
+- **Laporan Keuangan lebih ringan.** Query paralel, tidak ada lagi pemanggilan `netCapital` yang duplikat, dan persediaan memakai hasil agregat yang sudah ada.
+- **Kasir lebih responsif.** Satu observer produk dan satu observer pelanggan, pencarian keranjang memakai peta id, dan diskon member memakai daftar pelanggan yang sama.
+- **Penjualan dan opname massal dibatch.** Puluhan hingga ratusan statement per transaksi dikurangi menjadi beberapa operasi massal.
+- **Verifikasi PIN tidak lagi mem-blok main thread.** PBKDF2 dijalankan di dispatcher CPU.
+- **Laporan dan riwayat tidak dimuat dua kali** saat layar pertama dibuka.
+- **Pencarian global ada jeda 250 ms** sehingga tidak membaca data pada setiap ketukan.
+- **Batas restore backup diturunkan ke 25 MB** dan file dengan ukuran tidak dikenal ditolak, mencegah kehabisan memori.
+
+### Perbaikan
+
+- Kunci `LazyColumn` ditambahkan pada produk terlaris.
+- Rekap absensi mengelompokkan data per karyawan sekali, bukan filter berulang.
+
 ## v3.4.0
 
 Fase 5 dan terakhir dari Kalkulasa Suite UMKM: ekspor data master dan pencarian global.

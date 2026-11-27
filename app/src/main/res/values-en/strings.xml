@@ -81,7 +81,7 @@
     <string name="share_receipt">Share receipt</string>
     <string name="receipt_saved_title">Sale saved</string>
     <string name="receipt_later">Close</string>
-    <string name="backup_too_big">Backup file is too large (max 100 MB)</string>
+    <string name="backup_too_big">Backup file is too large (max 25 MB)</string>
     <string name="error_backup_unreadable">Backup file could not be read</string>
     <string name="button_pay">Save sale</string>
     <string name="sale_saved">Sale saved</string>

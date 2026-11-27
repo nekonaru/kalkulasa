@@ -34,6 +34,17 @@ import kotlinx.coroutines.flow.Flow
 /** Projection for the expense-by-category aggregate query. */
 data class CategorySpendRow(val nama: String, val total: Long)
 
+data class CashComponents(
+    val modal: Long,
+    val prive: Long,
+    val salesCash: Long,
+    val receivablePaid: Long,
+    val purchases: Long,
+    val payablePaid: Long,
+    val kasbon: Long,
+    val expenses: Long,
+)
+
 @Dao
 interface BusinessProfileDao {
     @Query("SELECT * FROM business_profile WHERE deletedAt IS NULL LIMIT 1")
@@ -92,6 +103,9 @@ interface ProductDao {
     @Query("SELECT * FROM product WHERE barcode = :barcode AND deletedAt IS NULL AND diarsipkan = 0 LIMIT 1")
     suspend fun getByBarcode(barcode: String): ProductEntity?
 
+    @Query("SELECT * FROM product WHERE id IN (:ids) AND deletedAt IS NULL")
+    suspend fun getByIds(ids: List<String>): List<ProductEntity>
+
     @Query("SELECT * FROM product WHERE deletedAt IS NULL")
     suspend fun getAllActive(): List<ProductEntity>
 
@@ -107,11 +121,17 @@ interface ProductDao {
     @Query("SELECT COALESCE(SUM(stok * hargaBeliRata2), 0) FROM product WHERE deletedAt IS NULL AND diarsipkan = 0")
     fun observeInventoryValue(): Flow<Long>
 
+    @Query("SELECT COALESCE(SUM(stok * hargaBeliRata2), 0) FROM product WHERE deletedAt IS NULL AND diarsipkan = 0")
+    suspend fun inventoryValue(): Long
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(product: ProductEntity)
 
     @Update
     suspend fun update(product: ProductEntity)
+
+    @Update
+    suspend fun updateAll(products: List<ProductEntity>)
 
     @Query("UPDATE product SET diarsipkan = :archived, updatedAt = :now WHERE id = :id")
     suspend fun setArchived(id: String, archived: Boolean, now: Long)
@@ -156,6 +176,9 @@ interface StockMovementDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(movement: StockMovementEntity)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(movements: List<StockMovementEntity>)
 }
 
 @Dao
@@ -208,6 +231,9 @@ interface SaleDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertItem(item: SaleItemEntity)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertItems(items: List<SaleItemEntity>)
 
     @Query("SELECT * FROM sale WHERE deletedAt IS NULL ORDER BY waktu DESC LIMIT :limit")
     fun observeRecent(limit: Int = 50): Flow<List<SaleEntity>>
@@ -339,6 +365,19 @@ interface CapitalEntryDao {
     @Query("SELECT COALESCE(SUM(nominal), 0) FROM capital_entry WHERE deletedAt IS NULL AND tipe = 'PRIVE'")
     suspend fun sumPrivateDraws(): Long
 
+    @Query("""
+        SELECT
+          (SELECT COALESCE(SUM(nominal), 0) FROM capital_entry WHERE deletedAt IS NULL AND tipe IN ('MODAL_AWAL','TAMBAH_MODAL')) AS modal,
+          (SELECT COALESCE(SUM(nominal), 0) FROM capital_entry WHERE deletedAt IS NULL AND tipe = 'PRIVE') AS prive,
+          (SELECT COALESCE(SUM(total), 0) FROM sale WHERE deletedAt IS NULL AND status = 'SELESAI' AND metodeBayar != 'HUTANG') AS salesCash,
+          (SELECT COALESCE(SUM(terbayar), 0) FROM receivable WHERE deletedAt IS NULL) AS receivablePaid,
+          (SELECT COALESCE(SUM(total), 0) FROM purchase WHERE deletedAt IS NULL) AS purchases,
+          (SELECT COALESCE(SUM(terbayar), 0) FROM payable WHERE deletedAt IS NULL) AS payablePaid,
+          (SELECT COALESCE(SUM(nominal), 0) FROM kasbon WHERE deletedAt IS NULL) AS kasbon,
+          (SELECT COALESCE(SUM(nominal), 0) FROM expense WHERE deletedAt IS NULL) AS expenses
+    """)
+    suspend fun cashComponents(): CashComponents
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(entry: CapitalEntryEntity)
 }
@@ -402,6 +441,9 @@ interface KasbonDao {
 
 @Dao
 interface PayrollDao {
+    @Query("SELECT COALESCE(SUM(dibayar), 0) FROM payroll WHERE karyawanId = :karyawanId AND periodeAwal = :periodeAwal AND deletedAt IS NULL")
+    suspend fun sumPaidFor(karyawanId: String, periodeAwal: Long): Long
+
     @Query("SELECT * FROM payroll WHERE deletedAt IS NULL ORDER BY waktu DESC")
     fun observeAll(): Flow<List<PayrollEntity>>
 

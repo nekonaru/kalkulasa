@@ -170,8 +170,8 @@ class SettingsViewModel @Inject constructor(
             try {
                 val resolver = context.contentResolver
                 val size = resolver.openAssetFileDescriptor(uri, "r")?.use { it.length }
-                if (size != null && size > MAX_BACKUP_BYTES) {
-                    _events.send(SettingsEvent.Message("BACKUP_TOO_BIG"))
+                if (size == null || size <= 0L || size > MAX_BACKUP_BYTES) {
+                    _events.send(SettingsEvent.Message(if (size != null && size > MAX_BACKUP_BYTES) "BACKUP_TOO_BIG" else "ERROR"))
                     return@launch
                 }
                 val json = resolver.openInputStream(uri)?.use { it.bufferedReader().readText() }
@@ -192,6 +192,6 @@ class SettingsViewModel @Inject constructor(
     fun ignore() = Unit
 
     private companion object {
-        const val MAX_BACKUP_BYTES = 100L * 1024 * 1024 // 100 MB: generous for years of shop data
+        const val MAX_BACKUP_BYTES = 25L * 1024 * 1024 // 25 MB is enough for years of shop data
     }
 }

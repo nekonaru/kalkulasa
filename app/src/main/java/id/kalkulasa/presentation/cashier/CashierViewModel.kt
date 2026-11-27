@@ -108,22 +108,31 @@ class CashierViewModel @Inject constructor(
     private val _namaPelanggan = MutableStateFlow("")
     val namaPelanggan: StateFlow<String> = _namaPelanggan.asStateFlow()
 
+    private val customers: StateFlow<List<id.kalkulasa.domain.model.Customer>> =
+        customerRepository.observeAll()
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
     /** Points of the customer whose name is currently typed in the form. */
-    val availablePoints: StateFlow<Long> = combine(customerRepository.observeAll(), _namaPelanggan) { customers, name ->
-        customers.find { it.nama.equals(name.trim(), ignoreCase = true) }?.poin ?: 0L
+    val availablePoints: StateFlow<Long> = combine(customers, _namaPelanggan) { list, name ->
+        list.find { it.nama.equals(name.trim(), ignoreCase = true) }?.poin ?: 0L
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 0L)
 
-    /** Products currently visible in the picker (filtered by query). */
-    val products: StateFlow<List<Product>> = _query
-        .flatMapLatest { q -> productRepository.observeActive(q) }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
-
+    /** Single product observer. Filtering is done in memory to avoid duplicate Room observers. */
     private val allActiveProducts: StateFlow<List<Product>> =
         productRepository.observeActive("")
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
+    val products: StateFlow<List<Product>> = combine(allActiveProducts, _query) { all, q ->
+        if (q.isBlank()) {
+            all
+        } else {
+            all.filter { it.nama.contains(q, ignoreCase = true) || (it.barcode?.contains(q, ignoreCase = true) == true) }
+        }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
     val cartEntries: StateFlow<List<CartEntry>> = combine(_cart, allActiveProducts) { cart, all ->
-        cart.mapNotNull { (id, qty) -> all.find { it.id == id }?.let { CartEntry(it, qty) } }
+        val byId = all.associateBy { it.id }
+        cart.mapNotNull { (id, qty) -> byId[id]?.let { CartEntry(it, qty) } }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     val subtotal: StateFlow<Long> = cartEntries
@@ -138,9 +147,9 @@ class CashierViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 0L)
 
     val memberDiscount: StateFlow<Long> = combine(
-        customerRepository.observeAll(), _namaPelanggan, subtotal,
-    ) { customers, name, sub ->
-        val customer = customers.find { it.nama.equals(name.trim(), ignoreCase = true) }
+        customers, _namaPelanggan, subtotal,
+    ) { list, name, sub ->
+        val customer = list.find { it.nama.equals(name.trim(), ignoreCase = true) }
         MemberUseCase.diskon(customer?.totalBelanja ?: 0L, sub)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 0L)
 

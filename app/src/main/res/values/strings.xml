@@ -81,7 +81,7 @@
     <string name="share_receipt">Bagikan struk</string>
     <string name="receipt_saved_title">Penjualan tersimpan</string>
     <string name="receipt_later">Tutup</string>
-    <string name="backup_too_big">File backup terlalu besar (maks 100 MB)</string>
+    <string name="backup_too_big">File backup terlalu besar (maks 25 MB)</string>
     <string name="error_backup_unreadable">File backup tidak bisa dibaca</string>
     <string name="button_pay">Simpan penjualan</string>
     <string name="sale_saved">Penjualan tersimpan</string>
