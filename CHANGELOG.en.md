@@ -1,5 +1,18 @@
 # Changelog
 
+## v4.3.0
+
+Phase 4 of the Kalkulasa UMKM Pro Suite: employee performance ranking and a digital payslip.
+
+### New features
+
+- **Employee ranking.** Order employees this month by wages paid, days present and a 0 to 100 performance score.
+- **Digital payslip.** Share wage, advance, overtime and net paid through WhatsApp or another app.
+
+### Improvements
+
+- **Tested pro employee rules.** `KaryawanProUseCase` holds score calculation and payslip formatting as pure Kotlin with unit tests.
+
 ## v4.2.0
 
 Phase 3 of the Kalkulasa UMKM Pro Suite: recurring expenses and profit sharing.

@@ -560,4 +560,8 @@
     <string name="profit_share_name">Nama penerima</string>
     <string name="profit_share_percent">Persentase</string>
     <string name="profit_share_save">Simpan bagi hasil</string>
+    <string name="karyawan_pro_title">Ranking Karyawan</string>
+    <string name="karyawan_pro_open">Ranking dan Slip Gaji</string>
+    <string name="ranking_empty">Belum ada data karyawan.</string>
+    <string name="slip_share">Bagikan slip</string>
 </resources>

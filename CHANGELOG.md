@@ -1,5 +1,18 @@
 # Changelog
 
+## v4.3.0
+
+Fase 4 dari Kalkulasa UMKM Pro Suite: ranking performa karyawan dan slip gaji digital.
+
+### Fitur baru
+
+- **Ranking karyawan.** Urutan karyawan bulan ini berdasarkan upah yang dibayarkan, jumlah hari hadir, dan skor performa 0 sampai 100.
+- **Slip gaji digital.** Bagikan ringkasan upah, kasbon, lembur, dan jumlah yang dibayar lewat WhatsApp atau aplikasi lain.
+
+### Peningkatan
+
+- **Aturan karyawan pro teruji.** `KaryawanProUseCase` memuat perhitungan skor dan format slip gaji sebagai Kotlin murni dengan tes unit.
+
 ## v4.2.0
 
 Fase 3 dari Kalkulasa UMKM Pro Suite: pengeluaran berulang dan bagi hasil.
