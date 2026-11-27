@@ -89,7 +89,7 @@ import java.util.UUID
         CashAuditEntity::class,
         SalesTargetEntity::class,
     ],
-    version = 16,
+    version = 17,
     exportSchema = true,
 )
 abstract class KalkulasaDatabase : RoomDatabase() {
@@ -125,6 +125,11 @@ abstract class KalkulasaDatabase : RoomDatabase() {
 
     companion object {
         const val NAME = "kalkulasa.db"
+
+        /** Migration 16 -> 17: customer birthday. */
+        val MIGRATION_16_17 = androidx.room.migration.Migration(16, 17) { db ->
+            db.execSQL("ALTER TABLE `customer` ADD COLUMN `tanggalLahir` INTEGER")
+        }
 
         /** Migration 15 -> 16: recurring expenses and profit sharing. */
         val MIGRATION_15_16 = androidx.room.migration.Migration(15, 16) { db ->
@@ -480,7 +485,7 @@ abstract class KalkulasaDatabase : RoomDatabase() {
         fun build(context: Context, deviceId: String, passphrase: ByteArray): KalkulasaDatabase =
             Room.databaseBuilder(context, KalkulasaDatabase::class.java, NAME)
                 .openHelperFactory(SupportOpenHelperFactory(passphrase))
-                .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, MIGRATION_7_8, MIGRATION_8_9, MIGRATION_9_10, MIGRATION_10_11, MIGRATION_11_12, MIGRATION_12_13, MIGRATION_13_14, MIGRATION_14_15, MIGRATION_15_16)
+                .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, MIGRATION_7_8, MIGRATION_8_9, MIGRATION_9_10, MIGRATION_10_11, MIGRATION_11_12, MIGRATION_12_13, MIGRATION_13_14, MIGRATION_14_15, MIGRATION_15_16, MIGRATION_16_17)
                 .addCallback(SeedCallback(deviceId))
                 .build()
     }

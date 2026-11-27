@@ -155,6 +155,7 @@ data class Customer(
     val totalBelanja: Long,
     val catatan: String? = null,
     val tag: String? = null,
+    val tanggalLahir: Long? = null,
 )
 
 data class Receivable(

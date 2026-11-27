@@ -52,4 +52,5 @@ fun id.kalkulasa.data.local.entity.CustomerEntity.toDomain() = Customer(
     totalBelanja = totalBelanja,
     catatan = catatan,
     tag = tag,
+    tanggalLahir = tanggalLahir,
 )

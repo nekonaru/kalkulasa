@@ -335,6 +335,7 @@ class BackupRepositoryImpl @Inject constructor(
         put("id", id); put("nama", nama); put("poin", poin); put("kunjungan", kunjungan)
         put("totalBelanja", totalBelanja); put("updatedAt", updatedAt)
         jPut(this, "catatan", catatan); jPut(this, "tag", tag)
+        jPut(this, "tanggalLahir", tanggalLahir)
         jPut(this, "deletedAt", deletedAt); put("deviceId", deviceId); put("syncStatus", syncStatus)
     }
 
@@ -620,6 +621,7 @@ class BackupRepositoryImpl @Inject constructor(
         id = getString("id"), nama = getString("nama"), poin = getLong("poin"),
         kunjungan = getInt("kunjungan"), totalBelanja = getLong("totalBelanja"),
         catatan = str("catatan"), tag = str("tag"),
+        tanggalLahir = optLongOrNull("tanggalLahir"),
         updatedAt = getLong("updatedAt"), deletedAt = optLongOrNull("deletedAt"),
         deviceId = getString("deviceId"), syncStatus = optString("syncStatus", "PENDING"),
     )
@@ -658,6 +660,6 @@ class BackupRepositoryImpl @Inject constructor(
     )
 
     private companion object {
-        const val BACKUP_VERSION = 16
+        const val BACKUP_VERSION = 17
     }
 }

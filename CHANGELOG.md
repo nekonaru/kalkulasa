@@ -1,5 +1,20 @@
 # Changelog
 
+## v4.4.0
+
+Fase 5 dari Kalkulasa UMKM Pro Suite: CRM dengan skor RFM dan pengingat ulang tahun.
+
+### Fitur baru
+
+- **Skor RFM pelanggan.** Skor 1 sampai 5 dari jumlah kunjungan dan total belanja, diurutkan dari yang paling bernilai.
+- **Pengingat ulang tahun.** Hitung hari menuju ulang tahun pelanggan dari tanggal lahir yang tersimpan.
+
+### Peningkatan
+
+- **Aturan CRM teruji.** `CrmUseCase` memuat perhitungan RFM dan hari ulang tahun sebagai Kotlin murni dengan tes unit.
+- **Backup format v17** mencakup tanggal lahir pelanggan. Backup lama tetap bisa dipulihkan.
+- **Migrasi database otomatis v16 ke v17** tanpa menghapus data lama.
+
 ## v4.3.0
 
 Fase 4 dari Kalkulasa UMKM Pro Suite: ranking performa karyawan dan slip gaji digital.

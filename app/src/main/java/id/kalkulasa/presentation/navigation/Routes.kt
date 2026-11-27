@@ -34,5 +34,6 @@ object Routes {
     const val GUDANG_PRO = "gudang-pro"
     const val KEUANGAN_PRO = "keuangan-pro"
     const val KARYAWAN_PRO = "karyawan-pro"
+    const val CRM_PRO = "crm-pro"
     const val NO_SUPPLIER = "__no_supplier__"
 }

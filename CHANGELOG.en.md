@@ -1,5 +1,20 @@
 # Changelog
 
+## v4.4.0
+
+Phase 5 of the Kalkulasa UMKM Pro Suite: CRM with RFM scoring and birthday reminders.
+
+### New features
+
+- **Customer RFM score.** A 1 to 5 score from visit count and total spend, sorted by value.
+- **Birthday reminder.** Days until a customer's birthday computed from the stored birth date.
+
+### Improvements
+
+- **Tested CRM rules.** `CrmUseCase` holds RFM and birthday calculations as pure Kotlin with unit tests.
+- **Backup format v17** includes customer birth dates. Older backups still restore.
+- **Automatic v16 to v17 database migration** with no data loss.
+
 ## v4.3.0
 
 Phase 4 of the Kalkulasa UMKM Pro Suite: employee performance ranking and a digital payslip.

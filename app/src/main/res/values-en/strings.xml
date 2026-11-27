@@ -564,4 +564,9 @@
     <string name="karyawan_pro_open">Ranking and Payslips</string>
     <string name="ranking_empty">No employee data yet.</string>
     <string name="slip_share">Share slip</string>
+    <string name="crm_pro_title">CRM Pro</string>
+    <string name="crm_pro_open">CRM Pro</string>
+    <string name="crm_pro_empty">No customers yet.</string>
+    <string name="crm_rfm">RFM score</string>
+    <string name="crm_birthday">Birthday</string>
 </resources>

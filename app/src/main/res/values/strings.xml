@@ -564,4 +564,9 @@
     <string name="karyawan_pro_open">Ranking dan Slip Gaji</string>
     <string name="ranking_empty">Belum ada data karyawan.</string>
     <string name="slip_share">Bagikan slip</string>
+    <string name="crm_pro_title">CRM Pro</string>
+    <string name="crm_pro_open">CRM Pro</string>
+    <string name="crm_pro_empty">Belum ada pelanggan.</string>
+    <string name="crm_rfm">Skor RFM</string>
+    <string name="crm_birthday">Ulang tahun</string>
 </resources>
