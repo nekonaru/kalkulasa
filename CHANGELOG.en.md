@@ -1,5 +1,19 @@
 # Changelog
 
+## v4.9.0
+
+CRM additions: WhatsApp broadcast, customer segmentation and member card codes.
+
+### New features
+
+- **Customer segmentation.** Filter by tag and minimum total spend to choose message recipients.
+- **WhatsApp broadcast.** Select several customers at once and send one message personalized with each name.
+- **Member card code.** A unique KLK-MEMBER prefixed ID for each customer, shown alongside the tier.
+
+### Improvements
+
+- **Tested segmentation rules.** `SegmentasiUseCase` holds tag matching and minimum spend as pure Kotlin with unit tests.
+
 ## v4.8.0
 
 Finance additions: period cash flow and supplier payable aging.

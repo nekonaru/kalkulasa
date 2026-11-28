@@ -587,4 +587,11 @@
     <string name="keuangan_lanjutan_title">Arus Kas dan Umur Hutang</string>
     <string name="keuangan_lanjutan_open">Arus Kas dan Umur Hutang</string>
     <string name="payable_aging_title">Umur Hutang Usaha</string>
+    <string name="broadcast_title">Broadcast dan Segmentasi</string>
+    <string name="broadcast_open">Broadcast dan Segmentasi</string>
+    <string name="segment_tag">Filter tag</string>
+    <string name="segment_min">Minimal belanja</string>
+    <string name="segment_empty">Tidak ada pelanggan yang cocok.</string>
+    <string name="broadcast_message">Pesan broadcast</string>
+    <string name="broadcast_send">Kirim broadcast</string>
 </resources>

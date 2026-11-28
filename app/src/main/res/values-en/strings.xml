@@ -587,4 +587,11 @@
     <string name="keuangan_lanjutan_title">Cash Flow and Payable Aging</string>
     <string name="keuangan_lanjutan_open">Cash Flow and Aging</string>
     <string name="payable_aging_title">Supplier Payable Aging</string>
+    <string name="broadcast_title">Broadcast and Segmentation</string>
+    <string name="broadcast_open">Broadcast and Segmentation</string>
+    <string name="segment_tag">Tag filter</string>
+    <string name="segment_min">Minimum spend</string>
+    <string name="segment_empty">No matching customers.</string>
+    <string name="broadcast_message">Broadcast message</string>
+    <string name="broadcast_send">Send broadcast</string>
 </resources>

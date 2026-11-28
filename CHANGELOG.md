@@ -1,5 +1,19 @@
 # Changelog
 
+## v4.9.0
+
+Tambahan CRM: broadcast WhatsApp, segmentasi pelanggan, dan kode kartu member.
+
+### Fitur baru
+
+- **Segmentasi pelanggan.** Filter berdasarkan tag dan minimal total belanja untuk memilih penerima pesan.
+- **Broadcast WhatsApp.** Pilih beberapa pelanggan sekaligus dan kirim satu pesan yang dipersonalisasi dengan nama masing-masing.
+- **Kode kartu member.** ID member unik berprefix KLK-MEMBER untuk setiap pelanggan, ditampilkan bersama tier.
+
+### Peningkatan
+
+- **Aturan segmentasi teruji.** `SegmentasiUseCase` memuat pencocokan tag dan minimal belanja sebagai Kotlin murni dengan tes unit.
+
 ## v4.8.0
 
 Tambahan keuangan: laporan arus kas periode dan umur hutang usaha.
