@@ -1,5 +1,19 @@
 # Changelog
 
+## v5.4.0
+
+Warehouse additions: lead-time restock, unit conversion and location transfers.
+
+### New features
+
+- **Lead-time restock.** Reorder quantity is computed from average daily sales times supplier lead time plus safety stock, for low-stock products.
+- **Unit conversion.** Convert cartons to pieces and back, with a combined carton and piece display.
+- **Location transfers.** Move a product from one location to another with a movement record.
+
+### Improvements
+
+- **Tested conversion rules.** `KonversiSatuanUseCase` holds two-way conversion and display formatting as pure Kotlin with unit tests.
+
 ## v5.3.0
 
 Cashier additions: customer-specific vouchers and per-item discounts.

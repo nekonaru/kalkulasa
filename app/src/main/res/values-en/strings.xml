@@ -613,4 +613,16 @@
     <string name="batch_pay_title">Batch supplier payment</string>
     <string name="batch_pay">Pay selected</string>
     <string name="ppn_report_title">VAT Report</string>
+    <string name="gudang_lengkap_title">Warehouse Complete</string>
+    <string name="gudang_lengkap_open">Warehouse Complete</string>
+    <string name="restock_lead_title">Lead Time Restock</string>
+    <string name="restock_daily">Average daily sales</string>
+    <string name="restock_calc">Calculate</string>
+    <string name="converter_title">Unit Conversion</string>
+    <string name="converter_dus">Cartons</string>
+    <string name="converter_isi">Units per carton</string>
+    <string name="transfer_full_title">Transfer Between Locations</string>
+    <string name="transfer_from">Source location</string>
+    <string name="transfer_to">Destination location</string>
+    <string name="transfer_save">Save transfer</string>
 </resources>

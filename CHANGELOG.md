@@ -1,5 +1,19 @@
 # Changelog
 
+## v5.4.0
+
+Tambahan gudang: saran restok lead time, konversi satuan, dan transfer antar lokasi.
+
+### Fitur baru
+
+- **Saran restok lead time.** Jumlah pesan ulang dihitung dari penjualan harian rata-rata dikali waktu tunggu pemasok ditambah stok minimum, untuk produk yang stoknya menipis.
+- **Konversi satuan.** Hitung jumlah pcs dari dus dan sebaliknya, dengan tampilan gabungan dus dan pcs.
+- **Transfer antar lokasi.** Pindahkan produk dari satu lokasi ke lokasi lain dengan catatan pergerakan.
+
+### Peningkatan
+
+- **Aturan konversi teruji.** `KonversiSatuanUseCase` memuat konversi dua arah dan format tampilan sebagai Kotlin murni dengan tes unit.
+
 ## v5.3.0
 
 Tambahan kasir: voucher khusus pelanggan dan diskon per item.

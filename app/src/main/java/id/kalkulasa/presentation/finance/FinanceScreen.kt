@@ -85,6 +85,7 @@ fun FinanceScreen(
     onOpenBroadcast: () -> Unit,
     onOpenShiftPro: () -> Unit,
     onOpenKeuanganAkhir: () -> Unit,
+    onOpenGudangLengkap: () -> Unit,
     viewModel: FinanceViewModel = hiltViewModel(),
 ) {
     val balance by viewModel.cashBalance.collectAsStateWithLifecycle()
@@ -163,6 +164,7 @@ fun FinanceScreen(
                     TextButton(onClick = onOpenBroadcast) { Text(context.getString(R.string.broadcast_open)) }
                     TextButton(onClick = onOpenShiftPro) { Text(context.getString(R.string.shift_pro_open)) }
                     TextButton(onClick = onOpenKeuanganAkhir) { Text(context.getString(R.string.keuangan_akhir_open)) }
+                    TextButton(onClick = onOpenGudangLengkap) { Text(context.getString(R.string.gudang_lengkap_open)) }
                 }
             }
 

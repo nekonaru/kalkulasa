@@ -613,4 +613,16 @@
     <string name="batch_pay_title">Bayar hutang batch</string>
     <string name="batch_pay">Bayar yang dipilih</string>
     <string name="ppn_report_title">Laporan PPN</string>
+    <string name="gudang_lengkap_title">Gudang Lengkap</string>
+    <string name="gudang_lengkap_open">Gudang Lengkap</string>
+    <string name="restock_lead_title">Saran Restok Lead Time</string>
+    <string name="restock_daily">Penjualan harian rata-rata</string>
+    <string name="restock_calc">Hitung saran</string>
+    <string name="converter_title">Konversi Satuan</string>
+    <string name="converter_dus">Jumlah dus</string>
+    <string name="converter_isi">Isi per dus</string>
+    <string name="transfer_full_title">Transfer Antar Lokasi</string>
+    <string name="transfer_from">Lokasi asal</string>
+    <string name="transfer_to">Lokasi tujuan</string>
+    <string name="transfer_save">Simpan transfer</string>
 </resources>
