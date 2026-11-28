@@ -1,5 +1,18 @@
 # Changelog
 
+## v4.8.0
+
+Finance additions: period cash flow and supplier payable aging.
+
+### New features
+
+- **Period cash flow.** Cash in from sales, receivables and capital, and cash out from purchases, expenses, drawings, debt payments and advances, for today, 7 days, 30 days or this month.
+- **Supplier payable aging.** Unsettled supplier debt grouped into not due, 1-30 days, 31-60 days and over 60 days.
+
+### Improvements
+
+- **Tested cash flow rules.** `ArusKasUseCase` summarizes all cash components as pure Kotlin with unit tests.
+
 ## v4.7.0
 
 Warehouse additions: expiry alerts and purchase price history.

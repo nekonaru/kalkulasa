@@ -90,6 +90,25 @@ class FinanceRepositoryImpl @Inject constructor(
 
     override suspend fun unsettledKasbon(): Long = db.kasbonDao().sumUnsettled()
 
+    override suspend fun cashFlowBetween(
+        from: Long,
+        to: Long,
+    ): id.kalkulasa.domain.usecase.ArusKasUseCase.Ringkasan {
+        val penjualan = db.saleDao().sumRevenueBetweenExcludingMethod(
+            from, to, id.kalkulasa.domain.model.PaymentMethod.HUTANG,
+        )
+        return id.kalkulasa.domain.usecase.ArusKasUseCase.ringkasan(
+            penjualan = penjualan,
+            piutangDiterima = db.receivableDao().sumPaidBetween(from, to),
+            modalMasuk = db.capitalEntryDao().sumCapitalBetween(from, to),
+            pembelian = db.purchaseDao().sumBetween(from, to),
+            pengeluaran = db.expenseDao().sumBetween(from, to),
+            prive = db.capitalEntryDao().sumPrivateDrawsBetween(from, to),
+            hutangDibayar = db.payablePaymentDao().sumBetween(from, to),
+            kasbon = db.kasbonDao().sumBetween(from, to),
+        )
+    }
+
     override suspend fun expensesByCategoryBetween(from: Long, to: Long): List<CategorySpend> =
         db.expenseDao().sumByCategoryBetween(from, to).map { CategorySpend(it.nama, it.total) }
 

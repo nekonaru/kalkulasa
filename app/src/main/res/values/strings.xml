@@ -584,4 +584,7 @@
     <string name="expiry_title">Kedaluwarsa</string>
     <string name="expiry_empty">Tidak ada batch mendekati kedaluwarsa.</string>
     <string name="price_history_title">Riwayat Harga Beli</string>
+    <string name="keuangan_lanjutan_title">Arus Kas dan Umur Hutang</string>
+    <string name="keuangan_lanjutan_open">Arus Kas dan Umur Hutang</string>
+    <string name="payable_aging_title">Umur Hutang Usaha</string>
 </resources>

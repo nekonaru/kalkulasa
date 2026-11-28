@@ -584,4 +584,7 @@
     <string name="expiry_title">Expiry</string>
     <string name="expiry_empty">No batches nearing expiry.</string>
     <string name="price_history_title">Purchase Price History</string>
+    <string name="keuangan_lanjutan_title">Cash Flow and Payable Aging</string>
+    <string name="keuangan_lanjutan_open">Cash Flow and Aging</string>
+    <string name="payable_aging_title">Supplier Payable Aging</string>
 </resources>

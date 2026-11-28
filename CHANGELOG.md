@@ -1,5 +1,18 @@
 # Changelog
 
+## v4.8.0
+
+Tambahan keuangan: laporan arus kas periode dan umur hutang usaha.
+
+### Fitur baru
+
+- **Arus kas periode.** Ringkasan kas masuk dari penjualan, piutang, dan modal, serta kas keluar dari pembelian, pengeluaran, prive, hutang, dan kasbon, untuk hari ini, 7 hari, 30 hari, atau bulan ini.
+- **Umur hutang usaha.** Hutang pemasok belum lunas dikelompokkan menjadi belum jatuh tempo, 1-30 hari, 31-60 hari, dan lebih dari 60 hari.
+
+### Peningkatan
+
+- **Aturan arus kas teruji.** `ArusKasUseCase` merangkum seluruh komponen kas sebagai Kotlin murni dengan tes unit.
+
 ## v4.7.0
 
 Tambahan gudang: peringatan kedaluwarsa dan riwayat harga beli.

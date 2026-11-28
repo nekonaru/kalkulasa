@@ -396,6 +396,12 @@ interface CapitalEntryDao {
     """)
     suspend fun cashComponents(): CashComponents
 
+    @Query("SELECT COALESCE(SUM(nominal), 0) FROM capital_entry WHERE deletedAt IS NULL AND tipe IN ('MODAL_AWAL','TAMBAH_MODAL') AND waktu BETWEEN :from AND :to")
+    suspend fun sumCapitalBetween(from: Long, to: Long): Long
+
+    @Query("SELECT COALESCE(SUM(nominal), 0) FROM capital_entry WHERE deletedAt IS NULL AND tipe = 'PRIVE' AND waktu BETWEEN :from AND :to")
+    suspend fun sumPrivateDrawsBetween(from: Long, to: Long): Long
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(entry: CapitalEntryEntity)
 }
@@ -449,6 +455,9 @@ interface KasbonDao {
 
     @Query("UPDATE kasbon SET terpakai = 1, updatedAt = :now WHERE karyawanId = :id AND terpakai = 0")
     suspend fun markUsed(id: String, now: Long)
+
+    @Query("SELECT COALESCE(SUM(nominal), 0) FROM kasbon WHERE deletedAt IS NULL AND waktu BETWEEN :from AND :to")
+    suspend fun sumBetween(from: Long, to: Long): Long
 
     @Query("SELECT COALESCE(SUM(nominal), 0) FROM kasbon WHERE deletedAt IS NULL")
     suspend fun sumAll(): Long
@@ -504,6 +513,9 @@ interface ReceivableDao {
 
     @Query("SELECT COALESCE(SUM(nominal - terbayar), 0) FROM receivable WHERE deletedAt IS NULL AND nominal > terbayar")
     fun observeOutstanding(): Flow<Long>
+
+    @Query("SELECT COALESCE(SUM(nominal), 0) FROM receivable WHERE deletedAt IS NULL AND waktu BETWEEN :from AND :to")
+    suspend fun sumPaidBetween(from: Long, to: Long): Long
 
     @Query("SELECT COALESCE(SUM(terbayar), 0) FROM receivable WHERE deletedAt IS NULL")
     suspend fun sumPaid(): Long

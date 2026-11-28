@@ -266,6 +266,7 @@ interface FinanceRepository {
     suspend fun cashBreakdown(): CashBreakdown
     suspend fun netCapital(): Long
     suspend fun unsettledKasbon(): Long
+    suspend fun cashFlowBetween(from: Long, to: Long): id.kalkulasa.domain.usecase.ArusKasUseCase.Ringkasan
     suspend fun expensesByCategoryBetween(from: Long, to: Long): List<CategorySpend>
     suspend fun expensesBetween(from: Long, to: Long): Long
     suspend fun purchasesBetween(from: Long, to: Long): Long
