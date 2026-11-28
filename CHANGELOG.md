@@ -1,5 +1,22 @@
 # Changelog
 
+## v5.1.0
+
+Tambahan karyawan: peran, PIN per karyawan, shift, dan lembur.
+
+### Fitur baru
+
+- **Peran karyawan.** Setiap karyawan memiliki peran Kasir atau Manajer sebagai dasar pembedaan akses.
+- **PIN per karyawan.** Atur PIN enam digit untuk karyawan; verifikasi berjalan di dispatcher CPU agar tidak mem-blok UI.
+- **Shift kerja.** Buat shift dengan jam mulai dan selesai dalam menit.
+- **Lembur.** Catat menit lembur dan upah lembur dihitung proporsional dari upah harian delapan jam.
+
+### Peningkatan
+
+- **Aturan shift teruji.** `ShiftUseCase` memuat perhitungan menit lembur dan upah lembur sebagai Kotlin murni dengan tes unit.
+- **Backup format v19** mencakup PIN karyawan, shift, lembur, dan peran. Backup lama tetap bisa dipulihkan.
+- **Migrasi database otomatis v18 ke v19** tanpa menghapus data lama.
+
 ## v5.0.0
 
 Rilis penutup UMKM Pro Suite: backup otomatis harian dan jual cepat dari produk favorit.

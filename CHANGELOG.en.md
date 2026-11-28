@@ -1,5 +1,22 @@
 # Changelog
 
+## v5.1.0
+
+Employee additions: roles, per-employee PINs, shifts and overtime.
+
+### New features
+
+- **Employee roles.** Each employee carries a Cashier or Manager role as a basis for access differences.
+- **Per-employee PINs.** Set a six-digit PIN for an employee; verification runs on the CPU dispatcher so it never blocks the UI.
+- **Work shifts.** Create shifts with start and end times in minutes.
+- **Overtime.** Record overtime minutes; pay is proportional to the daily wage over an eight-hour day.
+
+### Improvements
+
+- **Tested shift rules.** `ShiftUseCase` holds overtime minutes and pay calculations as pure Kotlin with unit tests.
+- **Backup format v19** includes employee PINs, shifts, overtime and roles. Older backups still restore.
+- **Automatic v18 to v19 database migration** with no data loss.
+
 ## v5.0.0
 
 The closing release of the UMKM Pro Suite: daily automatic backup and quick sale from favorite products.

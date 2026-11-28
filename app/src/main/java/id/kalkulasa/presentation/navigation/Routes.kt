@@ -39,5 +39,6 @@ object Routes {
     const val GUDANG_LANJUTAN = "gudang-lanjutan"
     const val KEUANGAN_LANJUTAN = "keuangan-lanjutan"
     const val BROADCAST = "broadcast"
+    const val SHIFT_PRO = "shift-pro"
     const val NO_SUPPLIER = "__no_supplier__"
 }

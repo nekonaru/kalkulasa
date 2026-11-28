@@ -35,6 +35,9 @@ import id.kalkulasa.data.local.entity.BundleEntity
 import id.kalkulasa.data.local.entity.BundleItemEntity
 import id.kalkulasa.data.local.entity.VoucherUsageEntity
 import id.kalkulasa.data.local.entity.SupplierEntity
+import id.kalkulasa.data.local.entity.EmployeePinEntity
+import id.kalkulasa.data.local.entity.WorkShiftEntity
+import id.kalkulasa.data.local.entity.OvertimeEntity
 import id.kalkulasa.data.local.entity.RecurringExpenseEntity
 import id.kalkulasa.data.local.entity.ChecklistItemEntity
 import id.kalkulasa.data.local.entity.ChecklistLogEntity
@@ -83,6 +86,9 @@ import java.util.UUID
         BundleItemEntity::class,
         VoucherUsageEntity::class,
         SupplierEntity::class,
+        EmployeePinEntity::class,
+        WorkShiftEntity::class,
+        OvertimeEntity::class,
         RecurringExpenseEntity::class,
         ChecklistItemEntity::class,
         ChecklistLogEntity::class,
@@ -93,7 +99,7 @@ import java.util.UUID
         CashAuditEntity::class,
         SalesTargetEntity::class,
     ],
-    version = 18,
+    version = 19,
     exportSchema = true,
 )
 abstract class KalkulasaDatabase : RoomDatabase() {
@@ -125,11 +131,44 @@ abstract class KalkulasaDatabase : RoomDatabase() {
     abstract fun recurringExpenseDao(): id.kalkulasa.data.local.dao.RecurringExpenseDao
     abstract fun profitShareDao(): id.kalkulasa.data.local.dao.ProfitShareDao
     abstract fun checklistDao(): id.kalkulasa.data.local.dao.ChecklistDao
+    abstract fun employeePinDao(): id.kalkulasa.data.local.dao.EmployeePinDao
+    abstract fun workShiftDao(): id.kalkulasa.data.local.dao.WorkShiftDao
+    abstract fun overtimeDao(): id.kalkulasa.data.local.dao.OvertimeDao
     abstract fun budgetDao(): id.kalkulasa.data.local.dao.BudgetDao
     abstract fun cashAuditDao(): id.kalkulasa.data.local.dao.CashAuditDao
 
     companion object {
         const val NAME = "kalkulasa.db"
+
+        /** Migration 18 -> 19: employee roles, PINs, shifts and overtime. */
+        val MIGRATION_18_19 = androidx.room.migration.Migration(18, 19) { db ->
+            db.execSQL("ALTER TABLE `employee` ADD COLUMN `role` TEXT NOT NULL DEFAULT 'KASIR'")
+            db.execSQL(
+                """CREATE TABLE IF NOT EXISTS `employee_pin` (
+                    `id` TEXT NOT NULL PRIMARY KEY, `employeeId` TEXT NOT NULL, `pinHash` TEXT NOT NULL,
+                    `updatedAt` INTEGER NOT NULL, `deletedAt` INTEGER,
+                    `deviceId` TEXT NOT NULL, `syncStatus` TEXT NOT NULL
+                )""".trimIndent(),
+            )
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_employee_pin_employeeId` ON `employee_pin` (`employeeId`)")
+            db.execSQL(
+                """CREATE TABLE IF NOT EXISTS `work_shift` (
+                    `id` TEXT NOT NULL PRIMARY KEY, `nama` TEXT NOT NULL,
+                    `jamMulaiMenit` INTEGER NOT NULL, `jamSelesaiMenit` INTEGER NOT NULL,
+                    `aktif` INTEGER NOT NULL, `updatedAt` INTEGER NOT NULL, `deletedAt` INTEGER,
+                    `deviceId` TEXT NOT NULL, `syncStatus` TEXT NOT NULL
+                )""".trimIndent(),
+            )
+            db.execSQL(
+                """CREATE TABLE IF NOT EXISTS `overtime` (
+                    `id` TEXT NOT NULL PRIMARY KEY, `employeeId` TEXT NOT NULL, `tanggal` INTEGER NOT NULL,
+                    `menit` INTEGER NOT NULL, `nominal` INTEGER NOT NULL, `dibayar` INTEGER NOT NULL,
+                    `updatedAt` INTEGER NOT NULL, `deletedAt` INTEGER,
+                    `deviceId` TEXT NOT NULL, `syncStatus` TEXT NOT NULL
+                )""".trimIndent(),
+            )
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_overtime_tanggal` ON `overtime` (`tanggal`)")
+        }
 
         /** Migration 17 -> 18: daily checklist. */
         val MIGRATION_17_18 = androidx.room.migration.Migration(17, 18) { db ->
@@ -510,7 +549,7 @@ abstract class KalkulasaDatabase : RoomDatabase() {
         fun build(context: Context, deviceId: String, passphrase: ByteArray): KalkulasaDatabase =
             Room.databaseBuilder(context, KalkulasaDatabase::class.java, NAME)
                 .openHelperFactory(SupportOpenHelperFactory(passphrase))
-                .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, MIGRATION_7_8, MIGRATION_8_9, MIGRATION_9_10, MIGRATION_10_11, MIGRATION_11_12, MIGRATION_12_13, MIGRATION_13_14, MIGRATION_14_15, MIGRATION_15_16, MIGRATION_16_17, MIGRATION_17_18)
+                .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, MIGRATION_7_8, MIGRATION_8_9, MIGRATION_9_10, MIGRATION_10_11, MIGRATION_11_12, MIGRATION_12_13, MIGRATION_13_14, MIGRATION_14_15, MIGRATION_15_16, MIGRATION_16_17, MIGRATION_17_18, MIGRATION_18_19)
                 .addCallback(SeedCallback(deviceId))
                 .build()
     }

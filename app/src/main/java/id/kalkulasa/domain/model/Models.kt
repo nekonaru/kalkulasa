@@ -266,6 +266,8 @@ data class Supplier(val id: String, val nama: String, val telepon: String?, val 
 
 data class StockTransfer(val id: String, val dariLokasi: String, val keLokasi: String, val waktu: Long)
 
+data class WorkShift(val id: String, val nama: String, val mulai: Int, val selesai: Int, val aktif: Boolean)
+
 data class RecurringExpense(val kategori: String, val nominal: Long, val hariPerBulan: Int, val aktif: Boolean)
 
 data class ProfitShare(val nama: String, val persentase: Int, val aktif: Boolean)

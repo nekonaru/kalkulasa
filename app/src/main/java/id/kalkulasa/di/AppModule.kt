@@ -50,6 +50,8 @@ import id.kalkulasa.data.repository.ProfitShareRepositoryImpl
 import id.kalkulasa.domain.repository.ProfitShareRepository
 import id.kalkulasa.data.repository.ChecklistRepositoryImpl
 import id.kalkulasa.domain.repository.ChecklistRepository
+import id.kalkulasa.data.repository.ShiftRepositoryImpl
+import id.kalkulasa.domain.repository.ShiftRepository
 import id.kalkulasa.data.repository.BudgetRepositoryImpl
 import id.kalkulasa.domain.repository.BudgetRepository
 import id.kalkulasa.data.repository.CashAuditRepositoryImpl
@@ -226,6 +228,11 @@ object AppModule {
     @Singleton
     fun provideChecklistRepository(db: KalkulasaDatabase, deviceId: String): ChecklistRepository =
         ChecklistRepositoryImpl(db, deviceId)
+
+    @Provides
+    @Singleton
+    fun provideShiftRepository(db: KalkulasaDatabase, deviceId: String): ShiftRepository =
+        ShiftRepositoryImpl(db, deviceId)
 
     @Provides
     @Singleton

@@ -17,6 +17,9 @@ import id.kalkulasa.data.local.entity.PayrollEntity
 import id.kalkulasa.data.local.entity.PayableEntity
 import id.kalkulasa.data.local.entity.PayablePaymentEntity
 import id.kalkulasa.data.local.entity.SupplierEntity
+import id.kalkulasa.data.local.entity.EmployeePinEntity
+import id.kalkulasa.data.local.entity.WorkShiftEntity
+import id.kalkulasa.data.local.entity.OvertimeEntity
 import id.kalkulasa.data.local.entity.RecurringExpenseEntity
 import id.kalkulasa.data.local.entity.ChecklistItemEntity
 import id.kalkulasa.data.local.entity.ChecklistLogEntity
@@ -623,6 +626,42 @@ interface BundleDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertItems(items: List<BundleItemEntity>)
+}
+
+@Dao
+interface EmployeePinDao {
+    @Query("SELECT * FROM employee_pin WHERE employeeId = :employeeId AND deletedAt IS NULL LIMIT 1")
+    suspend fun getFor(employeeId: String): EmployeePinEntity?
+
+    @Query("SELECT * FROM employee_pin")
+    suspend fun getAll(): List<EmployeePinEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsert(row: EmployeePinEntity)
+}
+
+@Dao
+interface WorkShiftDao {
+    @Query("SELECT * FROM work_shift WHERE aktif = 1 ORDER BY jamMulaiMenit")
+    fun observeActive(): Flow<List<WorkShiftEntity>>
+
+    @Query("SELECT * FROM work_shift")
+    suspend fun getAll(): List<WorkShiftEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsert(row: WorkShiftEntity)
+}
+
+@Dao
+interface OvertimeDao {
+    @Query("SELECT * FROM overtime WHERE deletedAt IS NULL AND employeeId = :employeeId AND tanggal BETWEEN :from AND :to")
+    suspend fun getFor(employeeId: String, from: Long, to: Long): List<OvertimeEntity>
+
+    @Query("SELECT * FROM overtime")
+    suspend fun getAll(): List<OvertimeEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsert(row: OvertimeEntity)
 }
 
 @Dao

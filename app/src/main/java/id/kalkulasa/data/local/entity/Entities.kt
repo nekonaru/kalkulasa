@@ -186,6 +186,7 @@ data class EmployeeEntity(
     val telepon: String?,
     val upahHarian: Long,
     val aktif: Boolean,
+    val role: String = "KASIR",
     val dibuatPada: Long,
     val updatedAt: Long,
     val deletedAt: Long? = null,
@@ -233,6 +234,44 @@ data class PayrollEntity(
     val totalKasbon: Long,
     val dibayar: Long,
     val waktu: Long,
+    val updatedAt: Long,
+    val deletedAt: Long? = null,
+    val deviceId: String,
+    val syncStatus: String = SyncStatus.PENDING,
+)
+
+@Entity(tableName = "employee_pin", indices = [Index("employeeId")])
+data class EmployeePinEntity(
+    @PrimaryKey val id: String,
+    val employeeId: String,
+    val pinHash: String,
+    val updatedAt: Long,
+    val deletedAt: Long? = null,
+    val deviceId: String,
+    val syncStatus: String = SyncStatus.PENDING,
+)
+
+@Entity(tableName = "work_shift")
+data class WorkShiftEntity(
+    @PrimaryKey val id: String,
+    val nama: String,
+    val jamMulaiMenit: Int,
+    val jamSelesaiMenit: Int,
+    val aktif: Boolean,
+    val updatedAt: Long,
+    val deletedAt: Long? = null,
+    val deviceId: String,
+    val syncStatus: String = SyncStatus.PENDING,
+)
+
+@Entity(tableName = "overtime", indices = [Index("tanggal")])
+data class OvertimeEntity(
+    @PrimaryKey val id: String,
+    val employeeId: String,
+    val tanggal: Long,
+    val menit: Int,
+    val nominal: Long,
+    val dibayar: Boolean,
     val updatedAt: Long,
     val deletedAt: Long? = null,
     val deviceId: String,

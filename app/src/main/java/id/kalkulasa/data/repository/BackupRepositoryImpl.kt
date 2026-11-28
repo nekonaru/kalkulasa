@@ -67,6 +67,9 @@ class BackupRepositoryImpl @Inject constructor(
         json.put("profit_share", JSONArray().also { arr -> db.profitShareDao().getAll().forEach { arr.put(it.toJson()) } })
         json.put("checklist_item", JSONArray().also { arr -> db.checklistDao().getAll().forEach { arr.put(it.toJson()) } })
         json.put("checklist_log", JSONArray().also { arr -> db.checklistDao().getAllLogs().forEach { arr.put(it.toJson()) } })
+        json.put("employee_pin", JSONArray().also { arr -> db.employeePinDao().getAll().forEach { arr.put(it.toJson()) } })
+        json.put("work_shift", JSONArray().also { arr -> db.workShiftDao().getAll().forEach { arr.put(it.toJson()) } })
+        json.put("overtime", JSONArray().also { arr -> db.overtimeDao().getAll().forEach { arr.put(it.toJson()) } })
         json.toString()
     }
 
@@ -119,6 +122,9 @@ class BackupRepositoryImpl @Inject constructor(
         val profitShares = root.optJSONArray("profit_share")?.toList { it.toProfitShare() } ?: emptyList()
         val checklistItems = root.optJSONArray("checklist_item")?.toList { it.toChecklistItem() } ?: emptyList()
         val checklistLogs = root.optJSONArray("checklist_log")?.toList { it.toChecklistLog() } ?: emptyList()
+        val employeePins = root.optJSONArray("employee_pin")?.toList { it.toEmployeePin() } ?: emptyList()
+        val workShifts = root.optJSONArray("work_shift")?.toList { it.toWorkShift() } ?: emptyList()
+        val overtimes = root.optJSONArray("overtime")?.toList { it.toOvertime() } ?: emptyList()
 
         db.withTransaction {
             db.clearAllTables()
@@ -157,6 +163,9 @@ class BackupRepositoryImpl @Inject constructor(
             profitShares.forEach { db.profitShareDao().upsert(it) }
             checklistItems.forEach { db.checklistDao().upsertItem(it) }
             checklistLogs.forEach { db.checklistDao().upsertLog(it) }
+            employeePins.forEach { db.employeePinDao().upsert(it) }
+            workShifts.forEach { db.workShiftDao().upsert(it) }
+            overtimes.forEach { db.overtimeDao().upsert(it) }
         }
     }
 
@@ -221,7 +230,7 @@ class BackupRepositoryImpl @Inject constructor(
     private fun id.kalkulasa.data.local.entity.EmployeeEntity.toJson() = JSONObject().apply {
         put("id", id); put("nama", nama)
         jPut(this, "jabatan", jabatan); jPut(this, "telepon", telepon)
-        put("upahHarian", upahHarian); put("aktif", aktif); put("dibuatPada", dibuatPada)
+        put("upahHarian", upahHarian); put("aktif", aktif); put("dibuatPada", dibuatPada); put("role", role)
         put("updatedAt", updatedAt); jPut(this, "deletedAt", deletedAt)
         put("deviceId", deviceId); put("syncStatus", syncStatus)
     }
@@ -269,6 +278,25 @@ class BackupRepositoryImpl @Inject constructor(
     private fun id.kalkulasa.data.local.entity.VoucherUsageEntity.toJson() = JSONObject().apply {
         put("id", id); put("voucherId", voucherId); put("voucherKode", voucherKode)
         put("namaPelanggan", namaPelanggan); put("saleId", saleId); put("waktu", waktu)
+        put("updatedAt", updatedAt); jPut(this, "deletedAt", deletedAt)
+        put("deviceId", deviceId); put("syncStatus", syncStatus)
+    }
+
+    private fun id.kalkulasa.data.local.entity.EmployeePinEntity.toJson() = JSONObject().apply {
+        put("id", id); put("employeeId", employeeId); put("pinHash", pinHash)
+        put("updatedAt", updatedAt); jPut(this, "deletedAt", deletedAt)
+        put("deviceId", deviceId); put("syncStatus", syncStatus)
+    }
+
+    private fun id.kalkulasa.data.local.entity.WorkShiftEntity.toJson() = JSONObject().apply {
+        put("id", id); put("nama", nama); put("jamMulaiMenit", jamMulaiMenit)
+        put("jamSelesaiMenit", jamSelesaiMenit); put("aktif", aktif); put("updatedAt", updatedAt)
+        jPut(this, "deletedAt", deletedAt); put("deviceId", deviceId); put("syncStatus", syncStatus)
+    }
+
+    private fun id.kalkulasa.data.local.entity.OvertimeEntity.toJson() = JSONObject().apply {
+        put("id", id); put("employeeId", employeeId); put("tanggal", tanggal)
+        put("menit", menit); put("nominal", nominal); put("dibayar", dibayar)
         put("updatedAt", updatedAt); jPut(this, "deletedAt", deletedAt)
         put("deviceId", deviceId); put("syncStatus", syncStatus)
     }
@@ -442,6 +470,7 @@ class BackupRepositoryImpl @Inject constructor(
         id = getString("id"), nama = getString("nama"),
         jabatan = str("jabatan"), telepon = str("telepon"),
         upahHarian = getLong("upahHarian"), aktif = getBoolean("aktif"),
+        role = optString("role", "KASIR"),
         dibuatPada = getLong("dibuatPada"), updatedAt = getLong("updatedAt"),
         deletedAt = optLongOrNull("deletedAt"), deviceId = getString("deviceId"),
         syncStatus = optString("syncStatus", "PENDING"),
@@ -583,6 +612,26 @@ class BackupRepositoryImpl @Inject constructor(
         deviceId = getString("deviceId"), syncStatus = optString("syncStatus", "PENDING"),
     )
 
+    private fun JSONObject.toEmployeePin() = id.kalkulasa.data.local.entity.EmployeePinEntity(
+        id = getString("id"), employeeId = getString("employeeId"), pinHash = getString("pinHash"),
+        updatedAt = getLong("updatedAt"), deletedAt = optLongOrNull("deletedAt"),
+        deviceId = getString("deviceId"), syncStatus = optString("syncStatus", "PENDING"),
+    )
+
+    private fun JSONObject.toWorkShift() = id.kalkulasa.data.local.entity.WorkShiftEntity(
+        id = getString("id"), nama = getString("nama"), jamMulaiMenit = getInt("jamMulaiMenit"),
+        jamSelesaiMenit = getInt("jamSelesaiMenit"), aktif = getBoolean("aktif"),
+        updatedAt = getLong("updatedAt"), deletedAt = optLongOrNull("deletedAt"),
+        deviceId = getString("deviceId"), syncStatus = optString("syncStatus", "PENDING"),
+    )
+
+    private fun JSONObject.toOvertime() = id.kalkulasa.data.local.entity.OvertimeEntity(
+        id = getString("id"), employeeId = getString("employeeId"), tanggal = getLong("tanggal"),
+        menit = getInt("menit"), nominal = getLong("nominal"), dibayar = getBoolean("dibayar"),
+        updatedAt = getLong("updatedAt"), deletedAt = optLongOrNull("deletedAt"),
+        deviceId = getString("deviceId"), syncStatus = optString("syncStatus", "PENDING"),
+    )
+
     private fun JSONObject.toBudget() = id.kalkulasa.data.local.entity.BudgetEntity(
         id = getString("id"), kategoriNama = getString("kategoriNama"),
         nominal = getLong("nominal"), bulan = getString("bulan"),
@@ -688,6 +737,6 @@ class BackupRepositoryImpl @Inject constructor(
     )
 
     private companion object {
-        const val BACKUP_VERSION = 18
+        const val BACKUP_VERSION = 19
     }
 }

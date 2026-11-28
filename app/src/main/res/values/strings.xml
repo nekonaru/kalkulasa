@@ -595,4 +595,16 @@
     <string name="broadcast_message">Pesan broadcast</string>
     <string name="broadcast_send">Kirim broadcast</string>
     <string name="quick_sale">Jual cepat</string>
+    <string name="shift_pro_title">Shift dan Lembur</string>
+    <string name="shift_pro_open">Shift dan Lembur</string>
+    <string name="shift_add">Tambah shift</string>
+    <string name="shift_name">Nama shift</string>
+    <string name="shift_start">Jam mulai (menit)</string>
+    <string name="shift_end">Jam selesai (menit)</string>
+    <string name="shift_save">Simpan shift</string>
+    <string name="employee_pin_title">PIN Karyawan</string>
+    <string name="employee_id">ID karyawan</string>
+    <string name="overtime_title">Lembur</string>
+    <string name="overtime_minutes">Menit lembur</string>
+    <string name="overtime_add">Catat lembur</string>
 </resources>

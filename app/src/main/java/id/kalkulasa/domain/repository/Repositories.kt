@@ -32,6 +32,7 @@ import id.kalkulasa.domain.model.StockTransfer
 import id.kalkulasa.domain.model.RecurringExpense
 import id.kalkulasa.domain.model.ProfitShare
 import id.kalkulasa.domain.model.ChecklistItem
+import id.kalkulasa.domain.model.WorkShift
 import id.kalkulasa.domain.model.Preorder
 import id.kalkulasa.domain.model.PreorderLine
 import id.kalkulasa.domain.model.Voucher
@@ -197,6 +198,14 @@ interface ChecklistRepository {
     fun observeItems(): Flow<List<ChecklistItem>>
     suspend fun toggle(itemId: String, selesai: Boolean): Result<Unit>
     suspend fun add(nama: String, fase: String): Result<Unit>
+}
+
+interface ShiftRepository {
+    fun observeShifts(): Flow<List<id.kalkulasa.domain.model.WorkShift>>
+    suspend fun saveShift(nama: String, mulai: Int, selesai: Int): Result<Unit>
+    suspend fun setPin(employeeId: String, pin: String): Result<Unit>
+    suspend fun verifyPin(employeeId: String, pin: String): Boolean
+    suspend fun addOvertime(employeeId: String, menit: Int, upahHarian: Long): Result<Unit>
 }
 
 interface VoucherRepository {

@@ -595,4 +595,16 @@
     <string name="broadcast_message">Broadcast message</string>
     <string name="broadcast_send">Send broadcast</string>
     <string name="quick_sale">Quick sale</string>
+    <string name="shift_pro_title">Shifts and Overtime</string>
+    <string name="shift_pro_open">Shifts and Overtime</string>
+    <string name="shift_add">Add shift</string>
+    <string name="shift_name">Shift name</string>
+    <string name="shift_start">Start minute</string>
+    <string name="shift_end">End minute</string>
+    <string name="shift_save">Save shift</string>
+    <string name="employee_pin_title">Employee PIN</string>
+    <string name="employee_id">Employee ID</string>
+    <string name="overtime_title">Overtime</string>
+    <string name="overtime_minutes">Overtime minutes</string>
+    <string name="overtime_add">Record overtime</string>
 </resources>
