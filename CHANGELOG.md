@@ -1,5 +1,18 @@
 # Changelog
 
+## v5.2.0
+
+Tambahan keuangan akhir: bayar hutang batch dan laporan PPN.
+
+### Fitur baru
+
+- **Bayar hutang batch.** Pilih beberapa tagihan pemasok sekaligus, isi porsi pembayaran masing-masing, lalu bayar dalam satu transaksi.
+- **Laporan PPN.** Hitung PPN keluaran 11% dari total yang belum termasuk pajak.
+
+### Peningkatan
+
+- **Aturan pajak dan batch teruji.** `PpnBatchUseCase` memuat perhitungan PPN dan validasi porsi pembayaran sebagai Kotlin murni dengan tes unit.
+
 ## v5.1.0
 
 Tambahan karyawan: peran, PIN per karyawan, shift, dan lembur.

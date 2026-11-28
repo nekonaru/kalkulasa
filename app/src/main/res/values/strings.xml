@@ -607,4 +607,9 @@
     <string name="overtime_title">Lembur</string>
     <string name="overtime_minutes">Menit lembur</string>
     <string name="overtime_add">Catat lembur</string>
+    <string name="keuangan_akhir_title">Bayar Batch dan PPN</string>
+    <string name="keuangan_akhir_open">Bayar Batch dan PPN</string>
+    <string name="batch_pay_title">Bayar hutang batch</string>
+    <string name="batch_pay">Bayar yang dipilih</string>
+    <string name="ppn_report_title">Laporan PPN</string>
 </resources>

@@ -607,4 +607,9 @@
     <string name="overtime_title">Overtime</string>
     <string name="overtime_minutes">Overtime minutes</string>
     <string name="overtime_add">Record overtime</string>
+    <string name="keuangan_akhir_title">Batch Payment and VAT</string>
+    <string name="keuangan_akhir_open">Batch Payment and VAT</string>
+    <string name="batch_pay_title">Batch supplier payment</string>
+    <string name="batch_pay">Pay selected</string>
+    <string name="ppn_report_title">VAT Report</string>
 </resources>

@@ -236,6 +236,7 @@ interface PayableRepository {
     fun observeOutstanding(): Flow<Long>
     suspend fun add(pemasok: String, nominal: Long, jatuhTempo: Long?, catatan: String?): Result<Unit>
     suspend fun recordPayment(id: String, amount: Long): Result<Unit>
+    suspend fun payBatch(items: List<Pair<String, Long>>): Result<Unit>
 }
 
 interface SaleRepository {

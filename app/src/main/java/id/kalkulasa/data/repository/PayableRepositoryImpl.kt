@@ -3,6 +3,7 @@ package id.kalkulasa.data.repository
 import androidx.room.withTransaction
 import id.kalkulasa.data.local.KalkulasaDatabase
 import id.kalkulasa.data.local.entity.PayableEntity
+
 import id.kalkulasa.data.local.entity.PayablePaymentEntity
 import id.kalkulasa.domain.model.Payable
 import id.kalkulasa.domain.repository.PayableRepository
@@ -72,6 +73,26 @@ class PayableRepositoryImpl @Inject constructor(
             )
             RepositorySupport.log(db.changeLogDao(), "payable", id, "UPDATE")
             RepositorySupport.log(db.changeLogDao(), "payable_payment", paymentId, "INSERT")
+        }
+    }
+
+    override suspend fun payBatch(items: List<Pair<String, Long>>): Result<Unit> = runCatching {
+        db.withTransaction {
+            items.forEach { (id, amount) ->
+                val row = db.payableDao().getById(id)
+                    ?: throw IllegalStateException("Hutang tidak ditemukan")
+                val newPaid = UtangUseCase.validatePayment(row.nominal, row.terbayar, amount).getOrThrow()
+                val now = RepositorySupport.now()
+                db.payableDao().upsert(row.copy(terbayar = newPaid, updatedAt = now))
+                db.payablePaymentDao().insert(
+                    PayablePaymentEntity(
+                        id = RepositorySupport.newId(), payableId = id, pemasok = row.pemasok,
+                        nominal = amount, catatan = "Bayar batch", waktu = now,
+                        updatedAt = now, deviceId = deviceId,
+                    ),
+                )
+                RepositorySupport.log(db.changeLogDao(), "payable", id, "UPDATE")
+            }
         }
     }
 

@@ -1,5 +1,18 @@
 # Changelog
 
+## v5.2.0
+
+Final finance additions: batch supplier payment and a VAT report.
+
+### New features
+
+- **Batch supplier payment.** Select several supplier bills at once, enter each payment portion and settle them in one transaction.
+- **VAT report.** Calculate 11% output VAT from a pre-tax total.
+
+### Improvements
+
+- **Tested tax and batch rules.** `PpnBatchUseCase` holds VAT calculation and payment portion validation as pure Kotlin with unit tests.
+
 ## v5.1.0
 
 Employee additions: roles, per-employee PINs, shifts and overtime.
