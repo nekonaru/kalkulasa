@@ -79,6 +79,7 @@ fun CashierScreen(
     val todaySales by viewModel.todaySales.collectAsStateWithLifecycle()
     val saving by viewModel.saving.collectAsStateWithLifecycle()
     val scanCode by viewModel.scanCode.collectAsStateWithLifecycle()
+    val favorites by viewModel.favoriteProducts.collectAsStateWithLifecycle()
     var receiptToShare by remember { mutableStateOf<String?>(null) }
 
     val snackbar = remember { SnackbarHostState() }
@@ -126,6 +127,8 @@ fun CashierScreen(
                     scanCode = scanCode,
                     onScanCodeChange = viewModel::onScanCodeChange,
                     onScan = viewModel::scanBarcode,
+                    favorites = favorites,
+                    onFavorite = viewModel::addFavorite,
                     modifier = Modifier.weight(1.15f).padding(12.dp),
                 )
                 CartSection(
@@ -160,6 +163,8 @@ fun CashierScreen(
                     scanCode = scanCode,
                     onScanCodeChange = viewModel::onScanCodeChange,
                     onScan = viewModel::scanBarcode,
+                    favorites = favorites,
+                    onFavorite = viewModel::addFavorite,
                     modifier = Modifier.fillMaxWidth().weight(1f).padding(horizontal = 12.dp, vertical = 8.dp),
                 )
                 CartSection(
@@ -240,6 +245,8 @@ private fun ProductPickerSection(
     scanCode: String,
     onScanCodeChange: (String) -> Unit,
     onScan: () -> Unit,
+    favorites: List<Product>,
+    onFavorite: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -268,6 +275,20 @@ private fun ProductPickerSection(
             },
             modifier = Modifier.fillMaxWidth(),
         )
+        if (favorites.isNotEmpty()) {
+            androidx.compose.foundation.layout.Row(
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                favorites.take(8).forEach { product ->
+                    FilterChip(
+                        selected = false,
+                        onClick = { onFavorite(product.id) },
+                        label = { Text(product.nama.take(14)) },
+                    )
+                }
+            }
+        }
         TextButton(onClick = onRepeatLast) {
             Icon(
                 Icons.Rounded.History,

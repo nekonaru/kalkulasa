@@ -14,8 +14,8 @@ android {
         applicationId = "id.kalkulasa"
         minSdk = 24
         targetSdk = 35
-        versionCode = 35
-        versionName = "4.9.0"
+        versionCode = 36
+        versionName = "5.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         resourceConfigurations += listOf("id", "en")

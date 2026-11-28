@@ -1,5 +1,18 @@
 # Changelog
 
+## v5.0.0
+
+Rilis penutup UMKM Pro Suite: backup otomatis harian dan jual cepat dari produk favorit.
+
+### Fitur baru
+
+- **Auto-backup harian.** Sekali sehari aplikasi menyimpan backup JSON ke folder aplikasi secara otomatis saat Pengaturan dibuka. Tidak menggantikan backup manual, melainkan lapisan pengaman tambahan.
+- **Jual cepat.** Produk favorit muncul sebagai pintasan di kasir; satu ketuk langsung menambahkannya ke keranjang.
+
+### Catatan
+
+Widget layar utama, dashboard customizable, audit aksesibilitas penuh, pencarian FTS, PIN per karyawan, shift, lembur, dan beberapa fitur lanjutan lainnya tetap menjadi utang teknis dan belum masuk rilis ini.
+
 ## v4.9.0
 
 Tambahan CRM: broadcast WhatsApp, segmentasi pelanggan, dan kode kartu member.

@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -155,6 +156,18 @@ class SettingsViewModel @Inject constructor(
                 writeToAppDir(fileName, json)
             }
             _events.send(SettingsEvent.Message("BACKUP:$location"))
+        }
+    }
+
+    fun autoBackupIfNeeded() {
+        viewModelScope.launch(kotlinx.coroutines.Dispatchers.IO) {
+            val today = DateFormatter.fileStamp(System.currentTimeMillis()).take(8)
+            if (settings.lastBackupDay.first() == today) return@launch
+            runCatching {
+                val json = backupRepository.exportJson()
+                writeToAppDir("kalkulasa-auto-$today.json", json)
+                settings.markBackedUp(today)
+            }
         }
     }
 

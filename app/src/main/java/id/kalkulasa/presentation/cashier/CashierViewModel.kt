@@ -148,6 +148,14 @@ class CashierViewModel @Inject constructor(
         cart.mapNotNull { (id, qty) -> byId[id]?.let { CartEntry(it, qty) } }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
+    val favoriteProducts: StateFlow<List<Product>> = allActiveProducts
+        .map { list -> list.filter { it.isFavorite } }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
+    fun addFavorite(productId: String) {
+        allActiveProducts.value.find { it.id == productId }?.let { addToCart(it) }
+    }
+
     val subtotal: StateFlow<Long> = cartEntries
         .map { entries -> entries.sumOf { it.lineTotal } }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 0L)

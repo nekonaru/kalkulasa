@@ -44,6 +44,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import id.kalkulasa.BuildConfig
 import id.kalkulasa.R
 import id.kalkulasa.core.datastore.ThemeMode
+import id.kalkulasa.presentation.component.OnLifecycleResume
 import id.kalkulasa.presentation.component.SectionHeader
 import kotlinx.coroutines.flow.collectLatest
 
@@ -57,6 +58,7 @@ fun SettingsScreen(
     val hasPin by viewModel.hasPin.collectAsStateWithLifecycle()
     val warungMode by viewModel.warungMode.collectAsStateWithLifecycle()
     val language by viewModel.language.collectAsStateWithLifecycle()
+    OnLifecycleResume { viewModel.autoBackupIfNeeded() }
     val context = LocalContext.current
     val snackbar = remember { SnackbarHostState() }
 

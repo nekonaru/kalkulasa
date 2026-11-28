@@ -594,4 +594,5 @@
     <string name="segment_empty">No matching customers.</string>
     <string name="broadcast_message">Broadcast message</string>
     <string name="broadcast_send">Send broadcast</string>
+    <string name="quick_sale">Quick sale</string>
 </resources>

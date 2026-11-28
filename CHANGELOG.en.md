@@ -1,5 +1,18 @@
 # Changelog
 
+## v5.0.0
+
+The closing release of the UMKM Pro Suite: daily automatic backup and quick sale from favorite products.
+
+### New features
+
+- **Daily automatic backup.** Once a day the app saves a JSON backup into the app folder when Settings is opened. This complements, rather than replaces, manual backup.
+- **Quick sale.** Favorite products appear as shortcuts at the cashier; one tap adds them to the cart.
+
+### Note
+
+Home screen widgets, a customizable dashboard, a full accessibility audit, FTS search, per-employee PINs, shifts, overtime and several other advanced items remain technical debt and are not part of this release.
+
 ## v4.9.0
 
 CRM additions: WhatsApp broadcast, customer segmentation and member card codes.

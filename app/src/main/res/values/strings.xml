@@ -594,4 +594,5 @@
     <string name="segment_empty">Tidak ada pelanggan yang cocok.</string>
     <string name="broadcast_message">Pesan broadcast</string>
     <string name="broadcast_send">Kirim broadcast</string>
+    <string name="quick_sale">Jual cepat</string>
 </resources>
