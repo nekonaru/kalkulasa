@@ -368,6 +368,8 @@ private fun CartSection(
                     onIncrement = { viewModel.increment(entry.product.id) },
                     onDecrement = { viewModel.decrement(entry.product.id) },
                     onRemove = { viewModel.removeFromCart(entry.product.id) },
+                    diskon = entry.diskon,
+                    onDiskon = { viewModel.onLineDiskon(entry.product.id, it) },
                 )
             }
         }
@@ -605,6 +607,8 @@ private fun CartRow(
     onIncrement: () -> Unit,
     onDecrement: () -> Unit,
     onRemove: () -> Unit,
+    diskon: Long = 0L,
+    onDiskon: (Long) -> Unit = {},
 ) {
     val context = LocalContext.current
     Row(
@@ -618,6 +622,13 @@ private fun CartRow(
                 RupiahFormatter.format(lineTotal),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            OutlinedTextField(
+                value = if (diskon > 0) diskon.toString() else "",
+                onValueChange = { onDiskon(it.filter(Char::isDigit).toLongOrNull() ?: 0L) },
+                label = { Text(context.getString(R.string.line_discount)) },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(0.6f),
             )
         }
         IconButton(onClick = onDecrement) { Icon(Icons.Rounded.Remove, contentDescription = context.getString(R.string.decrease)) }

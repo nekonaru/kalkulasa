@@ -253,6 +253,7 @@ interface SaleRepository {
         metodeBayar2: String? = null,
         nominalBayar2: Long = 0L,
         depositTerpakai: Long = 0L,
+        diskonItem: Map<String, Long> = emptyMap(),
     ): Result<Sale>
     suspend fun cancelSale(saleId: String): Result<Unit>
     suspend fun salesBetween(from: Long, to: Long): List<Sale>

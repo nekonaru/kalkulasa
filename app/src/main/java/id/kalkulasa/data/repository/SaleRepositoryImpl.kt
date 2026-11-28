@@ -48,6 +48,7 @@ class SaleRepositoryImpl @Inject constructor(
         metodeBayar2: String?,
         nominalBayar2: Long,
         depositTerpakai: Long,
+        diskonItem: Map<String, Long>,
     ): Result<Sale> {
         if (items.isEmpty()) return Result.failure(IllegalArgumentException("Keranjang kosong"))
         if (diskon < 0) return Result.failure(IllegalArgumentException("Diskon tidak boleh negatif"))
@@ -125,6 +126,7 @@ class SaleRepositoryImpl @Inject constructor(
                         jumlah = qty,
                         hargaJual = fresh.hargaJual,
                         hppSaatJual = fresh.hargaBeliRata2,
+                        diskonItem = diskonItem[fresh.id]?.coerceAtLeast(0L) ?: 0L,
                         updatedAt = now,
                         deviceId = deviceId,
                     )

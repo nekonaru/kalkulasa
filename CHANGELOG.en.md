@@ -1,5 +1,14 @@
 # Changelog
 
+## v5.3.0
+
+Cashier additions: customer-specific vouchers and per-item discounts.
+
+### New features
+
+- **Customer vouchers.** A voucher with CUSTOMER scope only applies when the entered customer name matches its owner; GLOBAL vouchers still apply to every sale.
+- **Per-item discounts.** Each cart line can carry its own rupiah discount. Line discounts reduce the line total before transaction discounts are computed and are stored per sale item.
+
 ## v5.2.0
 
 Final finance additions: batch supplier payment and a VAT report.

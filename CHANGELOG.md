@@ -1,5 +1,14 @@
 # Changelog
 
+## v5.3.0
+
+Tambahan kasir: voucher khusus pelanggan dan diskon per item.
+
+### Fitur baru
+
+- **Voucher per pelanggan.** Voucher dengan cakupan PELANGGAN hanya berlaku saat nama pelanggan yang diisi cocok dengan pemilik voucher; voucher GLOBAL tetap berlaku untuk semua transaksi.
+- **Diskon per item.** Setiap baris keranjang bisa diberi diskon rupiah tersendiri. Diskon per item mengurangi total baris sebelum diskon transaksi dihitung, dan tersimpan per item penjualan.
+
 ## v5.2.0
 
 Tambahan keuangan akhir: bayar hutang batch dan laporan PPN.

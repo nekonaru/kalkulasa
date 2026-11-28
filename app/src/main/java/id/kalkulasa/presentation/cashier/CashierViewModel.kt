@@ -40,14 +40,15 @@ import javax.inject.Inject
 
 enum class DiscountMode { RUPIAH, PERCENT }
 
-data class CartEntry(val product: Product, val qty: Double) {
+data class CartEntry(val product: Product, val qty: Double, val diskon: Long = 0L) {
     private val effectivePrice: Long
         get() = PromosiLanjutanUseCase.hargaEfektif(
             product.hargaJual, product.hargaGrosir, qty, product.qtyGrosir,
         )
     val lineTotal: Long get() {
         val raw = effectivePrice.toDouble() * qty.coerceAtLeast(0.0)
-        return if (raw >= Long.MAX_VALUE.toDouble()) Long.MAX_VALUE else kotlin.math.round(raw).toLong()
+        val gross = if (raw >= Long.MAX_VALUE.toDouble()) Long.MAX_VALUE else kotlin.math.round(raw).toLong()
+        return (gross - diskon.coerceAtLeast(0L)).coerceAtLeast(0L)
     }
 }
 
@@ -76,6 +77,7 @@ class CashierViewModel @Inject constructor(
     val query: StateFlow<String> = _query.asStateFlow()
 
     private val _cart = MutableStateFlow<Map<String, Double>>(emptyMap())
+    private val _lineDiskon = MutableStateFlow<Map<String, Long>>(emptyMap())
     private val _discount = MutableStateFlow("")
     val discount: StateFlow<String> = _discount.asStateFlow()
 
@@ -143,9 +145,9 @@ class CashierViewModel @Inject constructor(
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
-    val cartEntries: StateFlow<List<CartEntry>> = combine(_cart, allActiveProducts) { cart, all ->
+    val cartEntries: StateFlow<List<CartEntry>> = combine(_cart, allActiveProducts, _lineDiskon) { cart, all, diskon ->
         val byId = all.associateBy { it.id }
-        cart.mapNotNull { (id, qty) -> byId[id]?.let { CartEntry(it, qty) } }
+        cart.mapNotNull { (id, qty) -> byId[id]?.let { CartEntry(it, qty, diskon[id] ?: 0L) } }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     val favoriteProducts: StateFlow<List<Product>> = allActiveProducts
@@ -246,13 +248,24 @@ class CashierViewModel @Inject constructor(
     fun onVoucherCodeChange(value: String) {
         _voucherCode.value = value.trim().uppercase()
         viewModelScope.launch {
-            _voucher.value = if (value.isBlank()) null else voucherRepository.findByCode(value)
+            val found = if (value.isBlank()) null else voucherRepository.findByCode(value)
+            _voucher.value = found?.let { v ->
+                if (v.scope == "PELANGGAN") {
+                    val name = _namaPelanggan.value.trim()
+                    if (name.isBlank() || !v.namaPelanggan.equals(name, ignoreCase = true)) null else v
+                } else v
+            }
             if (value.isNotBlank() && _voucher.value == null) {
                 _events.send(CashierEvent.Message("VOUCHER_INVALID"))
             }
         }
     }
     fun setPpnEnabled(enabled: Boolean) { viewModelScope.launch { settings.setPpnEnabled(enabled) } }
+    fun onLineDiskon(productId: String, nominal: Long) {
+        _lineDiskon.value = _lineDiskon.value + (productId to nominal.coerceAtLeast(0L))
+    }
+    fun onDepositDipakai(value: Boolean) { _depositDipakai.value = value }
+
     fun onMetodeBayar2Change(value: String) { _metodeBayar2.value = value }
     fun onNominalBayar2Change(value: String) { _nominalBayar2.value = value.filter(Char::isDigit).take(12) }
     fun setDepositDipakai(enabled: Boolean) { _depositDipakai.value = enabled }
@@ -327,6 +340,7 @@ class CashierViewModel @Inject constructor(
         _metodeBayar2.value = ""
         _nominalBayar2.value = ""
         _depositDipakai.value = false
+        _lineDiskon.value = emptyMap()
     }
 
     fun canSaveSale(): Boolean =
@@ -369,6 +383,7 @@ class CashierViewModel @Inject constructor(
                 metodeBayar2 = _metodeBayar2.value.ifBlank { null },
                 nominalBayar2 = RupiahFormatter.parseOrZero(_nominalBayar2.value),
                 depositTerpakai = if (_depositDipakai.value) minOf(total.value, depositBalance.value) else 0L,
+                diskonItem = _lineDiskon.value,
             )
             _saving.value = false
             result.onSuccess { sale ->
